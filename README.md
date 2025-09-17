@@ -17,3 +17,8 @@ Plataforma digital para registrar objetos achados e perdidos. O objetivo é faci
 
 ## Equipe
 Projeto foi desenvolvido por Ana Carolina Sá Coelho da Silva, Caio Santos de Souza, Flávio Alécio de Morais Santos e Vinícius Saidy do Amaral de Lima.
+
+## 📖 Documentos
+- Regras de Negócios: https://docs.google.com/document/d/1MNZAiBlAvD0A-NLGtuM7BP-qmaUXpvcQK13iZ4Dh6TQ/edit?tab=t.0
+- Modelo Lógico e Caso de Usos: https://app.diagrams.net/#G1WU0X5jARL7nD-EkCvdCho4rtZMRDIs7A#%7B"pageId"%3A"C5RBs43oDa-KdzZeNtuy"%7D
+- Protótipos: https://www.figma.com/design/XyZf3Xcir9oKuEVtfLG5IR/Achados-e-Perdidos?node-id=69-407&t=XEGbmbuUyvWplcyc-0
