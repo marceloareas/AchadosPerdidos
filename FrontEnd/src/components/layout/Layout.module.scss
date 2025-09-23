@@ -5,5 +5,9 @@
 }
 
 .contentLayout {
+    margin-top: 75px;
+    margin-bottom: 90px;
     flex: 1;
+    min-height: calc(100vh - 165px);
+    overflow-y: auto;
 }

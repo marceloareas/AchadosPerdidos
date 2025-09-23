@@ -1,0 +1,8 @@
+@mixin flex-collumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+$primary-color: rgb(10, 73, 126);
