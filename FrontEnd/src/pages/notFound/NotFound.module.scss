@@ -1,0 +1,76 @@
+@use '../../styles/variables.scss' as *;
+
+.not_found_container {
+    @include flex-collumn;
+    min-height: 100vh;
+    text-align: center;
+    background-color: #f4f6f8;
+
+    span {
+        font-size: 200px;
+        height: auto;
+        animation: float 2s ease-in-out infinite;
+    }
+
+    .shadow {
+        position: relative;
+        top: -60px;
+        width: 150px;
+        height: 140px;
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 10%;
+        filter: blur(8px);
+        animation: scale 2s ease-in-out infinite;
+    }
+
+    h1 {
+        font-size: 5rem;
+        margin: 0;
+        color: #073861;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+        margin-top: 1rem;
+        color: #555;
+    }
+
+    a {
+        text-decoration: none;
+        color: $primary-color;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    .text_container {
+        margin-top: -100px;
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-30px);
+    }
+}
+
+@keyframes scale {
+
+    0%,
+    100% {
+        transform: scale(1.2) perspective(300px) rotateY(47deg) rotateX(88deg);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.7) perspective(300px) rotateY(47deg) rotateX(88deg);
+        opacity: 0.20;
+    }
+}
