@@ -7,6 +7,7 @@ import Matches from "./pages/matches/Matches";
 import MeusItens from "./pages/meusItens/MeusItens";
 import Chats from "./pages/chats/Chats";
 import NotFound from "./pages/notFound/NotFound";
+import AddItem from "./pages/cadastroItem/AddItem";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/matches" element={<Matches />} />
         <Route path="/itens" element={<MeusItens />} />
         <Route path="/chats" element={<Chats />} />
+        <Route path="/add-item" element={<AddItem />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
