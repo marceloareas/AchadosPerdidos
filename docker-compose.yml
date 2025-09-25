@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  frontend-achados:
+    container_name: achados_frontend
+    build:
+      context: ./FrontEnd
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend-achados
+    env_file:
+      - .env
+    networks:
+      - bridge_achados
+  backend-achados:
+    container_name: achados_backend
+    build:
+      context: ./BackEnd
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      postgresql_db:
+        condition: service_healthy
+    networks:
+      - bridge_achados
+  postgresql_db:
+    container_name: achados-postgresql
+    image: postgres:14
+    ports:
+      - "${DB_PORT}:5432"
+    env_file:
+      - .env
+    volumes:
+      - datalake_postgres:/var/lib/postgresql
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  mongo_db:
+    image: mongo:7
+    container_name: achados-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - datalake_mongo:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    networks:
+      - bridge_achados
+
+
+volumes:
+  datalake_postgres:
+    driver: local
+  datalake_mongo:
+    driver: local
+
+networks:
+  bridge_achados:
+    driver: bridge
+
+    
