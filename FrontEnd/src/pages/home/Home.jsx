@@ -1,23 +1,27 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import style from "./Home.module.scss";
 import { FiPlus } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
 
 const Home = () => {
+
+  const onNavigate = useNavigate();
+
   return (
     <Layout>
       <section className={style.section_home_above}>
         <h1>Achados e Perdidos</h1>
         <h2>CEFET/RJ - Campus Maracanã</h2>
-        <button className={style.btn_home}>
+        <button className={style.btn_home}  onClick={() => onNavigate("/add-item?type=lost")}>
           <FiPlus className={style.icon_plus_btn_home} />
           <div className={style.text_btn_home}>
             <h3> Cadastrar Item Perdido</h3>
             <h5> Perdeu algo? Cadastre aqui</h5>
           </div>
         </button>
-        <button className={style.btn_home}>
+        <button className={style.btn_home} onClick={() => onNavigate("/add-item?type=found")}>
           <FaSearch className={style.icon_search_btn_home} />
           <div className={style.text_btn_home}>
             <h3> Cadastrar Item Encontrado</h3>
