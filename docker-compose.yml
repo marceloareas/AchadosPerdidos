@@ -8,6 +8,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5173:5173"
+    volumes:
+      - ./FrontEnd:/app
+      - /app/node_modules
     depends_on:
       - backend-achados
     env_file:
