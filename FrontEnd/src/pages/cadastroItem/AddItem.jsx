@@ -4,7 +4,7 @@ import { AlertCircle, CheckCircle2 } from "lucide-react";
 
 import CustomButton from "../../components/ui/button/CustomButton";
 import Input from "../../components/ui/input/Input";
-import ItemTypeTag from "../../components/ui/itemTypeTag/itemTypeTag";
+import ItemTypeTag from "../../components/ui/itemTypeTag/ItemTypeTag";
 
 import Layout from "../../components/layout/Layout";
 
