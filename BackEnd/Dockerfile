@@ -1,22 +1,18 @@
-# Estágio de Build - Compila e cria o JAR
 FROM maven:3.9.11-amazoncorretto-21 AS build
-WORKDIR /workspace
-COPY pom.xml .
-COPY src ./src
-# Compila e cria o JAR executável
-RUN mvn clean install -DskipTests
 
-# Estágio Final - Prepara e executa a aplicação
-FROM openjdk:21
+COPY src /app/src
+COPY pom.xml /app
+
 WORKDIR /app
 
-# Copia o JAR do estágio anterior
-COPY --from=build /workspace/target/*.jar app.jar
+RUN mvn clean install
 
-# Usa as layertools do Spring para descompactar o JAR em camadas
-RUN java -Djarmode=layertools -jar app.jar extract
+FROM openjdk:21
 
-# Executa a aplicação a partir dos arquivos descompactados
-# CORREÇÃO: Adiciona o classpath (-cp .) para que o Java encontre a classe JarLauncher
-CMD ["java", "-cp", ".", "org.springframework.boot.loader.launch.JarLauncher"]
+COPY --from=build /app/target/achadosperdidos-0.0.1-SNAPSHOT.jar /app/app.jar
 
+WORKDIR /app
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "app.jar"]
