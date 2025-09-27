@@ -21,11 +21,14 @@ services:
     container_name: achados_backend
     build:
       context: ./BackEnd
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
       - "8080:8080"
     env_file:
       - .env
+    volumes:
+      - ./BackEnd:/workspace
+      - ~/.m2:/root/.m2   # cache das dependências do Maven
     depends_on:
       postgresql_db:
         condition: service_healthy
