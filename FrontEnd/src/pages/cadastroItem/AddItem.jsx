@@ -4,7 +4,7 @@ import { AlertCircle, CheckCircle2 } from "lucide-react";
 
 import CustomButton from "../../components/ui/button/CustomButton";
 import Input from "../../components/ui/input/Input";
-import ItemTypeTag from "../../components/ui/itemTypeTag/ItemTypeTag";
+import Badge from "../../components/ui/badge/Bagde";
 
 import Layout from "../../components/layout/Layout";
 
@@ -107,8 +107,7 @@ const AddItem = () => {
             </CustomButton>
           </div>
 
-          {/* Status tag */}
-          <ItemTypeTag type={itemType} />
+          <Badge badgeType="item" type={itemType} label={itemType === "lost" ? "Item Perdido" : "Item Encontrado"} />
 
           {/* Box de conteúdo */}
           <div className={style.formBox}>
