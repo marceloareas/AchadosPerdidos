@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const route = useLocation();
+  const onNavigate = useNavigate();
 
   const isHome = route.pathname == "/";
   const isMatches = route.pathname == "/matches";
@@ -17,7 +18,10 @@ const Header = () => {
   return (
     <>
       <div className={style.body_header}>
-        <section className={style.left_section_header}>
+        <section
+          className={style.left_section_header}
+          onClick={() => onNavigate("/")}
+        >
           <img className={style.logo_header} src={logo} alt="" />
           <span className={style.tittle_header}>A&P</span>
         </section>
