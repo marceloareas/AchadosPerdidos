@@ -52,6 +52,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - bridge_achados
   mongo_db:
     image: mongo:7
     container_name: achados-mongo
