@@ -12,7 +12,6 @@
   width: auto;
 }
 
-/* Badges de item */
 .lost {
   background-color: #d32e2e; 
   color: #fafafa;
@@ -24,12 +23,13 @@
 }
 
 .returned {
-  background-color: #2e7d32; 
-  color: #fafafa;
+  background-color: #BCE0A9;
+  color: #2e7d32;
 }
 
-/* Badges de categoria */
 .category {
-  background-color: #2b6cb0;
-  color: #fafafa;
+  background-color: #A9C0D2;
+  color: #0A497E;
+  font-size: 0.70rem;        
+  padding: 0.15rem 0.5rem; 
 }
