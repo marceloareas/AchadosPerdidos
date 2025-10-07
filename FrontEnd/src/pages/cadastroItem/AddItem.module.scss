@@ -1,3 +1,5 @@
+@use '../../styles/variables.scss' as *;
+
 .pageContainer {
   min-height: 100vh;
   background-color: #f9fafb;
@@ -34,13 +36,7 @@
 }
 
 .formBox {
-  background-color: #ffffff;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  @include formBox;
 }
 
 .textarea {
@@ -53,9 +49,7 @@
 }
 
 .form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  @include form;
 }
 
 .formGroup {
