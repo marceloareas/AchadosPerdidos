@@ -2,8 +2,9 @@
 
 
 .pageContainer {
-    @include flex-collumn;
-    min-height: 90vh;
+    @include flex-collumn(flex-start, center);
+    ;
+    min-height: 100vh;
     background-color: rgba(235, 240, 245, 0.4);
     padding: 2.5rem 1rem;
 }
@@ -17,18 +18,19 @@
 
 .section_register_top {
     @include flex-collumn;
-    margin-top: -50%;
-    margin-bottom: 10%
+    gap: 0.3rem;
+    margin-bottom: 5%
 }
 
 .formBox {
     @include formBox;
-    @include flex-collumn;
+    @include flex-collumn(flex-start, center);
     min-height: 35vh;
 }
 
 .form {
     @include form;
+    gap: 2rem !important;
 }
 
 .container_link {

@@ -1,10 +1,11 @@
-@mixin flex-collumn {
+@mixin flex-collumn ($justify: center, $align: center) {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: $align;
+    justify-content: $justify;
 }
 
+// Form styles
 @mixin formBox {
     background-color: #ffffff;
     border-radius: 0.5rem;
@@ -21,6 +22,16 @@
     gap: 1rem;
 }
 
+@mixin formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+@mixin label {
+    font-weight: 500;
+}
+
 @mixin container_link {
     display: flex;
     align-items: center;
@@ -34,14 +45,5 @@
     font-weight: 600;
 }
 
-@mixin formGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-@mixin label {
-    font-weight: 500;
-}
 
 $primary-color: rgb(10, 73, 126);
