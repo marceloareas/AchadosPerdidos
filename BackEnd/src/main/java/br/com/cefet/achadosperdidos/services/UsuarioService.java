@@ -1,8 +1,6 @@
 package br.com.cefet.achadosperdidos.services;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
