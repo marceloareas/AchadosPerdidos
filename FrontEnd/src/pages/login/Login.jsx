@@ -31,9 +31,7 @@ const Login = () => {
   return (
     <div className={style.pageContainer}>
       <section className={style.section_register_top}>
-        <div>
-          <img className={style.logo_marca} src={logo} alt="" />
-        </div>
+        <img className={style.logo_marca} src={logo} alt="" />
         <h3 className={style.logo_name}>A&P</h3>
         <h2 className={style.tittle_page}>Bem vindo!</h2>
         <span className={style.tittle_page}>Entre em sua conta</span>

@@ -33,9 +33,7 @@ const Cadastro = () => {
   return (
     <div className={style.pageContainer}>
       <section className={style.section_register_top}>
-        <div>
-          <img className={style.logo_marca} src={logo} alt="" />
-        </div>
+        <img className={style.logo_marca} src={logo} alt="" />
         <h3 className={style.logo_name}>A&P</h3>
         <h2 className={style.tittle_page}>Criar Conta</h2>
         <span className={style.tittle_page}>Cadastre-se no sistema</span>
@@ -91,7 +89,7 @@ const Cadastro = () => {
             {/* Cor */}
             <div className={style.formGroup}>
               <label htmlFor="confirm_senha" className={style.label}>
-                Confirme sua senha*
+                Confirmar senha*
               </label>
               <Input
                 type="password"
@@ -109,7 +107,7 @@ const Cadastro = () => {
               className={style.submitButton}
               disabled={isLoading}
             >
-              {isLoading ? "Cadastrando..." : "Cadastrar"}
+              {isLoading ? "Cadastrando..." : "Criar Conta"}
             </CustomButton>
           </form>
         </div>
@@ -118,7 +116,7 @@ const Cadastro = () => {
             {" "}
             Já tem uma conta?{" "}
             <a href="/login" className={style.auth_link}>
-              faça login
+              Faça Login
             </a>
           </span>
         </div>
