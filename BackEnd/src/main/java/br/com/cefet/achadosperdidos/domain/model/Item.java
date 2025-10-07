@@ -28,6 +28,7 @@ import br.com.cefet.achadosperdidos.domain.enums.StatusItemEnum;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
     private Long id;
 
     @ManyToMany
@@ -36,13 +37,16 @@ public class Item {
         joinColumns = @JoinColumn(name = "item_id"),
         inverseJoinColumns = @JoinColumn(name = "categoria_id")
     )
-    private Set<Categoria> categorias = new HashSet<>();
+    @Getter
+    private final Set<Categoria> categorias = new HashSet<>();
 
     @ManyToMany(mappedBy = "itens")
-    private Set<Match> matches = new HashSet<>();
+    @Getter
+    private final Set<Match> matches = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", referencedColumnName = "id")
+    @Getter
     private Usuario usuario;
 
     @Getter
