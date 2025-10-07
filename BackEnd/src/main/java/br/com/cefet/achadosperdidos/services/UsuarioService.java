@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.repositories.UsuarioRepository;
 import br.com.cefet.achadosperdidos.dto.usuario.UsuarioResponseDTO;
+import br.com.cefet.achadosperdidos.dto.usuario.UsuarioRequestDTO;
 import br.com.cefet.achadosperdidos.exception.usuario.UserNotFoundException;
 
 @Service
@@ -31,6 +32,43 @@ public class UsuarioService {
         return usuarioRepository.findById(id)
             .map(this::convertToResponseDTO)
             .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
+    }
+
+    public UsuarioResponseDTO create(UsuarioRequestDTO usuarioRequestDTO){
+        Usuario novoUsuario = new Usuario();
+
+        novoUsuario.setNome(usuarioRequestDTO.getNome());
+        novoUsuario.setEmail(usuarioRequestDTO.getEmail());
+        // CRIPTOGRAFIA
+        novoUsuario.setSenha(usuarioRequestDTO.getSenha());
+        
+        Usuario usuarioSalvo = usuarioRepository.save(novoUsuario);
+        return convertToResponseDTO(usuarioSalvo);
+    }
+
+    public UsuarioResponseDTO update(Long id, UsuarioRequestDTO usuarioRequestDTO){
+        Usuario usuario = usuarioRepository.findById(id)
+            .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
+
+        usuario.setNome(usuarioRequestDTO.getNome());
+        usuario.setEmail(usuarioRequestDTO.getEmail());
+
+        // CRIPTOGRAFIA
+        if (usuarioRequestDTO.getSenha() != null && !usuarioRequestDTO.getSenha().isEmpty()) {
+            usuario.setSenha(usuarioRequestDTO.getSenha());
+        }
+
+        Usuario usuarioAtualizado = usuarioRepository.save(usuario);
+        return convertToResponseDTO(usuarioAtualizado);
+    }
+
+    public void delete(Long id){
+        
+        if(!usuarioRepository.existsById(id)){
+            throw new UserNotFoundException("Usuário não encontrado");
+        }
+
+        usuarioRepository.deleteById(id);
     }
 
     public UsuarioResponseDTO convertToResponseDTO(Usuario usuario){
