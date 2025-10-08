@@ -8,6 +8,8 @@ import MeusItens from "./pages/meusItens/MeusItens";
 import Chats from "./pages/chats/Chats";
 import NotFound from "./pages/notFound/NotFound";
 import AddItem from "./pages/cadastroItem/AddItem";
+import Cadastro from "./pages/cadastro/Cadastro";
+import Login from "./pages/login/Login";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
         <Route path="/chats" element={<Chats />} />
         <Route path="/add-item" element={<AddItem />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/register" element={<Cadastro />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </>
   );

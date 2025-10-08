@@ -6,45 +6,52 @@ import { FiPlus } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
 import { Grid } from "@mui/material";
 import ItemCard from "../../components/ui/itemCard/ItemCard";
-
+import useItemStore from "../../store/item.js";
 const Home = () => {
   const navigate = useNavigate();
 
+  const itemsStore = useItemStore();
+  const { getItemsRecentlyReturned } = itemsStore;
+  const { itemsReturned } = itemsStore;
+  React.useEffect(() => {
+    getItemsRecentlyReturned();
+  }, []);
+
   // dados mockados - substituir pela API depois
-  const latestItems = [
-    {
-      itemType: "returned",
-      category: "Chaves",
-      title: "Chaveiro Vermelho",
-      location: "Biblioteca Central",
-      personName: "Ana Carolina", //nome do usuario que cadastrou o item
-      description: "Achei um chaveiro vermelho com 6 chaves na biblioteca."
-    },
-    {
-      itemType: "returned",
-      category: "Carteiras",
-      title: "Carteira Preta",
-      location: "Sala 203",
-      personName: "Vinicius Saidy",
-      description: "Carteira preta de couro com documentos e cartões."
-    },
-    {
-      itemType: "returned",
-      category: "Eletrônicos",
-      title: "Fone Bluetooth",
-      location: "Laboratório de Informática",
-      personName: "Caio Souza",
-      description: "Fone bluetooth preto sem marca visível."
-    },
-     {
-      itemType: "returned",
-      category: "Eletrônicos",
-      title: "Carregador USB-C",
-      location: "Corredor do pavilhão 1",
-      personName: "Flavio Alecio",
-      description: "Carregador branco tipo usb-c com adesivo de nuvem."
-    }
-  ];
+  // const latestItems = [
+  //   {
+  //     itemType: "returned",
+  //     category: "Chaves",
+  //     title: "Chaveiro Vermelho",
+  //     location: "Biblioteca Central",
+  //     personName: "Ana Carolina", //nome do usuario que cadastrou o item
+  //     description: "Achei um chaveiro vermelho com 6 chaves na biblioteca."
+  //   },
+  //   {
+  //     itemType: "returned",
+  //     category: "Carteiras",
+  //     title: "Carteira Preta",
+  //     location: "Sala 203",
+  //     personName: "Vinicius Saidy",
+  //     description: "Carteira preta de couro com documentos e cartões."
+  //   },
+  //   {
+  //     itemType: "returned",
+  //     category: "Eletrônicos",
+  //     title: "Fone Bluetooth",
+  //     location: "Laboratório de Informática",
+  //     personName: "Caio Souza",
+  //     description: "Fone bluetooth preto sem marca visível."
+  //   },
+  //    {
+  //     itemType: "returned",
+  //     category: "Eletrônicos",
+  //     title: "Carregador USB-C",
+  //     location: "Corredor do pavilhão 1",
+  //     personName: "Flavio Alecio",
+  //     description: "Carregador branco tipo usb-c com adesivo de nuvem."
+  //   }
+  // ];
 
   return (
     <Layout>
@@ -78,17 +85,17 @@ const Home = () => {
       <section className={style.section_home_below}>
         <h3 className={style.lastReturnedItems}>Últimos itens devolvidos</h3>
         <Grid container spacing={2} direction="column">
-          {latestItems.map((item, index) => (
+          {itemsReturned.map((item, index) => (
             <Grid item key={index}>
               <ItemCard
-                itemType={item.itemType}
-                category={item.category}
-                title={item.title}
-                location={item.location}
-                personName={item.personName} //mudar pra nome do usuario que cadastrou o item 
-                description={item.description}
-                showDescription={false} 
-                showOptions={false}    
+                itemType={item.tipo}
+                category={item.tipo}
+                title={item.nome}
+                location={item.endereco}
+                // personName={item.personName} //mudar pra nome do usuario que cadastrou o item
+                description={item.descricao}
+                showDescription={false}
+                showOptions={false}
               />
             </Grid>
           ))}

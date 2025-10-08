@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 
@@ -78,7 +78,8 @@ const AddItem = () => {
       });
     }, 1500);
   };
-
+  const [selectOpen, setSelectOpen] = useState(false);
+  const selectLabelRef = useRef(null);
   return (
     <Layout>
       <div className={style.pageContainer}>
@@ -107,7 +108,11 @@ const AddItem = () => {
             </CustomButton>
           </div>
 
-          <Badge badgeType="item" type={itemType} label={itemType === "lost" ? "Item Perdido" : "Item Encontrado"} />
+          <Badge
+            badgeType="item"
+            type={itemType}
+            label={itemType === "lost" ? "Item Perdido" : "Item Encontrado"}
+          />
 
           {/* Box de conteúdo */}
           <div className={style.formBox}>
@@ -156,25 +161,20 @@ const AddItem = () => {
                     )}
                   />
                 ) : (
-                  <FormControl fullWidth>
-                    <InputLabel id="category-label">Categoria *</InputLabel>
-                    <Select
-                      labelId="category-label"
-                      id="category"
-                      value={formData.category}
-                      label="Categoria *"
-                      onChange={(e) =>
-                        handleInputChange("category", e.target.value)
-                      }
-                      required
-                    >
-                      {categories.map((cat) => (
-                        <MenuItem key={cat} value={cat.toLowerCase()}>
-                          {cat}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <Autocomplete
+                    // multiple
+                    id="category"
+                    options={categories}
+                    value={
+                      formData.category ? formData.category.split(",") : []
+                    }
+                    onChange={(event, newValue) => {
+                      handleInputChange("category", newValue.join(","));
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} placeholder="Categoria *" />
+                    )}
+                  />
                 )}
               </div>
 

@@ -1,0 +1,44 @@
+@use '../../styles/variables.scss' as *;
+
+
+.pageContainer {
+    @include flex-collumn(flex-start, center);
+    min-height: 100vh;
+    background-color: rgba(235, 240, 245, 0.4);
+    padding: 2.5rem 1rem;
+}
+
+.logo_marca {
+    background-color: rgba(159, 190, 217, 0.40);
+    height: 50px;
+    padding: 20px 30px;
+    border-radius: 20px;
+}
+
+.section_register_top {
+    @include flex-collumn;
+    gap: 0.3rem;
+    margin-bottom: 5%;
+}
+
+.formBox {
+    @include formBox;
+    @include flex-collumn;
+}
+
+.form {
+    @include form;
+    gap: 1.3rem !important;
+}
+
+.container_link {
+    @include container_link;
+}
+
+.auth_link {
+    @include auth_link;
+}
+
+.label {
+    @include label;
+}
