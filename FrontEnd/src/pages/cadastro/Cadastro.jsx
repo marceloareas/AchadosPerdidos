@@ -1,5 +1,4 @@
 import React, { use, useState } from "react";
-import * as Yup from "yup";
 import style from "./Cadastro.module.scss";
 import logo from "../../assets/logoCefet.svg";
 
@@ -7,9 +6,7 @@ import CustomButton from "../../components/ui/button/CustomButton";
 import Input from "../../components/ui/input/Input";
 
 import useUserStore from "../../store/user.js";
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import Slide from '@mui/material/Slide';
+import { registerSchema } from "../../validation/validation.jsx";
 
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../../utils/NotificationContext.jsx";
@@ -25,45 +22,23 @@ const Cadastro = () => {
   const { createUser, loading, error } = useUserStore();
   const { showNotification } = useNotification();
   const onNavigate = useNavigate();
-  const validationSchema = Yup.object({
-    nome: Yup.string().required("O nome é obrigatório."),
-    email: Yup.string().email("Digite um email válido.").required("O email é obrigatório."),
-    senha: Yup.string()
-      .required("A senha é obrigatória.")
-      .min(6, "A senha deve ter no mínimo 6 caracteres."),
-    confirm_senha: Yup.string()
-      .oneOf([Yup.ref("senha"), null], "As senhas não coincidem.")
-      .required("Confirme sua senha."),
-  });
 
   // validação em tempo real
   const handleInputChange = async (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
     try {
-      await validationSchema.validateAt(field, { ...formData, [field]: value });
+      await registerSchema.validateAt(field, { ...formData, [field]: value });
       setErrors((prev) => ({ ...prev, [field]: null }));
     } catch (err) {
       setErrors((prev) => ({ ...prev, [field]: err.message }));
     }
   };
-  function SlideTransition(props) {
-  return <Slide {...props} direction="up" />;
-}
-const [open, setOpen] = React.useState(false);
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpen(false);
-  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await validationSchema.validate(formData, { abortEarly: false });
+      await registerSchema.validate(formData, { abortEarly: false });
       setErrors({});
 
       const formToSend = {
@@ -109,7 +84,9 @@ const [open, setOpen] = React.useState(false);
           <form onSubmit={handleSubmit} className={style.form}>
             {/* Nome */}
             <div className={style.formGroup}>
-              <label htmlFor="nome" className={style.label}>Nome*</label>
+              <label htmlFor="nome" className={style.label}>
+                Nome*
+              </label>
               <Input
                 id="nome"
                 placeholder="escreva seu nome"
@@ -121,19 +98,25 @@ const [open, setOpen] = React.useState(false);
 
             {/* Email */}
             <div className={style.formGroup}>
-              <label htmlFor="email" className={style.label}>E-mail*</label>
+              <label htmlFor="email" className={style.label}>
+                E-mail*
+              </label>
               <Input
                 id="email"
                 placeholder="Escreva seu email"
                 value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
               />
-              {errors.email && <div className={style.error}>{errors.email}</div>}
+              {errors.email && (
+                <div className={style.error}>{errors.email}</div>
+              )}
             </div>
 
             {/* Senha */}
             <div className={style.formGroup}>
-              <label htmlFor="senha" className={style.label}>Senha*</label>
+              <label htmlFor="senha" className={style.label}>
+                Senha*
+              </label>
               <Input
                 type="password"
                 id="senha"
@@ -141,20 +124,28 @@ const [open, setOpen] = React.useState(false);
                 value={formData.senha}
                 onChange={(e) => handleInputChange("senha", e.target.value)}
               />
-              {errors.senha && <div className={style.error}>{errors.senha}</div>}
+              {errors.senha && (
+                <div className={style.error}>{errors.senha}</div>
+              )}
             </div>
 
             {/* Confirmar senha */}
             <div className={style.formGroup}>
-              <label htmlFor="confirm_senha" className={style.label}>Confirmar senha*</label>
+              <label htmlFor="confirm_senha" className={style.label}>
+                Confirmar senha*
+              </label>
               <Input
                 type="password"
                 id="confirm_senha"
                 placeholder="Confirme sua senha"
                 value={formData.confirm_senha}
-                onChange={(e) => handleInputChange("confirm_senha", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("confirm_senha", e.target.value)
+                }
               />
-              {errors.confirm_senha && <div className={style.error}>{errors.confirm_senha}</div>}
+              {errors.confirm_senha && (
+                <div className={style.error}>{errors.confirm_senha}</div>
+              )}
             </div>
 
             {/* Botão */}
@@ -176,7 +167,9 @@ const [open, setOpen] = React.useState(false);
         <div className={style.container_link}>
           <span>
             Já tem uma conta?{" "}
-            <a href="/login" className={style.auth_link}>Faça Login</a>
+            <a href="/login" className={style.auth_link}>
+              Faça Login
+            </a>
           </span>
         </div>
       </section>

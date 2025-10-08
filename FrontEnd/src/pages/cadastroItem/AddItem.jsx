@@ -7,32 +7,34 @@ import Input from "../../components/ui/input/Input";
 import Badge from "../../components/ui/badge/Bagde";
 
 import Layout from "../../components/layout/Layout";
+import { itemSchema } from "../../validation/validation.jsx";
 
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+import { useNotification } from "../../utils/NotificationContext.jsx";
+import useItemStore from "../../store/item.js";
 
 import style from "./AddItem.module.scss";
 
 const AddItem = () => {
+  const [formData, setFormData] = useState({
+    nome: "",
+    descricao: "",
+    categoria: "",
+    endereco: "",
+    // color: "",
+    // additionalInfo: "",
+  });
   const [searchParams] = useSearchParams();
-  const defaultType = searchParams.get("type") || "lost";
+  const { showNotification } = useNotification();
+  const { createItem, loading, error } = useItemStore();
 
+  const defaultType = searchParams.get("type") || "lost";
   const [itemType, setItemType] = useState(
     defaultType === "found" ? "found" : "lost"
   );
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    category: "",
-    location: "",
-    color: "",
-    additionalInfo: "",
-  });
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const categories = [
     "Eletrônicos",
@@ -44,9 +46,78 @@ const AddItem = () => {
     "Livros",
     "Outros",
   ];
+
+  const handleInputChange = async (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    try {
+      await itemSchema.validateAt(field, { ...formData, [field]: value });
+      setErrors((prev) => ({ ...prev, [field]: null }));
+    } catch (err) {
+      setErrors((prev) => ({ ...prev, [field]: err.message }));
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    // setTimeout(() => {
+    // setIsLoading(false);
+    // alert(
+    //   `Item ${itemType === "lost" ? "perdido" : "encontrado"} cadastrado!`
+    // );
+    //   setFormData({
+    //     nome: "",
+    //     descricao: "",
+    //     categoria: "",
+    //     endereco: "",
+    //     // color: "",
+    //     // additionalInfo: "",
+    //   });
+    //   showNotification(`Item ${itemType === "lost" ? "perdido" : "encontrado"} cadastrado!`, "success");
+    //   onNavigate("/itens");
+    // }, 1500);
+    try {
+      itemSchema.validateSync(formData, { abortEarly: false });
+      setErrors({});
+      const formToSend = {
+        tipo: itemType,
+        nome: formData.nome,
+        descricao: formData.descricao,
+        categoria: formData.categoria,
+        endereco: formData.endereco,
+      };
+      if (!error) {
+        setFormData({
+          nome: "",
+          descricao: "",
+          categoria: "",
+          endereco: "",
+          // color: "",
+          // additionalInfo: "",
+        });
+      }
+      showNotification(
+        `Item ${itemType === "lost" ? "perdido" : "encontrado"} cadastrado!`,
+        "success"
+      );
+      onNavigate("/itens");
+    } catch (err) {
+      if (err.inner) {
+        const validationErrors = {};
+        err.inner.forEach((e) => {
+          validationErrors[e.path] = e.message;
+        });
+        setErrors(validationErrors);
+      }
+    }
+  };
+
+  // Responsividade
   const [windowWidth, setWidth] = useState(window.innerWidth);
   const sizePage =
     windowWidth > 1024 ? "default " : windowWidth > 640 ? "lg" : "sm";
+
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
 
@@ -54,32 +125,6 @@ const AddItem = () => {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    setTimeout(() => {
-      setIsLoading(false);
-      alert(
-        `Item ${itemType === "lost" ? "perdido" : "encontrado"} cadastrado!`
-      );
-      setFormData({
-        title: "",
-        description: "",
-        category: "",
-        location: "",
-        color: "",
-        additionalInfo: "",
-      });
-    }, 1500);
-  };
-  const [selectOpen, setSelectOpen] = useState(false);
-  const selectLabelRef = useRef(null);
   return (
     <Layout>
       <div className={style.pageContainer}>
@@ -135,6 +180,9 @@ const AddItem = () => {
                   onChange={(e) => handleInputChange("title", e.target.value)}
                   required
                 />
+                {errors.nome && (
+                  <div className={style.error}>{errors.nome}</div>
+                )}
               </div>
 
               {/* Categoria */}
@@ -148,10 +196,10 @@ const AddItem = () => {
                     id="category"
                     options={categories}
                     value={
-                      formData.category ? formData.category.split(",") : []
+                      formData.categoria ? formData.categoria.split(",") : []
                     }
                     onChange={(event, newValue) => {
-                      handleInputChange("category", newValue.join(","));
+                      handleInputChange("categoria", newValue.join(","));
                     }}
                     renderInput={(params) => (
                       <TextField
@@ -166,15 +214,18 @@ const AddItem = () => {
                     id="category"
                     options={categories}
                     value={
-                      formData.category ? formData.category.split(",") : []
+                      formData.categoria ? formData.categoria.split(",") : []
                     }
                     onChange={(event, newValue) => {
-                      handleInputChange("category", newValue.join(","));
+                      handleInputChange("categoria", newValue.join(","));
                     }}
                     renderInput={(params) => (
                       <TextField {...params} placeholder="Categoria *" />
                     )}
                   />
+                )}
+                {errors.categoria && (
+                  <div className={style.error}>{errors.categoria}</div>
                 )}
               </div>
 
@@ -186,12 +237,15 @@ const AddItem = () => {
                 <Input
                   id="location"
                   placeholder="Ex: Biblioteca Central, Sala de Aula..."
-                  value={formData.location}
+                  value={formData.endereco}
                   onChange={(e) =>
-                    handleInputChange("location", e.target.value)
+                    handleInputChange("endereco", e.target.value)
                   }
                   required
                 />
+                {errors.endereco && (
+                  <div className={style.error}>{errors.endereco}</div>
+                )}
               </div>
 
               {/* Descrição */}
@@ -203,13 +257,16 @@ const AddItem = () => {
                   id="description"
                   className={style.textarea}
                   placeholder="Descreva o item em detalhes: cor, marca, modelo..."
-                  value={formData.description}
+                  value={formData.descricao}
                   onChange={(e) =>
-                    handleInputChange("description", e.target.value)
+                    handleInputChange("descricao", e.target.value)
                   }
                   rows={6}
                   required
                 />
+                {errors.descricao && (
+                  <div className={style.error}>{errors.descricao}</div>
+                )}
               </div>
 
               {/* Cor */}
@@ -223,6 +280,9 @@ const AddItem = () => {
                   value={formData.color}
                   onChange={(e) => handleInputChange("color", e.target.value)}
                 />
+                {errors.color && (
+                  <div className={style.error}>{errors.color}</div>
+                )}
               </div>
 
               {/* Submit */}

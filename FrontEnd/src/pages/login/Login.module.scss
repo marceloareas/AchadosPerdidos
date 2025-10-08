@@ -45,3 +45,7 @@
 .label {
     @include label;
 }
+
+.error {
+    @include error;
+}
