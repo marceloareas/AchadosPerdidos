@@ -44,6 +44,10 @@
     text-decoration: none;
     font-weight: 600;
 }
+@mixin error {
+    color: red;
+
+}
 
 
 $primary-color: rgb(10, 73, 126);

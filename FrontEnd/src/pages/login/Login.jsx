@@ -4,29 +4,67 @@ import logo from "../../assets/logoCefet.svg";
 
 import CustomButton from "../../components/ui/button/CustomButton";
 import Input from "../../components/ui/input/Input";
-import TextField from "@mui/material/TextField";
+import { useNotification } from "../../utils/NotificationContext.jsx";
+import { loginSchema } from "../../validation/validation";
 
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     senha: "",
   });
+  const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const { showNotification } = useNotification();
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+
+    try {
+      loginSchema.validateAt(field, { ...formData, [field]: value });
+      setErrors((prev) => ({ ...prev, [field]: null }));
+    } catch (err) {
+      setErrors((prev) => ({ ...prev, [field]: err.message }));
+    }
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    setTimeout(() => {
-      setIsLoading(false);
-      alert("Usuário logado!");
+    try {
+      await loginSchema.validate(formData, { abortEarly: false });
+      setErrors({});
+
+      const formToSend = {
+        email: formData.email,
+        senha: formData.senha,
+      };
+      // Lógica de login aqui
+
+      // Precisa da logica de login para utilizar o error vindo do zustand
+      // if(!error){
       setFormData({
         email: "",
         senha: "",
       });
-    }, 1500);
+      showNotification("Login realizado com sucesso!", "success");
+      onNavigate("/dashboard");
+      // }
+    } catch (err) {
+      if (err.inner) {
+        const validationErrors = {};
+        err.inner.forEach((e) => {
+          validationErrors[e.path] = e.message;
+        });
+        setErrors(validationErrors);
+      }
+    }
+    // setTimeout(() => {
+    //   setIsLoading(false);
+    //   alert("Usuário logado!");
+    //   setFormData({
+    //     email: "",
+    //     senha: "",
+    //   });
+    // }, 1500);
   };
   return (
     <div className={style.pageContainer}>
@@ -53,6 +91,7 @@ const Login = () => {
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 required
               />
+              {errors.nome && <div className={style.error}>{errors.nome}</div>}
             </div>
 
             {/* Senha */}
@@ -68,6 +107,7 @@ const Login = () => {
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 required
               />
+              {errors.nome && <div className={style.error}>{errors.senha}</div>}
             </div>
 
             {/* Submit */}

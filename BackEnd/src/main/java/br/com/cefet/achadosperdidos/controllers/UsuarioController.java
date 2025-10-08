@@ -24,6 +24,7 @@ import br.com.cefet.achadosperdidos.domain.model.Usuario;
 
 @RestController
 @RequestMapping(value="/users")
+
 public class UsuarioController{
 
     private UsuarioService usuarioService;

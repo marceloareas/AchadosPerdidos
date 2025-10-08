@@ -18,6 +18,7 @@ public class Categoria {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
     private Long id;
 
     @ManyToMany(mappedBy = "categorias")
@@ -26,6 +27,13 @@ public class Categoria {
     @Getter
     @Setter
     private String nome;
+
+    public Categoria(){}
+
+    public Categoria(Long id, String nome){
+        this.id = id;
+        this.nome = nome;
+    }
 
 
 }
