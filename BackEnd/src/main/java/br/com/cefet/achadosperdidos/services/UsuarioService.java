@@ -42,6 +42,8 @@ public class UsuarioService {
         Usuario novoUsuario = new Usuario();
 
         novoUsuario.setNome(usuarioRequestDTO.getNome());
+
+        //todo: verificar se o email é valido para registrar. -> throw error se não.
         novoUsuario.setEmail(usuarioRequestDTO.getEmail());
         
         // CRIPTOGRAFIA
@@ -57,6 +59,8 @@ public class UsuarioService {
             .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
         usuario.setNome(usuarioRequestDTO.getNome());
+
+        //todo: verificar se o email é valido para atualizar. throw error se não.
         usuario.setEmail(usuarioRequestDTO.getEmail());
 
         // CRIPTOGRAFIA
