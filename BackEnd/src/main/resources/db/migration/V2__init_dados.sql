@@ -1,10 +1,10 @@
 -- Inserção de 5 Usuários
 INSERT INTO usuarios (nome, email, senha) VALUES
-('Ana Carolina Sá', 'carolzinha.da.globo@email.com', 'senha123'),
-('Caio Santos', 'caiosantos.dev@email.com', 'senha456'),
-('Flavio Alecio', 'flavio.cybersec.audit@email.com', 'senha789'),
-('Vinicius Saidy', 'vs.amo.glorioso@email.com', 'senha101'),
-('Marcelo Areas', 'professor.dos.joguinhos@email.com', 'senha112');
+('Ana Carolina Sá', 'carolzinha.da.globo@email.com', '$2a$12$kbCR.zLBVFJjT8BUvrhcgeh./O2Pi5e4m1s6kYUjnXh8RjsD4LtHy'),
+('Caio Santos', 'caiosantos.dev@email.com', '$2a$12$rL0U5r8J/.95BrJHPE4vx.7P4gm6XUyB7/O7/WOSIlS0Fxxukt8VS'),
+('Flavio Alecio', 'flavio.cybersec.audit@email.com', '$2a$12$./2c5nxuaKDeXRh1WQp1I.2YijbK9hH3JplQdIGyv09bdPxyRvQcy'),
+('Vinicius Saidy', 'vs.amo.glorioso@email.com', '$2a$12$.94OyxYG.iCqUnGyc0aQBOyci/EeQiypw2iBNh5t25RiqgMNyni7G'),
+('Marcelo Areas', 'professor.dos.joguinhos@email.com', '$2a$12$cxym59E/AssE6wZZQ52vN.TZHH/pDslR2y/BooKTN.2yLNEpeUdAG');
 
 -- Inserção das Categorias Padrão (sem alterações)
 INSERT INTO categorias (nome) VALUES

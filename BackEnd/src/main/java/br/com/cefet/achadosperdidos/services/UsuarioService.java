@@ -2,6 +2,7 @@ package br.com.cefet.achadosperdidos.services;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.cefet.achadosperdidos.domain.model.Usuario;
@@ -14,11 +15,14 @@ import br.com.cefet.achadosperdidos.exception.usuario.UserNotFoundException;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UsuarioService(
-        UsuarioRepository usuarioRepository
+        UsuarioRepository usuarioRepository,
+        PasswordEncoder passwordEncoder
     ) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<UsuarioResponseDTO> findAll(){
@@ -39,8 +43,10 @@ public class UsuarioService {
 
         novoUsuario.setNome(usuarioRequestDTO.getNome());
         novoUsuario.setEmail(usuarioRequestDTO.getEmail());
+        
         // CRIPTOGRAFIA
-        novoUsuario.setSenha(usuarioRequestDTO.getSenha());
+        String hashedSenha = passwordEncoder.encode(usuarioRequestDTO.getSenha());
+        novoUsuario.setSenha(hashedSenha);
         
         Usuario usuarioSalvo = usuarioRepository.save(novoUsuario);
         return convertToResponseDTO(usuarioSalvo);
@@ -55,7 +61,7 @@ public class UsuarioService {
 
         // CRIPTOGRAFIA
         if (usuarioRequestDTO.getSenha() != null && !usuarioRequestDTO.getSenha().isEmpty()) {
-            usuario.setSenha(usuarioRequestDTO.getSenha());
+            usuario.setSenha(passwordEncoder.encode(usuarioRequestDTO.getSenha()));
         }
 
         Usuario usuarioAtualizado = usuarioRepository.save(usuario);
