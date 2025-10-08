@@ -13,6 +13,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { useNotification } from "../../utils/NotificationContext.jsx";
 import useItemStore from "../../store/item.js";
+import useCategoryStore from "../../store/categoria.js";
 
 import style from "./AddItem.module.scss";
 
@@ -28,6 +29,11 @@ const AddItem = () => {
   const [searchParams] = useSearchParams();
   const { showNotification } = useNotification();
   const { createItem, loading, error } = useItemStore();
+  const { getCategorias, categorias } = useCategoryStore();
+
+  useEffect(() => {
+    getCategorias();
+  }, [getCategorias]);
 
   const defaultType = searchParams.get("type") || "lost";
   const [itemType, setItemType] = useState(
@@ -36,16 +42,7 @@ const AddItem = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const categories = [
-    "Eletrônicos",
-    "Acessórios",
-    "Chaves",
-    "Carteiras",
-    "Documentos",
-    "Roupas",
-    "Livros",
-    "Outros",
-  ];
+  const categories = categorias.map((cat) => cat.nome);
 
   const handleInputChange = async (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
