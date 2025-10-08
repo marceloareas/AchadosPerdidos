@@ -1,17 +1,16 @@
 package br.com.cefet.achadosperdidos.dto.categoria;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-public class CategoriaResponseDTO {
 
-    public CategoriaResponseDTO(){}
+@Getter
+@Setter
+@NoArgsConstructor
+public class CategoriaDTO {
 
-    @Getter
-    @Setter
     private Long id;
 
-    @Getter
-    @Setter
     private String nome;
 }

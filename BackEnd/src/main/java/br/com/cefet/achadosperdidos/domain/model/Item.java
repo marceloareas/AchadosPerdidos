@@ -73,6 +73,6 @@ public class Item {
 
     @Getter
     @Setter
-    private String endereco;
+    private String localizacao;
 
 }
