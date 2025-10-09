@@ -27,7 +27,7 @@ import br.com.cefet.achadosperdidos.domain.model.Usuario;
 
 public class UsuarioController{
 
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
     public UsuarioController(UsuarioService usuarioService){
         this.usuarioService = usuarioService;
@@ -44,12 +44,6 @@ public class UsuarioController{
     public ResponseEntity<UsuarioResponseDTO> getOneUser(@PathVariable Long id) {
         UsuarioResponseDTO usuario = usuarioService.findById(id);
         return ResponseEntity.ok(usuario);
-    }
-    
-    @PostMapping
-    public ResponseEntity<UsuarioResponseDTO> createUser(@RequestBody UsuarioRequestDTO usuarioRequestDTO){
-        UsuarioResponseDTO usuarioCriado = usuarioService.create(usuarioRequestDTO);
-        return new ResponseEntity<>(usuarioCriado, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
