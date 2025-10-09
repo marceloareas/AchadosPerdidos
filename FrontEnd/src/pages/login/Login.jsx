@@ -104,7 +104,7 @@ const Login = () => {
                 id="senha"
                 placeholder="Escreva sua senha"
                 // value={formData.senha}
-                onChange={(e) => handleInputChange("email", e.target.value)}
+                onChange={(e) => handleInputChange("senha", e.target.value)}
                 required
               />
               {errors.nome && <div className={style.error}>{errors.senha}</div>}

@@ -10,6 +10,7 @@ import NotFound from "./pages/notFound/NotFound";
 import AddItem from "./pages/cadastroItem/AddItem";
 import Cadastro from "./pages/cadastro/Cadastro";
 import Login from "./pages/login/Login";
+import Profile from "./pages/profile/Profile";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="*" element={<NotFound />} />
         <Route path="/register" element={<Cadastro />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </>
   );

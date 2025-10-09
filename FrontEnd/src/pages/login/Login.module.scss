@@ -3,7 +3,6 @@
 
 .pageContainer {
     @include flex-collumn(flex-start, center);
-    ;
     min-height: 100vh;
     background-color: rgba(235, 240, 245, 0.4);
     padding: 2.5rem 1rem;
