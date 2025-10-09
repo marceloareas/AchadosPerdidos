@@ -5,6 +5,7 @@ import logo from "../../assets/logoCefet.svg";
 import style from "./Header.module.scss";
 import { NavLink } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
+import { IconButton, Menu, MenuItem } from "@mui/material";
 
 const Header = () => {
   const route = useLocation();
@@ -14,6 +15,12 @@ const Header = () => {
   const isMatches = route.pathname == "/matches";
   const isChat = route.pathname == "/chats";
   const isItens = route.pathname == "/itens";
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
+  const handleMenuClose = () => setAnchorEl(null);
 
   return (
     <>
@@ -100,8 +107,18 @@ const Header = () => {
           </div>
         </section>
         <section className={style.right_section_header}>
-          <FiPlus className={style.plus_header} />
-          <FiUser className={style.user_header} />
+          <IconButton onClick={() => onNavigate("/add-item")}>
+            <FiPlus className={style.plus_header} />
+          </IconButton>
+          <>
+            <IconButton onClick={handleMenuOpen}>
+              <FiUser className={style.user_header} />
+            </IconButton>
+            <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
+              <MenuItem onClick={() => onNavigate("/profile")}>Perfil</MenuItem>
+              <MenuItem onClick={handleMenuClose}>SignOut</MenuItem>
+            </Menu>
+          </>
         </section>
       </div>
     </>
