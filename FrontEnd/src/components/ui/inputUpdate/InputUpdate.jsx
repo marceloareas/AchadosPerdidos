@@ -27,7 +27,6 @@ const InputUpdate = React.forwardRef(
     };
 
     const isPassword = type === "password";
-    console.log(type);
 
     return (
       <div style={{ display: "flex", gap: "0.5rem", width: "100%" }}>
