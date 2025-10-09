@@ -1,0 +1,65 @@
+@use '../../../styles/variables.scss' as *;
+
+.custom-inputUpdate {
+    width: 100%;
+
+    .MuiInputBase-root {
+        border-radius: 6px;
+        font-size: 1rem;
+        background-color: #fff;
+        color: black;
+        transition: ease-in-out .4s;
+    }
+
+    .Mui-disabled {
+        border-color: rgb(223 227 232);
+        background-color: rgba(193, 194, 194, 0.25) !important;
+        border-radius: 6px;
+        color: rgba(0, 0, 0, 0.315);
+        transition: ease-in-out .25s;
+
+        .MuiInputAdornment-root {
+            margin-left: 0px;
+        }
+
+        .MuiButtonBase-root-MuiIconButton-root {
+            border-radius: 0;
+        }
+    }
+
+
+
+    .MuiOutlinedInput-root {
+        fieldset {
+            // border-color: #ccc;
+            border-color: $primary-color;
+        }
+
+        &:hover fieldset {
+            border-color: #0A497E;
+        }
+
+        &.Mui-focused fieldset {
+            border-color: #0A497E;
+            border-width: 2px;
+        }
+    }
+
+    .MuiInputBase-adornedEnd {
+        background-color: #fff;
+    }
+
+    input,
+    textarea {
+        padding: 0.5rem 0.75rem;
+    }
+
+
+    textarea {
+        resize: vertical;
+    }
+
+    label {
+        font-size: 0.9rem;
+    }
+}
