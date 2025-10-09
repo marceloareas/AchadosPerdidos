@@ -22,7 +22,7 @@ public class ItemService {
     }
 
     public List<ItemResponseDTO> getRecentItensReturned(){
-        List<Item> mostRecentItens = this.itemRepository.findFirst2ByStatusOrderByDataDesc(StatusItemEnum.RECUPERADO);
+        List<Item> mostRecentItens = this.itemRepository.findFirst2ByStatusOrderByDataDevolucaoDesc(StatusItemEnum.RECUPERADO);
 
         return mostRecentItens.stream()
                 .map(this::convertToDTO)

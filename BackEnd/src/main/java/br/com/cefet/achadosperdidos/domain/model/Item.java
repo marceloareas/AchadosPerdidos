@@ -55,7 +55,15 @@ public class Item {
 
     @Getter
     @Setter
-    private LocalDateTime data;
+    private LocalDateTime dataEvento;
+
+    @Getter
+    @Setter
+    private LocalDateTime dataDevolucao;
+
+    @Getter
+    @Setter
+    private LocalDateTime dataCriacao;
     
     @Getter
     @Setter
