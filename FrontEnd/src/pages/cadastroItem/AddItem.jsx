@@ -14,8 +14,15 @@ import TextField from "@mui/material/TextField";
 import { useNotification } from "../../utils/NotificationContext.jsx";
 import useItemStore from "../../store/item.js";
 import useCategoryStore from "../../store/categoria.js";
+import ResponsiveDatePickers from "../../components/ui/datePicker/ResponsiveDatePicker.jsx";
+// import dayjs from "dayjs";
+// import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+// import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import style from "./AddItem.module.scss";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 const AddItem = () => {
   const [formData, setFormData] = useState({
@@ -23,6 +30,7 @@ const AddItem = () => {
     descricao: "",
     categoria: "",
     endereco: "",
+    dateEvento: "",
     // color: "",
     // additionalInfo: "",
   });
@@ -44,6 +52,24 @@ const AddItem = () => {
 
   const categories = categorias.map((cat) => cat.nome);
 
+  useEffect(() => {
+    setFormData({
+      nome: "",
+      descricao: "",
+      categoria: "",
+      endereco: "",
+      dateEvento: "",
+    });
+  }, [itemType]);
+  // if (itemType != defaultType) {
+  //   setFormData({
+  //     nome: "",
+  //     descricao: "",
+  //     categoria: "",
+  //     endereco: "",
+  //     dateEvento: "",
+  //   });
+  // }
   const handleInputChange = async (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     try {
@@ -167,14 +193,14 @@ const AddItem = () => {
             <form onSubmit={handleSubmit} className={style.form}>
               {/* Nome do item */}
               <div className={style.formGroup}>
-                <label htmlFor="title" className={style.label}>
+                <label htmlFor="nome" className={style.label}>
                   Nome do Item *
                 </label>
                 <Input
-                  id="title"
+                  id="nome"
                   placeholder="Ex: iPhone 13, Mochila preta, Chaves..."
-                  value={formData.title}
-                  onChange={(e) => handleInputChange("title", e.target.value)}
+                  value={formData.nome}
+                  onChange={(e) => handleInputChange("nome", e.target.value)}
                   required
                 />
                 {errors.nome && (
@@ -266,16 +292,15 @@ const AddItem = () => {
                 )}
               </div>
 
-              {/* Cor */}
+              {/* Data */}
               <div className={style.formGroup}>
                 <label htmlFor="color" className={style.label}>
-                  Cor Principal
+                  {itemType === "lost"
+                    ? "Data que você acha que perdeu"
+                    : "Data em que encontrou"}
                 </label>
-                <Input
-                  id="color"
-                  placeholder="Ex: Azul, Preto, Vermelho..."
-                  value={formData.color}
-                  onChange={(e) => handleInputChange("color", e.target.value)}
+                <ResponsiveDatePickers
+                  date={(e) => handleInputChange("dateEvento", e.target.value)}
                 />
                 {errors.color && (
                   <div className={style.error}>{errors.color}</div>
