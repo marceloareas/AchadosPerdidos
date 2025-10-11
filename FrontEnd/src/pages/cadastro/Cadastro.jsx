@@ -5,7 +5,7 @@ import logo from "../../assets/logoCefet.svg";
 import CustomButton from "../../components/ui/button/CustomButton";
 import Input from "../../components/ui/input/Input";
 
-import useUserStore from "../../store/user.js";
+import useAuthStore from "../../store/auth.js";
 import { registerSchema } from "../../validation/validation.jsx";
 
 import { useNavigate } from "react-router-dom";
@@ -19,7 +19,7 @@ const Cadastro = () => {
     // confirm_senha: "",
   });
   const [errors, setErrors] = useState({});
-  const { createUser, loading, error } = useUserStore();
+  const { register, loading, error } = useAuthStore();
   const { showNotification } = useNotification();
   const onNavigate = useNavigate();
 
@@ -47,7 +47,7 @@ const Cadastro = () => {
         senha: formData.senha,
       };
 
-      await createUser(formToSend);
+      await register(formToSend);
 
       if (!error) {
         setFormData({
