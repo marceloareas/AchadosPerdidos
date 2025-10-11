@@ -8,6 +8,7 @@ import Badge from "../../components/ui/badge/Bagde";
 
 import Layout from "../../components/layout/Layout";
 import { itemSchema } from "../../validation/validation.jsx";
+import dayjs from "dayjs";
 
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
@@ -109,13 +110,16 @@ const AddItem = () => {
         descricao: formData.descricao,
         categoria: formData.categoria,
         endereco: formData.endereco,
+        dateEvento: dayjs().utcOffset.format(formData.dateEvento),
       };
+      console.log(formToSend);
       if (!error) {
         setFormData({
           nome: "",
           descricao: "",
           categoria: "",
           endereco: "",
+          dateEvento: "",
           // color: "",
           // additionalInfo: "",
         });
@@ -148,6 +152,11 @@ const AddItem = () => {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const convertDate = (date) => {
+    return dayjs(date).format("YYYY-MM-DDTHH:mm:ssZ[Z]");
+  };
+
   return (
     <Layout>
       <div className={style.pageContainer}>
@@ -294,13 +303,16 @@ const AddItem = () => {
 
               {/* Data */}
               <div className={style.formGroup}>
-                <label htmlFor="color" className={style.label}>
+                <label htmlFor="dateEvento" className={style.label}>
                   {itemType === "lost"
                     ? "Data que você acha que perdeu"
                     : "Data em que encontrou"}
                 </label>
                 <ResponsiveDatePickers
-                  date={(e) => handleInputChange("dateEvento", e.target.value)}
+                  id="dateEvento"
+                  onChange={(e) => {
+                    handleInputChange("dateEvento", convertDate(e.$d));
+                  }}
                 />
                 {errors.color && (
                   <div className={style.error}>{errors.color}</div>
