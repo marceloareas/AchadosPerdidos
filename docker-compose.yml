@@ -66,6 +66,20 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}    
     networks:
       - bridge_achados
+  match_api:
+    container_name: achados_match
+    build:
+      context: ./aep-match
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    env_file:
+      - .env
+    volumes:
+      - ./aep-match:/app
+    networks:
+      - bridge_achados
+    
 
 
 volumes:
