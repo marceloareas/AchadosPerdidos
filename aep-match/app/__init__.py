@@ -3,8 +3,6 @@ from .controllers.MatchController import match_bp
 from dotenv import load_dotenv
 import os
 
-load_dotenv("../.env")
-
 def create_app():
     app = Flask(__name__)
     
