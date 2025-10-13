@@ -1,9 +1,23 @@
 from flask import Blueprint, request, jsonify
 from ..services.MatchService import MatchService
+from dotenv import load_dotenv
+import os
 
 match_bp = Blueprint('match_bp', __name__)
 
 match_service = MatchService()
+
+load_dotenv("../../.env")
+
+SECRET_KEY = os.getenv("INTERNAL_SECRET_KEY")
+
+@match_bp.before_request
+def verify_secret():
+
+    secret = request.headers.get("X-Secret-Key")
+
+    if secret != SECRET_KEY:
+        return jsonify({"erro": "Não autorizado!"}), 401
 
 @match_bp.route('/encontrar', methods=['POST'])
 def encontrar_possiveis_matches():
