@@ -18,7 +18,7 @@ import br.com.cefet.achadosperdidos.domain.model.Usuario;
 @Service
 public class TokenService {
 
-    @Value("${jwt.secret}")
+    @Value("${SECRET}")
     private String secret;
 
     // método para gerar o token
@@ -27,8 +27,9 @@ public class TokenService {
             // definir algoritmo
             Algorithm algorithm = Algorithm.HMAC256(secret);
             // gerar token
+            
             String token = JWT.create()
-                    .withIssuer("AchahadosPerdidos")
+                    .withIssuer("AchadosPerdidos")
                     .withSubject("" + user.getId())
                     .withExpiresAt(this.generateExpirationDate())
                     .sign(algorithm);
@@ -44,15 +45,16 @@ public class TokenService {
         return Instant.now().plus(Duration.ofMillis(86400000));
     }
 
-    // metodo para validar o token
-    public String validateToken(String token) {
+    // metodo para validar o token e retornar o ID do usuário.
+    public Long validateToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             var verifier = JWT.require(algorithm)
-                    .withIssuer("Hanafuda")
+                    .withIssuer("AchadosPerdidos")
                     .build();
             var decodedJWT = verifier.verify(token);
-            return decodedJWT.getSubject(); 
+            
+            return Long.parseLong(decodedJWT.getSubject()); 
         } catch (JWTVerificationException e) {
             return null; // Token inválido
         }
