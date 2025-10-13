@@ -75,17 +75,30 @@ services:
       - "5001:5001"
     env_file:
       - .env
+    environment:
+      - OLLAMA_HOST=http://host.docker.internal:11434
     volumes:
       - ./aep-match:/app
     networks:
       - bridge_achados
-    
+  ollama:
+    container_name: achados_ollama
+    build:
+      context: ./ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - bridge_achados
 
 
 volumes:
   datalake_postgres:
     driver: local
   datalake_mongo:
+    driver: local
+  ollama_data:
     driver: local
 
 networks:
