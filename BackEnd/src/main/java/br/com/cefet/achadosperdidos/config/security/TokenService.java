@@ -32,7 +32,7 @@ public class TokenService {
                     .withSubject("" + user.getId())
                     .withExpiresAt(this.generateExpirationDate())
                     .sign(algorithm);
-            return token;
+            return  "Bearer " + token;
 
         } catch (JWTCreationException e) {
             throw new RuntimeException("Erro ao gerar token");
