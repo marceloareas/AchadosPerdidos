@@ -10,6 +10,8 @@ import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.dto.categoria.CategoriaDTO;
 import br.com.cefet.achadosperdidos.dto.item.ItemRequestDTO;
 import br.com.cefet.achadosperdidos.dto.item.ItemResponseDTO;
+import br.com.cefet.achadosperdidos.exception.categoria.CategoriaNotFound;
+import br.com.cefet.achadosperdidos.repositories.CategoriaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,9 @@ public class ItemService {
 
     @Autowired
     private CategoriaService categoriaService;
+
+    @Autowired
+    private CategoriaRepository categoriaRepository;
 
     public List<ItemRecentementeRetornadoResponseDTO> getRecentItensReturned(){
         List<Item> mostRecentItens = this.itemRepository.findFirst2ByStatusOrderByDataDevolucaoDesc(StatusItemEnum.RECUPERADO);
@@ -53,8 +58,9 @@ public class ItemService {
 
         item.setUsuario(usuario);
 
-        itemRequestDTO.getCategorias().forEach(categoria -> {
-            item.addCategoria(new Categoria(categoria.getId(), categoria.getNome()));
+        itemRequestDTO.getCategorias().forEach(categoriaDTO -> {
+            Categoria categoria = categoriaRepository.findById(categoriaDTO.getId()).orElseThrow(() -> new CategoriaNotFound("Erro ao carregar categoria(s)."));
+            item.addCategoria(categoria);
         });
 
         item.setDataCriacao(LocalDateTime.now());
