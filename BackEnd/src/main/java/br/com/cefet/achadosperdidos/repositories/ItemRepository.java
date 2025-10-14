@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findFirst2ByStatusOrderByDataDevolucaoDesc(StatusItemEnum status);
+    List<Item> findByUsuarioId(Long userId);
 }

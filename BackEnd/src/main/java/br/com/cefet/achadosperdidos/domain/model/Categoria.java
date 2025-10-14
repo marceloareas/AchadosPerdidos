@@ -9,11 +9,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "categorias")
+@NoArgsConstructor
 public class Categoria {
 
     @Id
@@ -21,14 +24,14 @@ public class Categoria {
     @Getter
     private Long id;
 
+    @Getter
     @ManyToMany(mappedBy = "categorias")
-    private Set<Item> itens = new HashSet<>();
+    private final Set<Item> itens = new HashSet<>();
 
     @Getter
     @Setter
+    @NotNull
     private String nome;
-
-    public Categoria(){}
 
     public Categoria(Long id, String nome){
         this.id = id;

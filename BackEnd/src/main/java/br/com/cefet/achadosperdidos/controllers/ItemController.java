@@ -1,13 +1,17 @@
 package br.com.cefet.achadosperdidos.controllers;
 
-import br.com.cefet.achadosperdidos.dto.item.ItemResponseDTO;
-import br.com.cefet.achadosperdidos.services.ItemService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import br.com.cefet.achadosperdidos.dto.item.ItemRequestDTO;
+import br.com.cefet.achadosperdidos.dto.item.ItemResponseDTO;
+import br.com.cefet.achadosperdidos.domain.model.Usuario;
+import br.com.cefet.achadosperdidos.dto.item.ItemRecentementeRetornadoResponseDTO;
+import br.com.cefet.achadosperdidos.services.ItemService;
 
 @RestController
 @RequestMapping(value = "/item")
@@ -21,9 +25,34 @@ public class ItemController {
     }
 
     @GetMapping("recently-returned")
-    public ResponseEntity<List<ItemResponseDTO>> getTwoRecentReturnedItens(){
-        List<ItemResponseDTO> recentItemList = itemService.getRecentItensReturned(); 
+    public ResponseEntity<List<ItemRecentementeRetornadoResponseDTO>> getTwoRecentReturnedItens() {
+        List<ItemRecentementeRetornadoResponseDTO> recentItemList = itemService.getRecentItensReturned();
         return ResponseEntity.ok(recentItemList);
     }
 
+    @GetMapping
+    public ResponseEntity<List<ItemResponseDTO>> getUserItens(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = ((Usuario)auth.getPrincipal()).getId();
+        List<ItemResponseDTO> itens = itemService.getUserItens(userId);
+        return ResponseEntity.ok(itens);
+    }
+
+    @PostMapping
+    public ResponseEntity<ItemResponseDTO> createItem(@RequestBody ItemRequestDTO itemRequestDTO){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario user = (Usuario)auth.getPrincipal();
+        ItemResponseDTO item = itemService.createItem(itemRequestDTO, user);
+        return ResponseEntity.ok(item);
+        // String nome
+        // TipoItemEnum
+        // List de categoria
+        // String localizacao
+        // String descricao
+        // DataEvento
+        // DataCriacao (sera criado dentro Item) -> será iniciado dentro do service como LocalDateTime da data atual.
+        // DataDevolucao (inicialmente null). -> será iniciado dentro do service como null
+        // StatusItemEnum status -> (será iniciado dentro do service como Matching).
+
+    }
 }
