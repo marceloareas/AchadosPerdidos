@@ -2,6 +2,7 @@ package br.com.cefet.achadosperdidos.services;
 
 import java.util.List;
 
+import br.com.cefet.achadosperdidos.exception.auth.InvalidCredentials;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +43,12 @@ public class UsuarioService {
         Usuario novoUsuario = new Usuario();
 
         novoUsuario.setNome(usuarioRequestDTO.getNome());
+
+        Boolean alreadyExists = usuarioRepository.existsByEmail(usuarioRequestDTO.getEmail());
+
+        if(alreadyExists){
+            throw new InvalidCredentials("Ocorreu um erro ao realizar Login.");
+        }
 
         //todo: verificar se o email é valido para registrar. -> throw error se não.
         novoUsuario.setEmail(usuarioRequestDTO.getEmail());
