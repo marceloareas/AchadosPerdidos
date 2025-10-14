@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Optional;
 
 import br.com.cefet.achadosperdidos.domain.enums.StatusItemEnum;
+import br.com.cefet.achadosperdidos.domain.enums.TipoItemEnum;
 import br.com.cefet.achadosperdidos.domain.model.Categoria;
 import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.dto.categoria.CategoriaDTO;
 import br.com.cefet.achadosperdidos.dto.item.ItemRequestDTO;
 import br.com.cefet.achadosperdidos.dto.item.ItemResponseDTO;
+import br.com.cefet.achadosperdidos.exception.categoria.CategoriaLimitException;
 import br.com.cefet.achadosperdidos.exception.categoria.CategoriaNotFound;
 import br.com.cefet.achadosperdidos.repositories.CategoriaRepository;
 import jakarta.transaction.Transactional;
@@ -62,6 +64,14 @@ public class ItemService {
             Categoria categoria = categoriaRepository.findById(categoriaDTO.getId()).orElseThrow(() -> new CategoriaNotFound("Erro ao carregar categoria(s)."));
             item.addCategoria(categoria);
         });
+
+        if(item.getTipo() == TipoItemEnum.ACHADO && item.getCategorias().size() != 1){
+            throw new CategoriaLimitException("Itens achados só podem possuir uma categoria.");
+        }
+
+        if(item.getCategorias().isEmpty()){
+            throw new CategoriaLimitException("Itens devem possuir pelo menos uma categoria");
+        }
 
         item.setDataCriacao(LocalDateTime.now());
         item.setDataDevolucao(null);
