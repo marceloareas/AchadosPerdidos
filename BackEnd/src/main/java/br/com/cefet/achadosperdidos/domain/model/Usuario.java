@@ -12,13 +12,16 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 @Entity
 @Table(name = "usuarios")
+@NoArgsConstructor
 public class Usuario {
 
     @Id
@@ -28,23 +31,26 @@ public class Usuario {
 
     @Getter
     @Setter
+    @NotNull
     private String nome;
 
     @Getter
     @Setter
+    @NotNull
     private String email;
 
     @Getter
     @Setter
+    @NotNull
     private String senha;
 
 
 
     @ManyToMany(mappedBy = "usuarios")
-    private Set<Chat> chats = new HashSet<>();
+    private final Set<Chat> chats = new HashSet<>();
 
     @OneToMany(mappedBy = "usuario")
-    private List<Item> itens = new ArrayList<>();
+    private final List<Item> itens = new ArrayList<>();
     
     public Usuario(long id, String nome, String email, String senha){
         this.id = id;
@@ -52,10 +58,5 @@ public class Usuario {
         this.email = email;
         this.senha = senha;
     }
-
-    public Usuario(){
-
-    }
-
 
 }

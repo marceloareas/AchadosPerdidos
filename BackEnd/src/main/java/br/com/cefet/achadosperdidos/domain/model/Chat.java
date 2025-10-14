@@ -1,5 +1,8 @@
 package br.com.cefet.achadosperdidos.domain.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -7,17 +10,16 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
+import lombok.NoArgsConstructor;
+
 
 @Entity
 @Table(name = "chats")
+@NoArgsConstructor
 public class Chat {
 
     @Id
@@ -34,7 +36,7 @@ public class Chat {
         joinColumns = @JoinColumn(name = "chat_id"),
         inverseJoinColumns = @JoinColumn(name = "usuario_id")
     )
-    private List<Usuario> usuarios = new ArrayList<>();
+    private final List<Usuario> usuarios = new ArrayList<>();
 
     public Chat(Long id){
         this.id = id;

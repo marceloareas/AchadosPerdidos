@@ -1,6 +1,9 @@
 package br.com.cefet.achadosperdidos.domain.enums;
- 
 
+
+import lombok.Getter;
+
+@Getter
 public enum AcaoEnum {
     SOLICITACAO_ENTREGA("SOLICITACAO_ENTREGA"),
     SOLICITACAO_FINALIZACAO("SOLICITACAO_FINALIZACAO");
@@ -22,7 +25,4 @@ public enum AcaoEnum {
         // Lançar exceção customizada
     }
 
-    public String getEnumeratedString(){
-        return enumeratedString;
-    }
 }

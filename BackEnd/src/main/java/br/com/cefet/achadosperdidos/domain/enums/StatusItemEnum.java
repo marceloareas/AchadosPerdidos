@@ -1,7 +1,9 @@
 package br.com.cefet.achadosperdidos.domain.enums;
 
 
+import lombok.Getter;
 
+@Getter
 public enum StatusItemEnum {
     MATCHING("MATCHING"),
     EM_DEVOLUCAO("EM_DEVOLUCAO"),
@@ -24,7 +26,4 @@ public enum StatusItemEnum {
         // Lançar exceção customizada
     }
 
-    public String getEnumeratedString(){
-        return enumeratedString;
-    }
 }

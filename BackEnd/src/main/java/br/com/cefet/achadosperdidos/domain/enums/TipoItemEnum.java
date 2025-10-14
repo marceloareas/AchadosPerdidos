@@ -1,5 +1,8 @@
 package br.com.cefet.achadosperdidos.domain.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum TipoItemEnum {
     PERDIDO("PERDIDO"),
     ACHADO("ACHADO");
@@ -21,7 +24,4 @@ public enum TipoItemEnum {
         // Lançar exceção customizada
     }
 
-    public String getEnumeratedString(){
-        return enumeratedString;
-    }
 }

@@ -1,9 +1,7 @@
 package br.com.cefet.achadosperdidos.domain.model;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
-
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -16,12 +14,15 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.OneToOne;
+
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 @Entity
 @Table(name = "matchs")
+@NoArgsConstructor
 public class Match {
     
     @Id
@@ -44,7 +45,7 @@ public class Match {
         inverseJoinColumns = @JoinColumn(name = "item_id")
     )
     @Size(min = 2, max = 2, message = "Um match deve conter dois usuários")
-    private Set<Item> itens = new HashSet<>();
+    private final Set<Item> itens = new HashSet<>();
 
     @OneToOne(mappedBy = "match", optional = true)
     private Chat chat;
