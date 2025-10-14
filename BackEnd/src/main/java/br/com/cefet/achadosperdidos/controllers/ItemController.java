@@ -52,15 +52,13 @@ public class ItemController {
         Usuario user = (Usuario)auth.getPrincipal();
         ItemResponseDTO item = itemService.createItem(itemRequestDTO, user);
         return ResponseEntity.ok(item);
-        // String nome
-        // TipoItemEnum
-        // List de categoria
-        // String localizacao
-        // String descricao
-        // DataEvento
-        // DataCriacao (sera criado dentro Item) -> será iniciado dentro do service como LocalDateTime da data atual.
-        // DataDevolucao (inicialmente null). -> será iniciado dentro do service como null
-        // StatusItemEnum status -> (será iniciado dentro do service como Matching).
+    }
 
+    @PatchMapping("/{itemId}")
+    public ResponseEntity<ItemResponseDTO> patchItem(@PathVariable Long itemId, @RequestBody ItemRequestDTO itemRequestDTO){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario)auth.getPrincipal();
+        ItemResponseDTO itemAtualizado = itemService.patchItem(itemId, itemRequestDTO, usuario);
+        return ResponseEntity.ok(itemAtualizado);
     }
 }

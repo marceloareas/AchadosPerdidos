@@ -1,8 +1,10 @@
 package br.com.cefet.achadosperdidos.services;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import br.com.cefet.achadosperdidos.domain.enums.StatusItemEnum;
 import br.com.cefet.achadosperdidos.domain.enums.TipoItemEnum;
@@ -11,6 +13,7 @@ import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.dto.categoria.CategoriaDTO;
 import br.com.cefet.achadosperdidos.dto.item.ItemRequestDTO;
 import br.com.cefet.achadosperdidos.dto.item.ItemResponseDTO;
+import br.com.cefet.achadosperdidos.exception.auth.InvalidCredentials;
 import br.com.cefet.achadosperdidos.exception.auth.NotAuthorized;
 import br.com.cefet.achadosperdidos.exception.categoria.CategoriaLimitException;
 import br.com.cefet.achadosperdidos.exception.categoria.CategoriaNotFound;
@@ -95,6 +98,46 @@ public class ItemService {
         //disparar Thread de match
 
         return this.convertToDTO(createdItem);
+    }
+
+    @Transactional
+    public ItemResponseDTO patchItem(Long itemId, ItemRequestDTO itemRequestDTO, Usuario usuario){
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException("Item não encontrado"));
+
+        if(!usuario.getId().equals(item.getUsuario().getId())) throw new InvalidCredentials("Item não pertence ao usuário");
+
+        if(itemRequestDTO.getNome() != null) item.setNome(itemRequestDTO.getNome());
+        if(itemRequestDTO.getDescricao() != null) item.setDescricao(itemRequestDTO.getDescricao());
+        if(itemRequestDTO.getLocalizacao() != null) item.setLocalizacao(itemRequestDTO.getLocalizacao());
+        if(itemRequestDTO.getDataEvento() != null) item.setDataEvento(itemRequestDTO.getDataEvento());
+
+        if(itemRequestDTO.getCategorias() != null){
+            List<Long> novasCategoriasIds = itemRequestDTO.getCategorias().stream().map(CategoriaDTO::getId).toList();
+            Set<Categoria> novasCategorias = new HashSet<>(categoriaRepository.findAllById(novasCategoriasIds));
+
+            Set<Categoria> atuaisCategorias = item.getCategorias();
+
+            Set<Categoria> categoriasParaAdicionar = new HashSet<>(novasCategorias);
+            categoriasParaAdicionar.removeAll(atuaisCategorias);
+
+            Set<Categoria> categoriasParaRemover = new HashSet<>(atuaisCategorias);
+            categoriasParaRemover.removeAll(novasCategorias);
+
+            if(!categoriasParaRemover.isEmpty()){
+                List<Categoria> categoriasREM = categoriaRepository.findAllById(categoriasParaRemover.stream().map(Categoria::getId).toList());
+                categoriasREM.forEach(item::removerCategoria);
+            }
+
+            if(!categoriasParaAdicionar.isEmpty()){
+                List<Categoria> categoriasADD = categoriaRepository.findAllById(categoriasParaAdicionar.stream().map(Categoria::getId).toList());
+                categoriasADD.forEach(item::addCategoria);
+            }
+
+        }
+
+        Item itemAtualizado = itemRepository.save(item);
+
+        return convertToDTO(itemAtualizado);
     }
 
 
