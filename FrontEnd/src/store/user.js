@@ -4,6 +4,7 @@ import Api from "../api/Api";
 // /users
 
 const useUserStore = create((set, get) => ({
+  user: null,
   users: [],
   setUser: (userData) => set({ user: userData }),
   loading: false,
@@ -59,7 +60,7 @@ const useUserStore = create((set, get) => ({
   deleteUser: async (userId) => {
     set({ loading: true });
     try {
-      await api.delete(`/user/${userId}`);
+      await Api.delete(`/user/${userId}`);
       set((state) => ({
         users: state.users.filter((u) => u.userId !== userId),
         user: {},

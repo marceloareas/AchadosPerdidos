@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import Api from "../api/Api";
+import useAuthStore from "./auth";
 // import { persist } from "zustand/middleware";
+import { API_HEADER } from "../utils/config/API_HEADER";
 
 const useItemStore = create((set, get) => ({
   items: [],
@@ -12,9 +14,12 @@ const useItemStore = create((set, get) => ({
   getItemsRecentlyReturned: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await Api.get("/item/recently-returned");
+      const { token } = useAuthStore.getState();
+      const response = await Api.get(
+        "/item/recently-returned",
+        API_HEADER(token)
+      );
       set({ itemsReturned: response.data, loading: false });
-      // console.log(response.data);
     } catch (error) {
       set({ error: error.message, loading: false });
     } finally {
@@ -22,8 +27,5 @@ const useItemStore = create((set, get) => ({
     }
   },
 }));
-//   {
-//     name: "item-storage", // unique name
-//   }
 
 export default useItemStore;
