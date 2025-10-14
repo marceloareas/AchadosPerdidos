@@ -140,6 +140,19 @@ public class ItemService {
         return convertToDTO(itemAtualizado);
     }
 
+    @Transactional
+    public String deleteItem(Long itemId, Usuario usuario){
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException("Item não encontrado"));
+
+        if(!item.getUsuario().getId().equals(usuario.getId())){
+            throw new InvalidCredentials("Item não pertence ao usuário");
+        }
+
+        itemRepository.deleteById(itemId);
+
+        return "Item deletado com sucesso";
+    }
+
 
     public ItemRecentementeRetornadoResponseDTO convertToRecentlyReturnedDTO(Item item){
         ItemRecentementeRetornadoResponseDTO dto = new ItemRecentementeRetornadoResponseDTO();

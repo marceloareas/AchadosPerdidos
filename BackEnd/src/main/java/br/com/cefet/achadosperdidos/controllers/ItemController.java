@@ -61,4 +61,13 @@ public class ItemController {
         ItemResponseDTO itemAtualizado = itemService.patchItem(itemId, itemRequestDTO, usuario);
         return ResponseEntity.ok(itemAtualizado);
     }
+
+    @DeleteMapping("/{itemId}")
+    public ResponseEntity<String> deleteItem(@PathVariable Long itemId){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario)auth.getPrincipal();
+        String resposta = itemService.deleteItem(itemId, usuario);
+        return ResponseEntity.ok(resposta);
+    }
+
 }
