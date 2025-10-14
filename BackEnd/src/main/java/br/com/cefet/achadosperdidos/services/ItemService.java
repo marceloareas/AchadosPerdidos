@@ -11,8 +11,10 @@ import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.dto.categoria.CategoriaDTO;
 import br.com.cefet.achadosperdidos.dto.item.ItemRequestDTO;
 import br.com.cefet.achadosperdidos.dto.item.ItemResponseDTO;
+import br.com.cefet.achadosperdidos.exception.auth.NotAuthorized;
 import br.com.cefet.achadosperdidos.exception.categoria.CategoriaLimitException;
 import br.com.cefet.achadosperdidos.exception.categoria.CategoriaNotFound;
+import br.com.cefet.achadosperdidos.exception.item.ItemNotFoundException;
 import br.com.cefet.achadosperdidos.repositories.CategoriaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,18 @@ public class ItemService {
     public List<ItemResponseDTO> getUserItens(Long userId){
         List<Item> itemList = this.itemRepository.findByUsuarioId(userId);
         return itemList.stream().map(this::convertToDTO).toList();
+    }
+
+    public ItemResponseDTO getItem(Long id, Usuario usuario){
+        Optional<Item> item = itemRepository.findById(id);
+
+
+
+        if(item.isEmpty()) throw new ItemNotFoundException("Item não encontrado");
+
+        if(!item.get().getUsuario().getId().equals(usuario.getId())) throw new NotAuthorized("O item não pertence ao usuário.");
+
+        return convertToDTO(item.get());
     }
 
     @Transactional

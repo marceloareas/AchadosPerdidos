@@ -38,6 +38,14 @@ public class ItemController {
         return ResponseEntity.ok(itens);
     }
 
+    @GetMapping("/{itemId}")
+    public ResponseEntity<ItemResponseDTO> getItem(@PathVariable Long itemId){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario)auth.getPrincipal();
+        ItemResponseDTO item = itemService.getItem(itemId, usuario);
+        return ResponseEntity.ok(item);
+    }
+
     @PostMapping
     public ResponseEntity<ItemResponseDTO> createItem(@RequestBody ItemRequestDTO itemRequestDTO){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
