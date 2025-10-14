@@ -19,8 +19,9 @@ const Cadastro = () => {
     // confirm_senha: "",
   });
   const [errors, setErrors] = useState({});
-  const { register, loading, error } = useAuthStore();
+  const { register } = useAuthStore();
   const { showNotification } = useNotification();
+  const [isLoading, setIsLoading] = useState(false);
   const onNavigate = useNavigate();
 
   // validação em tempo real
@@ -36,6 +37,7 @@ const Cadastro = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
       await registerSchema.validate(formData, { abortEarly: false });
@@ -48,15 +50,22 @@ const Cadastro = () => {
       };
 
       await register(formToSend);
-
-      if (!error) {
+      const { erro, response } = useAuthStore.getState();
+      if (!erro) {
         setFormData({
           nome: "",
           email: "",
           senha: "",
         });
         showNotification("Cadastro realizado com sucesso!", "success");
-        onNavigate("/login");
+        setTimeout(() => {
+          onNavigate("/login");
+        }, 1500);
+      } else {
+        showNotification(response, "error");
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
       }
     } catch (err) {
       if (err.inner) {
@@ -154,13 +163,13 @@ const Cadastro = () => {
               variant="default"
               size="lg"
               className={style.submitButton}
-              disabled={loading}
+              disabled={isLoading}
             >
-              {loading ? "Cadastrando..." : "Criar Conta"}
+              {isLoading ? "Cadastrando..." : "Criar Conta"}
             </CustomButton>
 
             {/* Erro do backend */}
-            {error && <div className={style.error}>{error}</div>}
+            {/* {errors && <div className={style.error}>{errors}</div>} */}
           </form>
         </div>
 

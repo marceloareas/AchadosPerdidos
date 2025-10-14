@@ -6,15 +6,20 @@ import CustomButton from "../../components/ui/button/CustomButton";
 import Input from "../../components/ui/input/Input";
 import { useNotification } from "../../utils/NotificationContext.jsx";
 import { loginSchema } from "../../validation/validation";
+import useAuthStore from "../../store/auth.js";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     senha: "",
   });
+  const onNavigate = useNavigate();
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const { showNotification } = useNotification();
+  const { login } = useAuthStore();
+
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
@@ -28,7 +33,6 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
     try {
       await loginSchema.validate(formData, { abortEarly: false });
       setErrors({});
@@ -37,17 +41,24 @@ const Login = () => {
         email: formData.email,
         senha: formData.senha,
       };
-      // Lógica de login aqui
-
-      // Precisa da logica de login para utilizar o error vindo do zustand
-      // if(!error){
-      setFormData({
-        email: "",
-        senha: "",
-      });
-      showNotification("Login realizado com sucesso!", "success");
-      onNavigate("/dashboard");
-      // }
+      await login(formToSend);
+      const { erro, response } = useAuthStore.getState();
+      if (!erro) {
+        setFormData({
+          email: "",
+          senha: "",
+        });
+        showNotification("Login realizado com sucesso!", "success");
+        setTimeout(() => {
+          setIsLoading(false);
+          onNavigate("/");
+        }, 1500);
+      } else {
+        showNotification(response, "error");
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
+      }
     } catch (err) {
       if (err.inner) {
         const validationErrors = {};
@@ -57,14 +68,6 @@ const Login = () => {
         setErrors(validationErrors);
       }
     }
-    // setTimeout(() => {
-    //   setIsLoading(false);
-    //   alert("Usuário logado!");
-    //   setFormData({
-    //     email: "",
-    //     senha: "",
-    //   });
-    // }, 1500);
   };
   return (
     <div className={style.pageContainer}>
