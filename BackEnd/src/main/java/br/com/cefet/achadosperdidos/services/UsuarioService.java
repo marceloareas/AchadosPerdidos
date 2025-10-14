@@ -3,6 +3,7 @@ package br.com.cefet.achadosperdidos.services;
 import java.util.List;
 
 import br.com.cefet.achadosperdidos.exception.auth.InvalidCredentials;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,7 @@ public class UsuarioService {
             .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
     }
 
+    @Transactional
     public UsuarioResponseDTO create(UsuarioRequestDTO usuarioRequestDTO){
         Usuario novoUsuario = new Usuario();
 
@@ -61,31 +63,48 @@ public class UsuarioService {
         return convertToResponseDTO(usuarioSalvo);
     }
 
+    @Transactional
     public UsuarioResponseDTO update(Long id, UsuarioRequestDTO usuarioRequestDTO){
         Usuario usuario = usuarioRepository.findById(id)
             .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
-        usuario.setNome(usuarioRequestDTO.getNome());
+        if(usuarioRequestDTO.getNome() != null && !usuarioRequestDTO.getNome().equals(usuario.getNome()))
+            usuario.setNome(usuarioRequestDTO.getNome());
 
         //todo: verificar se o email é valido para atualizar. throw error se não.
-        usuario.setEmail(usuarioRequestDTO.getEmail());
-
-        // CRIPTOGRAFIA
-        if (usuarioRequestDTO.getSenha() != null && !usuarioRequestDTO.getSenha().isEmpty()) {
-            usuario.setSenha(passwordEncoder.encode(usuarioRequestDTO.getSenha()));
-        }
+        if(usuarioRequestDTO.getEmail() != null && !usuarioRequestDTO.getEmail().equals(usuario.getEmail()))
+            usuario.setEmail(usuarioRequestDTO.getEmail());
 
         Usuario usuarioAtualizado = usuarioRepository.save(usuario);
         return convertToResponseDTO(usuarioAtualizado);
     }
 
-    public void delete(Long id){
+    @Transactional
+    public String updatePassword(Long id, String senha, String confirmacaoSenha){
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
+
+        // todo? aplicar validações de senha.
+
+        if(senha.equals(confirmacaoSenha)){
+            String hashedSenha = passwordEncoder.encode(senha);
+            usuario.setSenha(hashedSenha);
+        }
+
+        usuarioRepository.save(usuario);
+
+        return "Senha atualizada com sucesso";
+    }
+
+    @Transactional
+    public String delete(Long id){
         
         if(!usuarioRepository.existsById(id)){
             throw new UserNotFoundException("Usuário não encontrado");
         }
 
         usuarioRepository.deleteById(id);
+
+        return "Usuário deletado com sucesso";
     }
 
     public UsuarioResponseDTO convertToResponseDTO(Usuario usuario){
