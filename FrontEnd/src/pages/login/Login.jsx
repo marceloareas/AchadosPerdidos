@@ -20,11 +20,11 @@ const Login = () => {
   const { showNotification } = useNotification();
   const { login } = useAuthStore();
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = async (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
     try {
-      loginSchema.validateAt(field, { ...formData, [field]: value });
+      await loginSchema.validateAt(field, { ...formData, [field]: value });
       setErrors((prev) => ({ ...prev, [field]: null }));
     } catch (err) {
       setErrors((prev) => ({ ...prev, [field]: err.message }));
@@ -66,6 +66,7 @@ const Login = () => {
           validationErrors[e.path] = e.message;
         });
         setErrors(validationErrors);
+        setIsLoading(false);
       }
     }
   };
@@ -90,11 +91,13 @@ const Login = () => {
               <Input
                 id="email"
                 placeholder="Escreva seu email"
-                // value={formData.email}
+                value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 required
               />
-              {errors.nome && <div className={style.error}>{errors.nome}</div>}
+              {errors.email && (
+                <div className={style.error}>{errors.email}</div>
+              )}
             </div>
 
             {/* Senha */}
@@ -106,11 +109,13 @@ const Login = () => {
                 type="password"
                 id="senha"
                 placeholder="Escreva sua senha"
-                // value={formData.senha}
+                value={formData.senha}
                 onChange={(e) => handleInputChange("senha", e.target.value)}
                 required
               />
-              {errors.nome && <div className={style.error}>{errors.senha}</div>}
+              {errors.senha && (
+                <div className={style.error}>{errors.senha}</div>
+              )}
             </div>
 
             {/* Submit */}

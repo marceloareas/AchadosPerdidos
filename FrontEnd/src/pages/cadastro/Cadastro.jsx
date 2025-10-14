@@ -74,6 +74,7 @@ const Cadastro = () => {
           validationErrors[e.path] = e.message;
         });
         setErrors(validationErrors);
+        setIsLoading(false);
       }
     }
   };
