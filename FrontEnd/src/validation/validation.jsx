@@ -21,11 +21,12 @@ const loginSchema = Yup.object({
 });
 
 const itemSchema = Yup.object({
-  nome: Yup.string().required("O nome é obrigatório."),
-  categoria: Yup.string().required("A categoria é obrigatória."),
-  endereco: Yup.string().required("A localização é obrigatória."),
+  nome: Yup.string().required("O nome do item é obrigatório."),
   descricao: Yup.string().required("A descrição é obrigatória."),
-  cor: Yup.string(),
+  categorias: Yup.array().required("A categoria é obrigatória."),
+  localizacao: Yup.string().required("A localização é obrigatória."),
+  dataEvento: Yup.date().required("A data é obrigatória."),
+  // cor: Yup.string(),
 });
 
 export { registerSchema, loginSchema, itemSchema };
