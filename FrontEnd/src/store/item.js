@@ -23,8 +23,6 @@ const useItemStore = create((set, get) => ({
       set({ itemsReturned: response.data, loading: false });
     } catch (err) {
       set({ erro: err.response.data, loading: false });
-    } finally {
-      set({ loading: false });
     }
   },
 
@@ -34,14 +32,12 @@ const useItemStore = create((set, get) => ({
       const { token } = useAuthStore.getState();
       const response = await Api.get("/item", API_HEADER(token));
       set({
-        itemsUser: [...get().itemsUser, response.data],
+        itemsUser: response.data,
         loading: false,
         erro: null,
       });
     } catch (err) {
       set({ response: err.response.data, loading: false, erro: true });
-    } finally {
-      set({ loading: false, erro: false });
     }
   },
   createItem: async (formData) => {
@@ -56,8 +52,6 @@ const useItemStore = create((set, get) => ({
       });
     } catch (err) {
       set({ response: err.response.data, loading: false, erro: true });
-    } finally {
-      set({ loading: false, erro: false });
     }
   },
 }));

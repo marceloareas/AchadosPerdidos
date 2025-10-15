@@ -1,0 +1,97 @@
+@use '../../styles/variables.scss' as *;
+
+.titleMyItems,
+.filtro {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 3% 2% 2% 2%;
+}
+
+.countMyItems {
+    @include flex-collumn(center, flex-start);
+    width: 600px;
+
+    h1 {
+        line-height: 1.5;
+        font-weight: bold;
+    }
+
+    p {
+        color: #6b7280
+    }
+}
+
+.tabs_container {
+    margin-bottom: 1.5rem;
+}
+
+.tabs_list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.tabs_content {
+    margin-top: 1.5rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 0;
+}
+
+.empty_icon {
+    height: 3rem;
+    width: 3rem;
+    margin: 0 auto 1rem;
+    border-radius: 9999px;
+    background-color: #f4f4f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+    height: 1.5rem;
+    width: 1.5rem;
+    color: #6b7280;
+}
+
+.empty_title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.empty_subtitle {
+    color: #6b7280;
+    margin-bottom: 1rem;
+}
+
+.items_list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+
+.menu_button {
+    height: 2rem;
+    width: 2rem;
+    padding: 0;
+}
+
+.menu_icon {
+    height: 1rem;
+    width: 1rem;
+}
+
+.menu_item_icon {
+    height: 1rem;
+    width: 1rem;
+    margin-right: 0.5rem;
+}
+
+.menu_delete {
+    color: red;
+}
