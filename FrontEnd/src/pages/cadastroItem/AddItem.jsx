@@ -16,29 +16,24 @@ import { useNotification } from "../../utils/NotificationContext.jsx";
 import useItemStore from "../../store/item.js";
 import useCategoryStore from "../../store/categoria.js";
 import ResponsiveDatePickers from "../../components/ui/datePicker/ResponsiveDatePicker.jsx";
-// import dayjs from "dayjs";
-// import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
-// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-// import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import style from "./AddItem.module.scss";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { useNavigate } from "react-router-dom";
 
 const AddItem = () => {
   const [formData, setFormData] = useState({
     nome: "",
     descricao: "",
-    categoria: "",
-    endereco: "",
-    dateEvento: "",
-    // color: "",
-    // additionalInfo: "",
+    categorias: "",
+    localizacao: "",
+    dataEvento: "",
   });
   const [searchParams] = useSearchParams();
   const { showNotification } = useNotification();
-  const { createItem, loading, error } = useItemStore();
+  const { createItem } = useItemStore();
   const { getCategorias, categorias } = useCategoryStore();
+
+  const onNavigate = useNavigate();
 
   useEffect(() => {
     getCategorias();
@@ -57,20 +52,12 @@ const AddItem = () => {
     setFormData({
       nome: "",
       descricao: "",
-      categoria: "",
-      endereco: "",
-      dateEvento: "",
+      categorias: "",
+      localizacao: "",
+      dataEvento: "",
     });
   }, [itemType]);
-  // if (itemType != defaultType) {
-  //   setFormData({
-  //     nome: "",
-  //     descricao: "",
-  //     categoria: "",
-  //     endereco: "",
-  //     dateEvento: "",
-  //   });
-  // }
+
   const handleInputChange = async (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     try {
@@ -81,54 +68,48 @@ const AddItem = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // setTimeout(() => {
-    // setIsLoading(false);
-    // alert(
-    //   `Item ${itemType === "lost" ? "perdido" : "encontrado"} cadastrado!`
-    // );
-    //   setFormData({
-    //     nome: "",
-    //     descricao: "",
-    //     categoria: "",
-    //     endereco: "",
-    //     // color: "",
-    //     // additionalInfo: "",
-    //   });
-    //   showNotification(`Item ${itemType === "lost" ? "perdido" : "encontrado"} cadastrado!`, "success");
-    //   onNavigate("/itens");
-    // }, 1500);
     try {
       itemSchema.validateSync(formData, { abortEarly: false });
       setErrors({});
+      let tipoItem = itemType == "lost" ? "PERDIDO" : "ACHADO";
       const formToSend = {
-        tipo: itemType,
+        tipo: tipoItem,
         nome: formData.nome,
         descricao: formData.descricao,
-        categoria: formData.categoria,
-        endereco: formData.endereco,
-        dateEvento: dayjs().utcOffset.format(formData.dateEvento),
+        categorias: categorias.filter((cat) =>
+          formData.categorias.includes(cat.nome)
+        ),
+        localizacao: formData.localizacao,
+        dataEvento: formData.dataEvento,
       };
-      console.log(formToSend);
-      if (!error) {
+      await createItem(formToSend);
+      const { erro, response } = useItemStore.getState();
+      if (!erro) {
         setFormData({
           nome: "",
           descricao: "",
-          categoria: "",
-          endereco: "",
-          dateEvento: "",
-          // color: "",
-          // additionalInfo: "",
+          categorias: "",
+          localizacao: "",
+          dataEvento: "",
         });
+        showNotification(
+          `Item ${itemType === "lost" ? "perdido" : "encontrado"} cadastrado!`,
+          "success"
+        );
+        setTimeout(() => {
+          setIsLoading(false);
+          onNavigate("/itens");
+        }, 1000);
+      } else {
+        showNotification(response, "error");
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
       }
-      showNotification(
-        `Item ${itemType === "lost" ? "perdido" : "encontrado"} cadastrado!`,
-        "success"
-      );
-      onNavigate("/itens");
     } catch (err) {
       if (err.inner) {
         const validationErrors = {};
@@ -154,7 +135,7 @@ const AddItem = () => {
   }, []);
 
   const convertDate = (date) => {
-    return dayjs(date).format("YYYY-MM-DDTHH:mm:ssZ[Z]");
+    return dayjs(date).format("YYYY-MM-DDTHH:mm:ss");
   };
 
   return (
@@ -217,21 +198,19 @@ const AddItem = () => {
                 )}
               </div>
 
-              {/* Categoria */}
+              {/* Categorias */}
               <div className={style.formGroup}>
                 <label htmlFor="category" className={style.label}>
-                  Categoria *
+                  categorias *
                 </label>
                 {itemType === "lost" ? (
                   <Autocomplete
                     multiple
                     id="category"
                     options={categories}
-                    value={
-                      formData.categoria ? formData.categoria.split(",") : []
-                    }
+                    value={formData.categorias ? formData.categorias : []}
                     onChange={(event, newValue) => {
-                      handleInputChange("categoria", newValue.join(","));
+                      handleInputChange("categorias", newValue);
                     }}
                     renderInput={(params) => (
                       <TextField
@@ -242,22 +221,20 @@ const AddItem = () => {
                   />
                 ) : (
                   <Autocomplete
-                    // multiple
                     id="category"
                     options={categories}
-                    value={
-                      formData.categoria ? formData.categoria.split(",") : []
-                    }
+                    value={formData.categorias}
                     onChange={(event, newValue) => {
-                      handleInputChange("categoria", newValue.join(","));
+                      console.log(event, newValue);
+                      handleInputChange("categorias", newValue);
                     }}
                     renderInput={(params) => (
                       <TextField {...params} placeholder="Categoria *" />
                     )}
                   />
                 )}
-                {errors.categoria && (
-                  <div className={style.error}>{errors.categoria}</div>
+                {errors.categorias && (
+                  <div className={style.error}>{errors.categorias}</div>
                 )}
               </div>
 
@@ -269,14 +246,14 @@ const AddItem = () => {
                 <Input
                   id="location"
                   placeholder="Ex: Biblioteca Central, Sala de Aula..."
-                  value={formData.endereco}
+                  value={formData.localizacao}
                   onChange={(e) =>
-                    handleInputChange("endereco", e.target.value)
+                    handleInputChange("localizacao", e.target.value)
                   }
                   required
                 />
-                {errors.endereco && (
-                  <div className={style.error}>{errors.endereco}</div>
+                {errors.localizacao && (
+                  <div className={style.error}>{errors.localizacao}</div>
                 )}
               </div>
 
@@ -303,19 +280,19 @@ const AddItem = () => {
 
               {/* Data */}
               <div className={style.formGroup}>
-                <label htmlFor="dateEvento" className={style.label}>
+                <label htmlFor="dataEvento" className={style.label}>
                   {itemType === "lost"
                     ? "Data que você acha que perdeu"
                     : "Data em que encontrou"}
                 </label>
                 <ResponsiveDatePickers
-                  id="dateEvento"
+                  id="dataEvento"
                   onChange={(e) => {
-                    handleInputChange("dateEvento", convertDate(e.$d));
+                    handleInputChange("dataEvento", convertDate(e.$d));
                   }}
                 />
-                {errors.color && (
-                  <div className={style.error}>{errors.color}</div>
+                {errors.dataEvento && (
+                  <div className={style.error}>{errors.dataEvento}</div>
                 )}
               </div>
 
