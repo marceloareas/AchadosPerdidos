@@ -1,18 +1,37 @@
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, Typography, Box, IconButton, Menu, MenuItem } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Typography,
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+} from "@mui/material";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "../dropDownMenu/DropDownMenu.jsx";
+import CustomButton from "../button/CustomButton.jsx";
+import { MoreVertical, Eye, Edit, Trash2 } from "lucide-react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import Badge from "../badge/Bagde";
-
+import style from "./ItemCard.module.scss";
 const ItemCard = ({
-  itemType,         
-  category,         
-  title,            
-  location,         
-  personName,       
-  description,      
-  showDescription = true, 
-  showOptions = false,    
+  chidren,
+  itemType,
+  category,
+  title,
+  location,
+  personName,
+  description,
+  showDescription = true,
+  showOptions = false,
+  ...props
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -20,9 +39,10 @@ const ItemCard = ({
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
 
-  const previewDescription = description?.length > 100 
-    ? description.substring(0, 100) + "..."
-    : description;
+  const previewDescription =
+    description?.length > 100
+      ? description.substring(0, 100) + "..."
+      : description;
 
   return (
     <Card
@@ -33,22 +53,36 @@ const ItemCard = ({
         transition: "0.2s",
         "&:hover": { boxShadow: 6 },
         minHeight: 0,
-        '& .MuiCardHeader-root': { py: 1, px: 2 },       // menos padding no header
-        '& .MuiCardContent-root': { py: 1, px: 2 },      // menos padding no conteúdo
+        "& .MuiCardHeader-root": { py: 1, px: 2 }, // menos padding no header
+        "& .MuiCardContent-root": { py: 1, px: 2 }, // menos padding no conteúdo
       }}
+      {...props}
     >
       <CardHeader
         title={
           <Box display="flex" flexDirection="column" gap={0.5}>
-            <Box display="flex" justifyContent="space-between" alignItems="center">
-              <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: "bold", fontSize: "1.2rem" }}
+              >
                 {title}
               </Typography>
-              <Badge badgeType="item" type={itemType} label={
-                itemType === "lost" ? "Item Perdido" :
-                itemType === "found" ? "Item Encontrado" :
-                "Item Devolvido"
-              } />
+              <Badge
+                badgeType="item"
+                type={itemType}
+                label={
+                  itemType === "lost"
+                    ? "Item Perdido"
+                    : itemType === "found"
+                    ? "Item Encontrado"
+                    : "Item Devolvido"
+                }
+              />
             </Box>
 
             <Box>
@@ -59,27 +93,65 @@ const ItemCard = ({
         action={
           showOptions && (
             <>
-              <IconButton onClick={handleMenuOpen} size="small">
+              <div className="item-actions">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <CustomButton
+                      variant="ghost"
+                      size="sm"
+                      className={style.menu_button}
+                      onClick={handleMenuOpen}
+                    >
+                      <MoreVertical className="menu-icon" />
+                    </CustomButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    open={open}
+                    onClose={handleMenuClose}
+                  >
+                    <DropdownMenuItem onClick={() => handleView(item.id)}>
+                      <Eye className={style.menu_item_icon} /> Visualizar
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleEdit(item.id)}>
+                      <Edit className={style.menu_item_icon} /> Editar
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => handleDelete(item.id)}
+                      className={style.menu_delete}
+                    >
+                      <Trash2 className={style.menu_item_icon} /> Excluir
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              {/* <IconButton onClick={handleMenuOpen} size="small">
                 <MoreVertIcon fontSize="small" />
               </IconButton>
               <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
                 <MenuItem onClick={handleMenuClose}>Visualizar</MenuItem>
                 <MenuItem onClick={handleMenuClose}>Editar</MenuItem>
                 <MenuItem onClick={handleMenuClose}>Excluir</MenuItem>
-              </Menu>
+              </Menu> */}
             </>
           )
         }
       />
 
       <CardContent>
+        {chidren}
         {personName && (
           <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
             Por: {personName}
           </Typography>
         )}
         {location && (
-          <Box display="flex" alignItems="center" gap={0.5} mb={showDescription && description ? 1 : 0}>
+          <Box
+            display="flex"
+            alignItems="center"
+            gap={0.5}
+            mb={showDescription && description ? 1 : 0}
+          >
             <LocationOnIcon fontSize="small" color="action" />
             <Typography variant="body2" color="text.secondary">
               {location}
