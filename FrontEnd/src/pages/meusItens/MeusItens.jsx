@@ -72,7 +72,7 @@ const MeusItens = () => {
             ) : (
               <div className={style.items_list}>
                 {filteredItems.map((item) => {
-                  const isLost = item.tipo === "PERDIDO";
+                  const isLost = item.tipo === "PERDIDO" ? "PERDIDO" : "ACHADO";
 
                   return (
                     <ItemCard

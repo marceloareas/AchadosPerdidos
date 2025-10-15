@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import useUserStore from "./user.js";
 import Api from "../api/Api";
 
 const useAuthStore = create((set, get) => ({
@@ -25,21 +26,38 @@ const useAuthStore = create((set, get) => ({
   login: async (formData) => {
     set({ loading: true, erro: null });
     try {
+    
       const response = await Api.post("/auth/login", formData);
       console.log(response);
-      localStorage.setItem("Bearer-token", response.data.token);
+
+      const token = response.data.token;
+      localStorage.setItem("Bearer-token", token);
       set(() => ({
         response: response.message,
         loading: false,
-        token: localStorage.getItem("Bearer-token"),
+        token: token,
       }));
+
+    
+      const userResponse = await Api.get("/auth/me", {
+        headers: { Authorization: token },
+      });
+
+      const { nome, email } = userResponse.data;
+
+     
+      localStorage.setItem("user", JSON.stringify({ nome, email }));
+      const { setUser } = useUserStore.getState();
+      setUser({ nome, email });
+
     } catch (err) {
-      set({ response: err.response.data, loading: false, erro: true });
+      set({ response: err.response?.data, loading: false, erro: true });
       console.log(err);
       console.log(get().erro);
       console.log(get().response);
     }
   },
+
 
   logout: () => {
     localStorage.removeItem("Bearer-token");

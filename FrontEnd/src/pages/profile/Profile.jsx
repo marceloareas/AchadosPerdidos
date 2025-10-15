@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import style from "./Profile.module.scss";
 import Footer from "../../components/footer/Footer";
 import { BiSolidUserCircle } from "react-icons/bi";
@@ -8,17 +8,30 @@ import CustomButton from "../../components/ui/button/CustomButton.jsx";
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../../utils/NotificationContext.jsx";
 import { registerSchema } from "../../validation/validation";
+import useUserStore from "../../store/user.js";
 
 const Profile = () => {
+  const { user } = useUserStore();
   const [formData, setFormData] = useState({
-    nome: "",
-    email: "",
+    nome: user?.nome || "",
+    email: user?.email || "",
     senha: "",
+    confirm_senha: ""
   });
   const onNavigate = useNavigate();
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const { showNotification } = useNotification();
+
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        nome: user.nome,
+        email: user.email
+      }));
+    }
+  }, [user]);
 
   const handleInputChange = async (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -29,41 +42,13 @@ const Profile = () => {
     } catch (err) {
       setErrors((prev) => ({ ...prev, [field]: err.message }));
     }
-    console.log(errors);
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      await registerSchema.validate(formData, { abortEarly: false });
-      setErrors({});
-
-      const formToSend = {
-        nome: formData.nome,
-        email: formData.email,
-        senha: formData.senha,
-      };
-
-      await createUser(formToSend);
-
-      // if (!error) {
-      setFormData({
-        nome: "",
-        email: "",
-        senha: "",
-      });
-      showNotification("Usuário atualizado com sucesso!", "success");
-      // }
-    } catch (err) {
-      if (err.inner) {
-        const validationErrors = {};
-        err.inner.forEach((e) => {
-          validationErrors[e.path] = e.message;
-        });
-        setErrors(validationErrors);
-      }
-    }
+    
   };
+
   return (
     <>
       <div className={style.pageContainer}>
@@ -76,8 +61,8 @@ const Profile = () => {
             />
           </section>
           <section className={style.mid_section}>
-            <h1 className={style.title}>Olá, usuário.</h1>
-            <h3 className={style.subtitle}> Visualize seus dados abaixo.</h3>
+            <h1 className={style.title}>Olá, {user?.nome}</h1>
+            <h3 className={style.subtitle}>Visualize seus dados abaixo.</h3>
             <BiSolidUserCircle className={style.svgProfile} size={150} />
           </section>
           <section className={style.bottom_section}>
@@ -94,7 +79,7 @@ const Profile = () => {
                   required
                 />
               </div>
-              {/* Email */}
+
               <div className={style.formGroup}>
                 <label htmlFor="email" className={style.label}>
                   E-mail*
@@ -110,7 +95,7 @@ const Profile = () => {
                 )}
               </div>
 
-              {/* Senha */}
+              {/* Mantém os campos de senha normalmente */}
               <div className={style.formGroup}>
                 <label htmlFor="senha" className={style.label}>
                   Senha*
@@ -127,7 +112,6 @@ const Profile = () => {
                 )}
               </div>
 
-              {/* Confirmar senha */}
               <div className={style.formGroup}>
                 <label htmlFor="confirm_senha" className={style.label}>
                   Confirmar senha*
@@ -145,7 +129,7 @@ const Profile = () => {
                   <div className={style.error}>{errors.confirm_senha}</div>
                 )}
               </div>
-              {/* Submit */}
+
               <CustomButton
                 type="submit"
                 variant="default"
