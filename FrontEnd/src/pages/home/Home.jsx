@@ -88,7 +88,7 @@ const Home = () => {
           {itemsReturned.map((item, index) => (
             <Grid item key={index}>
               <ItemCard
-                itemType={item.tipo}
+                itemType={"RECUPERADO"}
                 category={item.categoria.nome}
                 title={item.nome}
                 location={item.localizacao}

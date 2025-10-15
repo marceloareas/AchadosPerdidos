@@ -39,9 +39,9 @@ const AddItem = () => {
     getCategorias();
   }, [getCategorias]);
 
-  const defaultType = searchParams.get("type") || "lost";
+  const defaultType = searchParams.get("type") || "PERDIDO";
   const [itemType, setItemType] = useState(
-    defaultType === "found" ? "found" : "lost"
+    defaultType === "ACHADO" ? "ACHADO" : "PERDIDO"
   );
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -75,7 +75,7 @@ const AddItem = () => {
     try {
       itemSchema.validateSync(formData, { abortEarly: false });
       setErrors({});
-      let tipoItem = itemType == "lost" ? "PERDIDO" : "ACHADO";
+      let tipoItem = itemType == "PERDIDO" ? "PERDIDO" : "ACHADO";
       const formToSend = {
         tipo: tipoItem,
         nome: formData.nome,
@@ -97,7 +97,7 @@ const AddItem = () => {
           dataEvento: "",
         });
         showNotification(
-          `Item ${itemType === "lost" ? "perdido" : "encontrado"} cadastrado!`,
+          `Item ${itemType === "PERDIDO" ? "perdido" : "encontrado"} cadastrado!`,
           "success"
         );
         setTimeout(() => {
@@ -147,19 +147,19 @@ const AddItem = () => {
           {/* Toggle buttons */}
           <div className={style.toggleButtons}>
             <CustomButton
-              variant={itemType === "lost" ? "default" : "outline"}
+              variant={itemType === "PERDIDO" ? "default" : "outline"}
               size={sizePage}
               className={style.flexButton}
-              onClick={() => setItemType("lost")}
+              onClick={() => setItemType("PERDIDO")}
             >
               <AlertCircle className={style.icon} />
               Perdi algo
             </CustomButton>
             <CustomButton
-              variant={itemType === "found" ? "default" : "outline"}
+              variant={itemType === "ACHADO" ? "default" : "outline"}
               size={sizePage}
               className={style.flexButton}
-              onClick={() => setItemType("found")}
+              onClick={() => setItemType("ACHADO")}
             >
               <CheckCircle2 className={style.icon} />
               Encontrei algo
@@ -169,13 +169,13 @@ const AddItem = () => {
           <Badge
             badgeType="item"
             type={itemType}
-            label={itemType === "lost" ? "Item Perdido" : "Item Encontrado"}
+            label={itemType === "PERDIDO" ? "Item Perdido" : "Item Encontrado"}
           />
 
           {/* Box de conteúdo */}
           <div className={style.formBox}>
             <h2 className={style.sectionTitle}>
-              {itemType === "lost"
+              {itemType === "PERDIDO"
                 ? "Descreva o que você perdeu"
                 : "Descreva o que você encontrou"}
             </h2>
@@ -203,7 +203,7 @@ const AddItem = () => {
                 <label htmlFor="category" className={style.label}>
                   categorias *
                 </label>
-                {itemType === "lost" ? (
+                {itemType === "PERDIDO" ? (
                   <Autocomplete
                     multiple
                     id="category"
@@ -281,7 +281,7 @@ const AddItem = () => {
               {/* Data */}
               <div className={style.formGroup}>
                 <label htmlFor="dataEvento" className={style.label}>
-                  {itemType === "lost"
+                  {itemType === "PERDIDO"
                     ? "Data que você acha que perdeu"
                     : "Data em que encontrou"}
                 </label>
@@ -307,7 +307,7 @@ const AddItem = () => {
                 {isLoading
                   ? "Cadastrando..."
                   : `Cadastrar Item ${
-                      itemType === "lost" ? "Perdido" : "Encontrado"
+                      itemType === "PERDIDO" ? "Perdido" : "Encontrado"
                     }`}
               </CustomButton>
             </form>

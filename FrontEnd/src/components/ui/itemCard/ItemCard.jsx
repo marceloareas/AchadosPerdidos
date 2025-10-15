@@ -45,8 +45,8 @@ const ItemCard = ({
                 {title}
               </Typography>
               <Badge badgeType="item" type={itemType} label={
-                itemType === "lost" ? "Item Perdido" :
-                itemType === "found" ? "Item Encontrado" :
+                itemType === "PERDIDO" ? "Item Perdido" :
+                itemType === "ACHADO" ? "Item Encontrado" :
                 "Item Devolvido"
               } />
             </Box>

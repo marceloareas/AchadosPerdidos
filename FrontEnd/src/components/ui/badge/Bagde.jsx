@@ -4,11 +4,11 @@ import style from "./Badge.module.scss";
 const Badge = ({ badgeType, type, label }) => {
   let badgeClass = "";
   if(badgeType === "item") {
-    if(type === "lost") { 
+    if(type === "PERDIDO") { 
       badgeClass = style.lost;
-    } else if(type === "found") {
+    } else if(type === "ACHADO") {
       badgeClass = style.found;
-    } else if(type === "returned") {
+    } else if(type === "RECUPERADO") {
       badgeClass = style.returned;
     } else {
       return;
