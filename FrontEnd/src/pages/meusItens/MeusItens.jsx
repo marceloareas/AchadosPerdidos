@@ -2,6 +2,7 @@ import React, { useEffect, useInsertionEffect, useState } from "react";
 import Layout from "../../components/layout/Layout";
 import CustomButton from "../../components/ui/button/CustomButton";
 import ItemCard from "../../components/ui/itemCard/ItemCard";
+import { Plus } from "lucide-react";
 import {
   Tabs,
   TabsList,
