@@ -40,6 +40,12 @@ const useAuthStore = create((set, get) => ({
       console.log(get().response);
     }
   },
+
+  logout: () => {
+    localStorage.removeItem("Bearer-token");
+    set({ token: null });
+  },
+
 }));
 
 export default useAuthStore;

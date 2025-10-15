@@ -11,20 +11,21 @@ import AddItem from "./pages/cadastroItem/AddItem";
 import Cadastro from "./pages/cadastro/Cadastro";
 import Login from "./pages/login/Login";
 import Profile from "./pages/profile/Profile";
+import ProtectedRoute from "./utils/protectedRoute/protectedRoute";
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/matches" element={<Matches />} />
-        <Route path="/itens" element={<MeusItens />} />
-        <Route path="/chats" element={<Chats />} />
-        <Route path="/add-item" element={<AddItem />} />
+        <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="/matches" element={<ProtectedRoute><Matches /></ProtectedRoute>} />
+        <Route path="/itens" element={<ProtectedRoute><MeusItens /></ProtectedRoute>} />
+        <Route path="/chats" element={<ProtectedRoute><Chats /></ProtectedRoute>} />
+        <Route path="/add-item" element={<ProtectedRoute><AddItem /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
         <Route path="/register" element={<Cadastro />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       </Routes>
     </>
   );

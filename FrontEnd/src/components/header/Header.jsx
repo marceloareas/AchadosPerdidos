@@ -6,6 +6,7 @@ import style from "./Header.module.scss";
 import { NavLink } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IconButton, Menu, MenuItem } from "@mui/material";
+import useAuthStore from "../../store/auth";
 
 const Header = () => {
   const route = useLocation();
@@ -18,9 +19,15 @@ const Header = () => {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const { logout } = useAuthStore();
 
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
+  const handleLogout = () => {
+    logout();
+    handleMenuClose();
+    onNavigate("/login");
+  }
 
   return (
     <>
@@ -116,7 +123,7 @@ const Header = () => {
             </IconButton>
             <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
               <MenuItem onClick={() => onNavigate("/profile")}>Perfil</MenuItem>
-              <MenuItem onClick={handleMenuClose}>SignOut</MenuItem>
+              <MenuItem onClick={handleLogout}>SignOut</MenuItem>
             </Menu>
           </>
         </section>
