@@ -46,8 +46,6 @@ const AddItem = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const categories = categorias.map((cat) => cat.nome);
-
   useEffect(() => {
     setFormData({
       nome: "",
@@ -80,9 +78,7 @@ const AddItem = () => {
         tipo: tipoItem,
         nome: formData.nome,
         descricao: formData.descricao,
-        categorias: categorias.filter((cat) =>
-          formData.categorias.includes(cat.nome)
-        ),
+        categorias: formData.categorias,
         localizacao: formData.localizacao,
         dataEvento: formData.dataEvento,
       };
@@ -97,7 +93,9 @@ const AddItem = () => {
           dataEvento: "",
         });
         showNotification(
-          `Item ${itemType === "PERDIDO" ? "perdido" : "encontrado"} cadastrado!`,
+          `Item ${
+            itemType === "PERDIDO" ? "perdido" : "encontrado"
+          } cadastrado!`,
           "success"
         );
         setTimeout(() => {
@@ -207,8 +205,9 @@ const AddItem = () => {
                   <Autocomplete
                     multiple
                     id="category"
-                    options={categories}
+                    options={categorias}
                     value={formData.categorias ? formData.categorias : []}
+                    getOptionLabel={(option) => option?.nome || ""}
                     onChange={(event, newValue) => {
                       handleInputChange("categorias", newValue);
                     }}
@@ -222,11 +221,17 @@ const AddItem = () => {
                 ) : (
                   <Autocomplete
                     id="category"
-                    options={categories}
-                    value={formData.categorias}
+                    options={categorias}
+                    getOptionLabel={(option) => option?.nome || ""}
+                    // isOptionEqualToValue={(option, value) =>
+                    //   option.id === value.id
+                    // }
+                    value={formData.categorias[0] || null}
                     onChange={(event, newValue) => {
-                      console.log(event, newValue);
-                      handleInputChange("categorias", newValue);
+                      handleInputChange(
+                        "categorias",
+                        newValue ? [newValue] : []
+                      );
                     }}
                     renderInput={(params) => (
                       <TextField {...params} placeholder="Categoria *" />
