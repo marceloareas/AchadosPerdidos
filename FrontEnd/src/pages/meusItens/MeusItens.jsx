@@ -66,8 +66,9 @@ const MeusItens = () => {
                 <p className={style.empty_subtitle}>
                   {activeTab === "all"
                     ? "Você ainda não cadastrou nenhum item"
-                    : `Você não tem itens ${activeTab === "PERDIDO" ? "perdidos" : "encontrados"
-                    }`}
+                    : `Você não tem itens ${
+                        activeTab === "PERDIDO" ? "perdidos" : "encontrados"
+                      }`}
                 </p>
                 <CustomButton asChild>Cadastrar Item</CustomButton>
               </div>
@@ -79,6 +80,7 @@ const MeusItens = () => {
                   return (
                     <ItemCard
                       key={item.id}
+                      id={item.id}
                       itemType={isLost}
                       onClick={() => handleCardClick(item)}
                       title={item.nome}

@@ -18,3 +18,9 @@
 .menu_delete {
     color: red !important;
 }
+
+.container {
+    z-index: 9999 !important;
+    max-width: 28rem;
+    /* equivalente a className="max-w-md" */
+}

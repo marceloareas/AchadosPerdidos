@@ -54,6 +54,18 @@ const useItemStore = create((set, get) => ({
       set({ response: err.response.data, loading: false, erro: true });
     }
   },
+
+  deleteItem: async (id) => {
+    set({ loading: true, erro: null });
+    try {
+      const { token } = useAuthStore.getState();
+      const response = await Api.delete(`/item/${id}`, API_HEADER(token));
+      await get().getUserItens();
+      set({ loading: false, erro: null, response: response.data });
+    } catch (err) {
+      set({ response: err.response.data, loading: false, erro: true });
+    }
+  },
 }));
 
 export default useItemStore;
