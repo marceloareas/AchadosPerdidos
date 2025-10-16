@@ -12,7 +12,7 @@ const Footer = () => {
   const route = useLocation();
   const onNavigate = useNavigate();
 
-  const isHome = route.pathname == "/";
+  const isHome = route.pathname == "/home";
   const isMatches = route.pathname == "/matches";
   const isChat = route.pathname == "/chats";
   const isItens = route.pathname == "/itens";

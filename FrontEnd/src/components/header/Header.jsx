@@ -11,12 +11,12 @@ const Header = () => {
   const route = useLocation();
   const onNavigate = useNavigate();
 
-  const isHome = route.pathname === "/";
+  const isHome = route.pathname === "/home";
   const isMatches = route.pathname === "/matches";
   const isChat = route.pathname === "/chats";
   const isItens = route.pathname === "/itens";
 
-  const { token, logout } = useAuthStore(); 
+  const { token, logout } = useAuthStore();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -33,16 +33,13 @@ const Header = () => {
       <div className={style.body_header}>
         <section
           className={style.left_section_header}
-          onClick={() => onNavigate("/")}
+          onClick={() => onNavigate("/home")}
         >
           <img className={style.logo_header} src={logo} alt="" />
           <span className={style.tittle_header}>A&P</span>
         </section>
         <section className={style.right_section_header}>
-          <CustomButton
-            variant="outline"
-            onClick={() => onNavigate("/login")}
-          >
+          <CustomButton variant="outline" onClick={() => onNavigate("/login")}>
             Entrar
           </CustomButton>
         </section>
@@ -55,7 +52,7 @@ const Header = () => {
     <div className={style.body_header}>
       <section
         className={style.left_section_header}
-        onClick={() => onNavigate("/")}
+        onClick={() => onNavigate("/home")}
       >
         <img className={style.logo_header} src={logo} alt="" />
         <span className={style.tittle_header}>A&P</span>
