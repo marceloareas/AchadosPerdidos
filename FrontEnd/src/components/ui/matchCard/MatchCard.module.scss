@@ -1,0 +1,26 @@
+.matchCard {
+  margin-bottom: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.matchCardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.matchChatLink {
+  text-decoration: none;
+  width: 100%;
+}
+
+.matchChatButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .icon {
+    margin-right: 8px;
+  }
+}

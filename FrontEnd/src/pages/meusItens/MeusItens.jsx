@@ -1,6 +1,7 @@
 import React, { useEffect, useInsertionEffect, useState } from "react";
 import Layout from "../../components/layout/Layout";
 import CustomButton from "../../components/ui/button/CustomButton";
+import { Box, Typography } from "@mui/material";
 import ItemCard from "../../components/ui/itemCard/ItemCard";
 import { Plus } from "lucide-react";
 import {
@@ -29,13 +30,15 @@ const MeusItens = () => {
   return (
     <Layout>
       <section className={style.titleMyItems}>
-        <div className={style.countMyItems}>
-          <h1>Meus Itens</h1>
-          <p>
+        <Box className={style.header}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Meus Itens
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
             {itemsUser.length}{" "}
             {itemsUser.length === 1 ? "item cadastrado" : "itens cadastrados"}
-          </p>
-        </div>
+          </Typography>
+        </Box>
       </section>
       <section className={style.filtro}>
         <Tabs
@@ -63,9 +66,8 @@ const MeusItens = () => {
                 <p className={style.empty_subtitle}>
                   {activeTab === "all"
                     ? "Você ainda não cadastrou nenhum item"
-                    : `Você não tem itens ${
-                        activeTab === "PERDIDO" ? "perdidos" : "encontrados"
-                      }`}
+                    : `Você não tem itens ${activeTab === "PERDIDO" ? "perdidos" : "encontrados"
+                    }`}
                 </p>
                 <CustomButton asChild>Cadastrar Item</CustomButton>
               </div>

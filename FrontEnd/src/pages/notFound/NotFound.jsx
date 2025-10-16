@@ -11,7 +11,7 @@ const NotFound = () => {
       <div className={style.text_container}>
         <h1>404</h1>
         <h2>Página não encontrada</h2>
-        <Link to="/">
+        <Link to="/home">
           <h3>Voltar para Home</h3>
         </Link>
       </div>

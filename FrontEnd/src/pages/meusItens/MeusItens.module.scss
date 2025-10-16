@@ -8,18 +8,22 @@
     margin: 3% 2% 2% 2%;
 }
 
-.countMyItems {
-    @include flex-collumn(center, flex-start);
-    width: 600px;
+// .countMyItems {
+//     @include flex-collumn(center, flex-start);
+//     width: 600px;
 
-    h1 {
-        line-height: 1.5;
-        font-weight: bold;
-    }
+//     h1 {
+//         line-height: 1.5;
+//         font-weight: bold;
+//     }
 
-    p {
-        color: #6b7280
-    }
+//     p {
+//         color: #6b7280
+//     }
+// }
+
+.header {
+  margin-bottom: 24px;
 }
 
 .tabs_container {
