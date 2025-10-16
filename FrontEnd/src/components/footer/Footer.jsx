@@ -26,7 +26,7 @@ const Footer = () => {
               ? `${style.box_icons_footer} ${style.box_icons_footer_current}`
               : style.box_icons_footer
           }
-          onClick={() => onNavigate("/")}
+          onClick={() => onNavigate("/home")}
         >
           <FiHome className={style.icons_footer} />
           <span className={style.nav_footer}>Home</span>
