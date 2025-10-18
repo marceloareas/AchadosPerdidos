@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import br.com.cefet.achadosperdidos.domain.enums.StatusItemEnum;
 import br.com.cefet.achadosperdidos.domain.enums.TipoItemEnum;
@@ -38,6 +39,9 @@ public class ItemService {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private MatchService matchService;
 
     public List<ItemRecentementeRetornadoResponseDTO> getRecentItensReturned(){
         List<Item> mostRecentItens = this.itemRepository.findFirst2ByStatusOrderByDataDevolucaoDesc(StatusItemEnum.RECUPERADO);
@@ -97,7 +101,16 @@ public class ItemService {
 
         //disparar Thread de match
 
-        return this.convertToDTO(createdItem);
+        ItemResponseDTO itemPivo = convertToDTO(createdItem);
+        TipoItemEnum tipoOposto = itemPivo.getTipo() == TipoItemEnum.PERDIDO ? TipoItemEnum.ACHADO : TipoItemEnum.PERDIDO;
+        List<ItemResponseDTO> itensTarget = itemRepository.findByTipo(tipoOposto)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        matchService.findMatches(itemPivo, itensTarget);
+
+        return itemPivo;
     }
 
     @Transactional
