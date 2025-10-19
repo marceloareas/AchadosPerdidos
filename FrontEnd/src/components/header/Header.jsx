@@ -3,6 +3,7 @@ import { FiUser, FiPlus } from "react-icons/fi";
 import logo from "../../assets/logoCefet.svg";
 import style from "./Header.module.scss";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { PiSignOutBold } from "react-icons/pi";
 import { IconButton, Menu, MenuItem, Button } from "@mui/material";
 import CustomButton from "../ui/button/CustomButton";
 import useAuthStore from "../../store/auth";
@@ -66,7 +67,7 @@ const Header = () => {
           }
         >
           <NavLink
-            to="/"
+            to="/home"
             className={
               isHome
                 ? `${style.nav_header} ${style.nav_header_current}`
@@ -140,7 +141,10 @@ const Header = () => {
         </IconButton>
         <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
           <MenuItem onClick={() => onNavigate("/profile")}>Perfil</MenuItem>
-          <MenuItem onClick={handleLogout}>SignOut</MenuItem>
+          <MenuItem onClick={handleLogout}>
+            <PiSignOutBold />
+            SignOut
+          </MenuItem>
         </Menu>
       </section>
     </div>
