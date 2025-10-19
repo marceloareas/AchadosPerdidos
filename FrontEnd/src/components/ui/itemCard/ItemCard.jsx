@@ -9,19 +9,6 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogHeader,
-//   DialogTitle,
-// } from "../dialog/Dialog.jsx";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-} from "@mui/material";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -30,10 +17,13 @@ import style from "./ItemCard.module.scss";
 import useItemStore from "../../../store/item";
 import { useNotification } from "../../../utils/NotificationContext";
 import CustomButton from "../button/CustomButton";
+import ModalDelete from "../dialog/ModalDelete";
+import ModalViewEdit from "../dialog/ModalViewEdit";
 
 const ItemCard = ({
   id,
   itemType,
+  date,
   category,
   title,
   location,
@@ -44,11 +34,20 @@ const ItemCard = ({
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const { showNotification } = useNotification();
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
+
+  const { showNotification } = useNotification();
   // const [selectedItem, setSelectedItem] = useState null;
-  const [isViewDeleteModalOpen, setIsViewDeleteModalOpen] = useState(false);
+
+  const [openModalDelete, setOpenDelete] = useState(false);
+  const handleModalOpen = () => setOpenDelete(true);
+  const handleModalClose = () => setOpenDelete(false);
+
+  const [openModalView, setOpenView] = useState(false);
+  const handleModalViewOpen = () => setOpenView(true);
+  const handleModalViewClose = () => setOpenView(false);
+
   const [isLoading, setIsLoading] = useState(false);
   const { deleteItem } = useItemStore();
   const previewDescription =
@@ -132,13 +131,13 @@ const ItemCard = ({
                     <Eye className={style.menu_item_icon} />
                     Visualizar
                   </MenuItem>
-                  <MenuItem>
+                  <MenuItem onClick={handleModalViewOpen}>
                     <Edit className={style.menu_item_icon} />
                     Editar
                   </MenuItem>
                   <MenuItem
                     className={style.menu_delete}
-                    onClick={() => setIsViewDeleteModalOpen(true)}
+                    onClick={handleModalOpen}
                   >
                     <Trash2 className={style.menu_item_icon} />
                     Excluir
@@ -175,35 +174,31 @@ const ItemCard = ({
           )}
         </CardContent>
       </Card>
-      <Dialog
-        open={isViewDeleteModalOpen}
-        onOpenChange={setIsViewDeleteModalOpen}
+      <ModalDelete
+        open={openModalDelete}
+        onClose={handleModalClose}
+        title={"Deseja mesmo deletar este item?"}
+        content={"Essa ação não poderá ser desfeita."}
       >
-        <DialogTitle>Deseja mesmo deletar este item?</DialogTitle>
-        <DialogContent>Essa ação não poderá ser desfeita.</DialogContent>
-        <DialogActions>
-          <CustomButton
-            type="submit"
-            variant="default"
-            size="lg"
-            className={style.submitButton}
-            onClick={() => setIsViewDeleteModalOpen(false)}
-            disabled={isLoading}
-          >
-            {isLoading ? "Cancelar..." : "Cancelar"}
-          </CustomButton>
-          <CustomButton
-            type="button"
-            variant="destructive"
-            size="lg"
-            className={style.submitButton}
-            onClick={() => handleDelete(id)}
-            disabled={isLoading}
-          >
-            {isLoading ? "Deletando..." : "Deletar"}
-          </CustomButton>
-        </DialogActions>
-      </Dialog>
+        <CustomButton
+          type="button"
+          variant="default"
+          size="lg"
+          onClick={handleModalClose}
+          disabled={isLoading}
+        >
+          {isLoading ? "Cancelar..." : "Cancelar"}
+        </CustomButton>
+        <CustomButton
+          type="button"
+          variant="destructive"
+          size="lg"
+          onClick={() => handleDelete(id)}
+          disabled={isLoading}
+        >
+          {isLoading ? "Deletando..." : "Deletar"}
+        </CustomButton>
+      </ModalDelete>
     </>
   );
 };
