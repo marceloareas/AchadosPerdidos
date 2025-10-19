@@ -13,9 +13,10 @@ import {
 
 import style from "./MeusItens.module.scss";
 import useItemStore from "../../store/item.js";
+import { useNavigate } from "react-router-dom";
 const MeusItens = () => {
   const [activeTab, setActiveTab] = useState("all");
-
+  const navigate = useNavigate();
   const { itemsUser, getUserItens } = useItemStore();
   // Mock data for user's items
   useEffect(() => {
@@ -60,7 +61,10 @@ const MeusItens = () => {
             {filteredItems.length === 0 ? (
               <div className={style.empty_state}>
                 <div className={style.empty_icon}>
-                  <Plus className={style.icon} />
+                  <Plus
+                    className={style.icon}
+                    onClick={() => navigate("/add-item")}
+                  />
                 </div>
                 <h3 className={style.empty_title}>Nenhum item encontrado</h3>
                 <p className={style.empty_subtitle}>
@@ -70,13 +74,15 @@ const MeusItens = () => {
                         activeTab === "PERDIDO" ? "perdidos" : "encontrados"
                       }`}
                 </p>
-                <CustomButton asChild>Cadastrar Item</CustomButton>
+                <CustomButton asChild onClick={() => navigate("/add-item")}>
+                  Cadastrar Item
+                </CustomButton>
               </div>
             ) : (
               <div className={style.items_list}>
                 {filteredItems.map((item) => {
                   const isLost = item.tipo === "PERDIDO" ? "PERDIDO" : "ACHADO";
-
+                  console.log(item);
                   return (
                     <ItemCard
                       key={item.id}
@@ -84,6 +90,7 @@ const MeusItens = () => {
                       itemType={isLost}
                       onClick={() => handleCardClick(item)}
                       title={item.nome}
+                      date={item.dataEvento}
                       description={item.descricao}
                       location={item.localizacao}
                       category={item.categorias[0].nome}
