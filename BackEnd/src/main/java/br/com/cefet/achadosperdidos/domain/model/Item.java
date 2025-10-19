@@ -4,17 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import lombok.Getter;
@@ -43,9 +33,12 @@ public class Item {
     @Getter
     private final Set<Categoria> categorias = new HashSet<>();
 
-    @ManyToMany(mappedBy = "itens")
-    @Getter
-    private final Set<Match> matches = new HashSet<>();
+    @OneToMany(mappedBy = "itemPerdido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final Set<Match> matches_perdido = new HashSet<>();
+
+    // Um item (achado) pode estar em muitos matches
+    @OneToMany(mappedBy = "itemAchado", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final Set<Match> matches_achado = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", referencedColumnName = "id")
@@ -102,6 +95,16 @@ public class Item {
     public void removerCategoria(Categoria categoria){
         this.categorias.remove(categoria);
         categoria.getItens().remove(this);
+    }
+
+    public void addMatch(Match match) {
+        if (this.tipo == TipoItemEnum.PERDIDO) {
+            match.setItemPerdido(this);
+            this.matches_perdido.add(match);
+        } else if (this.tipo == TipoItemEnum.ACHADO) {
+            match.setItemAchado(this);
+            this.matches_achado.add(match);
+        }
     }
 
     public Item (

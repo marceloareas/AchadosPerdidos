@@ -14,6 +14,8 @@ import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.dto.categoria.CategoriaDTO;
 import br.com.cefet.achadosperdidos.dto.item.ItemRequestDTO;
 import br.com.cefet.achadosperdidos.dto.item.ItemResponseDTO;
+import br.com.cefet.achadosperdidos.dto.match.ItemCreatedEvent;
+import br.com.cefet.achadosperdidos.dto.match.MatchItemDTO;
 import br.com.cefet.achadosperdidos.exception.auth.InvalidCredentials;
 import br.com.cefet.achadosperdidos.exception.auth.NotAuthorized;
 import br.com.cefet.achadosperdidos.exception.categoria.CategoriaLimitException;
@@ -22,6 +24,7 @@ import br.com.cefet.achadosperdidos.exception.item.ItemNotFoundException;
 import br.com.cefet.achadosperdidos.repositories.CategoriaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import br.com.cefet.achadosperdidos.domain.model.Item;
@@ -42,6 +45,9 @@ public class ItemService {
 
     @Autowired
     private MatchService matchService;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     public List<ItemRecentementeRetornadoResponseDTO> getRecentItensReturned(){
         List<Item> mostRecentItens = this.itemRepository.findFirst2ByStatusOrderByDataDevolucaoDesc(StatusItemEnum.RECUPERADO);
@@ -101,16 +107,9 @@ public class ItemService {
 
         //disparar Thread de match
 
-        ItemResponseDTO itemPivo = convertToDTO(createdItem);
-        TipoItemEnum tipoOposto = itemPivo.getTipo() == TipoItemEnum.PERDIDO ? TipoItemEnum.ACHADO : TipoItemEnum.PERDIDO;
-        List<ItemResponseDTO> itensTarget = itemRepository.findByTipo(tipoOposto)
-                .stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        eventPublisher.publishEvent(new ItemCreatedEvent(createdItem.getId()));
 
-        matchService.findMatches(itemPivo, itensTarget);
-
-        return itemPivo;
+        return convertToDTO(createdItem);
     }
 
     @Transactional

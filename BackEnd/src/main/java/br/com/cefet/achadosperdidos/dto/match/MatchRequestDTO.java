@@ -14,8 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 public class MatchRequestDTO {
 
-    private ItemResponseDTO item_pivo;
+    private MatchItemDTO item_pivo;
     
-    private List<ItemResponseDTO> itens_target;
+    private List<MatchItemDTO> itens_target;
 
 }

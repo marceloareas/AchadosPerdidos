@@ -12,7 +12,7 @@ public class WebClientConfig {
     @Bean
     public WebClient webClient (WebClient.Builder builder){
         return builder
-                .baseUrl("http://match_api:5001")
+                .baseUrl("http://match-api:5001")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
