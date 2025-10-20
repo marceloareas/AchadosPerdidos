@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import br.com.cefet.achadosperdidos.domain.enums.StatusItemEnum;
 import br.com.cefet.achadosperdidos.domain.enums.TipoItemEnum;
@@ -13,6 +14,8 @@ import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.dto.categoria.CategoriaDTO;
 import br.com.cefet.achadosperdidos.dto.item.ItemRequestDTO;
 import br.com.cefet.achadosperdidos.dto.item.ItemResponseDTO;
+import br.com.cefet.achadosperdidos.dto.match.ItemCreatedEvent;
+import br.com.cefet.achadosperdidos.dto.match.MatchItemDTO;
 import br.com.cefet.achadosperdidos.exception.auth.InvalidCredentials;
 import br.com.cefet.achadosperdidos.exception.auth.NotAuthorized;
 import br.com.cefet.achadosperdidos.exception.categoria.CategoriaLimitException;
@@ -21,6 +24,7 @@ import br.com.cefet.achadosperdidos.exception.item.ItemNotFoundException;
 import br.com.cefet.achadosperdidos.repositories.CategoriaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import br.com.cefet.achadosperdidos.domain.model.Item;
@@ -38,6 +42,12 @@ public class ItemService {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private MatchService matchService;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     public List<ItemRecentementeRetornadoResponseDTO> getRecentItensReturned(){
         List<Item> mostRecentItens = this.itemRepository.findFirst2ByStatusOrderByDataDevolucaoDesc(StatusItemEnum.RECUPERADO);
@@ -97,7 +107,9 @@ public class ItemService {
 
         //disparar Thread de match
 
-        return this.convertToDTO(createdItem);
+        eventPublisher.publishEvent(new ItemCreatedEvent(createdItem.getId()));
+
+        return convertToDTO(createdItem);
     }
 
     @Transactional

@@ -29,8 +29,8 @@ class MatchService:
                 ids_matches.append(item['id'])
                 notas_matches.append(round(nota, 2))
 
-        return [{
+        return {
             "id_ItemPivo": item_pivo['id'],
             "ids_PossiveisMatches": ids_matches,
             "notas_PossiveisMatches": notas_matches
-        }]
+        }
