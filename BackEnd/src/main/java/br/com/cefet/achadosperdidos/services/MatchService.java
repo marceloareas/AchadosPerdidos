@@ -78,7 +78,7 @@ public class MatchService {
             TipoItemEnum tipoOposto = itemPivo.getTipo() == TipoItemEnum.PERDIDO ? TipoItemEnum.ACHADO : TipoItemEnum.PERDIDO;
 
             // Itens do tipo oposto para comparacao pela LLM
-            List<Item> itensTarget = itemRepository.findByTipo(tipoOposto);
+            List<Item> itensTarget = itemRepository.findByTipoAndUsuario_IdNot(tipoOposto, item.getUsuario().getId());
 
             // Conversao dos itens do tipo oposto para o formato de requisicao para a API de Match
             List<MatchItemDTO> itensTargetDTO = itensTarget.stream().map(this::convertToMatchItem).toList();
@@ -94,8 +94,8 @@ public class MatchService {
                 .body(Mono.just(requestDTO), MatchRequestDTO.class)
                 .retrieve()
                 .bodyToMono(String.class)
-                .doOnSuccess(response -> System.out.println("<-- resposta da requisicao"))
-                .doOnError(error -> System.out.println("<-- Erro ao chamar a API"));
+                .doOnSuccess(response -> System.out.println("resposta da requisicao:" + response))
+                .doOnError(error -> System.out.println("Erro ao chamar a API:" + error.getMessage()));
 
             // FLUXO DE PROCESSAMENTO DE MATCHES
             Mono<Void> processingChain = responseMono

@@ -11,4 +11,5 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findFirst2ByStatusOrderByDataDevolucaoDesc(StatusItemEnum status);
     List<Item> findByUsuarioId(Long userId);
     List<Item> findByTipo(TipoItemEnum tipo);
+    List<Item> findByTipoAndUsuario_IdNot(TipoItemEnum tipo, Long usuarioId);
 }
