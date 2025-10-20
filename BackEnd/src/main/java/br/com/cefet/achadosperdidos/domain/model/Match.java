@@ -13,7 +13,9 @@ import lombok.Setter;
 
 
 @Entity
-@Table(name = "matchs")
+@Table(name = "matchs", uniqueConstraints = {
+        @UniqueConstraint(name = "UK_match_itens", columnNames = {"item_perdido_id", "item_achado_id"})
+})
 @NoArgsConstructor
 public class Match {
     
