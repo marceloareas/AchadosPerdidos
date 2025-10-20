@@ -17,11 +17,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -31,11 +31,13 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Service
 public class MatchService {
+
+    @Value("${MATCH_API_KEY}")
+    private String MATCH_API_KEY;
 
     @Autowired
     private WebClient webClient;
@@ -63,35 +65,32 @@ public class MatchService {
     @Async
     @Transactional
     public CompletableFuture<Void> findMatches(Long createdItemId) {
-        System.out.println("chegou em findMatches");
         try {
-            System.out.println("42");
+            // 1- Achar o item para atuar no objeto managed.
             Item item = itemRepository.findById(createdItemId)
                     .orElseThrow(() -> new ItemNotFoundException("Item não encontrado"));
             TipoItemEnum tipoItemCriado = item.getTipo();
-            System.out.println(43);
-            MatchItemDTO itemPivo = convertToMatchItem(item);
-            System.out.println(45);
-            TipoItemEnum tipoOposto = itemPivo.getTipo() == TipoItemEnum.PERDIDO ? TipoItemEnum.ACHADO : TipoItemEnum.PERDIDO;
-            System.out.println(46);
-            List<Item> itensTarget = itemRepository.findByTipo(tipoOposto);
-            System.out.println(48);
-            List<MatchItemDTO> itensTargetDTO = itensTarget.stream().map(this::convertToMatchItem).toList();
-            System.out.println(50);
 
-            System.out.println("-> Iniciando busca por matches para o item: " + itemPivo.getNome());
-            System.out.println(53);
+            // Converter item para o tipo de itemPivo (formato da requisição para /llm/match/encontrar em match-api)
+            MatchItemDTO itemPivo = convertToMatchItem(item);
+
+            // Obter o tipo oposto do item
+            TipoItemEnum tipoOposto = itemPivo.getTipo() == TipoItemEnum.PERDIDO ? TipoItemEnum.ACHADO : TipoItemEnum.PERDIDO;
+
+            // Itens do tipo oposto para comparacao pela LLM
+            List<Item> itensTarget = itemRepository.findByTipo(tipoOposto);
+
+            // Conversao dos itens do tipo oposto para o formato de requisicao para a API de Match
+            List<MatchItemDTO> itensTargetDTO = itensTarget.stream().map(this::convertToMatchItem).toList();
+
+            // Criar o DTO para a requisicao.
             MatchRequestDTO requestDTO = new MatchRequestDTO(itemPivo, itensTargetDTO);
 
-
-            String requestBody = objectMapper.writeValueAsString(requestDTO);
-            System.out.println("-> Enviando para match-api:");
-            System.out.println(requestBody);
-
+            System.out.println("api key:" + MATCH_API_KEY);
             //CHAMADA REATIVA
             Mono<String> responseMono = webClient.post()
                 .uri("http://match-api:5001/llm/match/encontrar")
-                .header("X-API-KEY", "2c1f4c46b0a8d8cf4abc3be95bca89a7f76712f54de305d0c2e82b07b4f5c53d")
+                .header("X-API-KEY", MATCH_API_KEY)
                 .body(Mono.just(requestDTO), MatchRequestDTO.class)
                 .retrieve()
                 .bodyToMono(String.class)
@@ -111,13 +110,9 @@ public class MatchService {
 
             return processingChain.then().toFuture();
 
-        } catch (JsonProcessingException e) {
-            System.err.println("Erro ao serializar o corpo da requisição: " + e.getMessage());
         } catch( Exception e) {
             throw new MatchGenericException(e.getMessage());
         }
-
-        return CompletableFuture.completedFuture(null);
     }
 
     /**
