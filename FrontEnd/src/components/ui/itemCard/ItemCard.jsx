@@ -18,7 +18,10 @@ import useItemStore from "../../../store/item";
 import { useNotification } from "../../../utils/NotificationContext";
 import CustomButton from "../button/CustomButton";
 import ModalDelete from "../dialog/ModalDelete";
-import ModalViewEdit from "../dialog/ModalViewEdit";
+import ModalView from "../dialog/view/ModalView";
+import ModalEditItem from "../dialog/editItem/ModalEditItem";
+import { CalendarTodayOutlined } from "@mui/icons-material";
+import dayjs from "dayjs";
 
 const ItemCard = ({
   id,
@@ -38,7 +41,6 @@ const ItemCard = ({
   const handleMenuClose = () => setAnchorEl(null);
 
   const { showNotification } = useNotification();
-  // const [selectedItem, setSelectedItem] = useState null;
 
   const [openModalDelete, setOpenDelete] = useState(false);
   const handleModalOpen = () => setOpenDelete(true);
@@ -48,12 +50,14 @@ const ItemCard = ({
   const handleModalViewOpen = () => setOpenView(true);
   const handleModalViewClose = () => setOpenView(false);
 
+  const [openModalEdit, setOpenEdit] = useState(false);
+  const handleModalEditOpen = () => setOpenEdit(true);
+  const handleModalEditClose = () => setOpenEdit(false);
+
   const [isLoading, setIsLoading] = useState(false);
   const { deleteItem } = useItemStore();
   const previewDescription =
-    description?.length > 100
-      ? description.substring(0, 100) + "..."
-      : description;
+    description?.length > 100 ? description.substring(0, 100) + "..." : description;
 
   const handleDelete = async (id) => {
     try {
@@ -65,15 +69,14 @@ const ItemCard = ({
         setIsLoading(true);
       } else {
         showNotification(response, "error");
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 1000);
+        setTimeout(() => setIsLoading(false), 1000);
       }
     } catch (err) {
       showNotification(err, "error");
       setIsLoading(false);
     }
   };
+
   return (
     <>
       <Card
@@ -84,22 +87,16 @@ const ItemCard = ({
           transition: "0.2s",
           "&:hover": { boxShadow: 6 },
           minHeight: 0,
-          "& .MuiCardHeader-root": { py: 1, px: 2 }, // menos padding no header
-          "& .MuiCardContent-root": { py: 1, px: 2 }, // menos padding no conteúdo
+          "& .MuiCardHeader-root": { py: 1, px: 2 },
+          "& .MuiCardContent-root": { py: 1, px: 2 },
         }}
+        onClick={handleModalViewOpen}
       >
         <CardHeader
           title={
             <Box display="flex" flexDirection="column" gap={0.5}>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Typography
-                  variant="h6"
-                  sx={{ fontWeight: "bold", fontSize: "1.2rem" }}
-                >
+              <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Typography variant="h6" sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>
                   {title}
                 </Typography>
                 <Badge
@@ -114,7 +111,6 @@ const ItemCard = ({
                   }
                 />
               </Box>
-
               <Box>
                 <Badge badgeType="category" label={category} />
               </Box>
@@ -123,21 +119,44 @@ const ItemCard = ({
           action={
             showOptions && (
               <>
-                <IconButton onClick={handleMenuOpen} size="small">
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleMenuOpen(e);
+                  }}
+                  size="small"
+                >
                   <MoreVertIcon fontSize="small" />
                 </IconButton>
+
                 <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
-                  <MenuItem>
+                  <MenuItem
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleModalViewOpen();
+                      handleMenuClose();
+                    }}
+                  >
                     <Eye className={style.menu_item_icon} />
                     Visualizar
                   </MenuItem>
-                  <MenuItem onClick={handleModalViewOpen}>
+                  <MenuItem
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleModalEditOpen();
+                      handleMenuClose();
+                    }}
+                  >
                     <Edit className={style.menu_item_icon} />
                     Editar
                   </MenuItem>
                   <MenuItem
                     className={style.menu_delete}
-                    onClick={handleModalOpen}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleModalOpen();
+                      handleMenuClose();
+                    }}
                   >
                     <Trash2 className={style.menu_item_icon} />
                     Excluir
@@ -155,12 +174,7 @@ const ItemCard = ({
             </Typography>
           )}
           {location && (
-            <Box
-              display="flex"
-              alignItems="center"
-              gap={0.5}
-              mb={showDescription && description ? 1 : 0}
-            >
+            <Box display="flex" alignItems="center" gap={0.5} mb={showDescription && description ? 1 : 0}>
               <LocationOnIcon fontSize="small" color="action" />
               <Typography variant="body2" color="text.secondary">
                 {location}
@@ -172,33 +186,55 @@ const ItemCard = ({
               {previewDescription}
             </Typography>
           )}
+          {date && (
+            <Box display="flex" alignItems="center" gap={0.5} mt={1}>
+              <CalendarTodayOutlined fontSize="small" color="action" />
+              <Typography variant="body2" color="text.secondary">
+                {dayjs(date).format("DD/MM/YYYY")}
+              </Typography>
+            </Box>
+          )}
         </CardContent>
       </Card>
+
+      {/* Modais */}
+      <ModalView
+        open={openModalView}
+        onClose={handleModalViewClose}
+        item={{ id, title, category, location, personName, description, date, type: itemType }}
+        onEdit={() => handleModalEditOpen()}
+        onDelete={() => handleDelete(id)}
+        showOptions={showOptions}
+        isDeleting={isLoading}
+      />
+
       <ModalDelete
         open={openModalDelete}
         onClose={handleModalClose}
         title={"Deseja mesmo deletar este item?"}
         content={"Essa ação não poderá ser desfeita."}
       >
-        <CustomButton
-          type="button"
-          variant="default"
-          size="lg"
-          onClick={handleModalClose}
-          disabled={isLoading}
-        >
+        <CustomButton type="button" variant="default" size="lg" onClick={handleModalClose} disabled={isLoading}>
           {isLoading ? "Cancelar..." : "Cancelar"}
         </CustomButton>
-        <CustomButton
-          type="button"
-          variant="destructive"
-          size="lg"
-          onClick={() => handleDelete(id)}
-          disabled={isLoading}
-        >
+        <CustomButton type="button" variant="destructive" size="lg" onClick={() => handleDelete(id)} disabled={isLoading}>
           {isLoading ? "Deletando..." : "Deletar"}
         </CustomButton>
       </ModalDelete>
+
+      <ModalEditItem
+        open={openModalEdit}
+        onClose={handleModalEditClose}
+        item={{
+          id,
+          nome: title,
+          descricao: description,
+          categorias: category ? [{ nome: category }] : [],
+          localizacao: location,
+          dataEvento: date,
+          tipo: itemType,
+        }}
+      />
     </>
   );
 };

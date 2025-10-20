@@ -14,6 +14,7 @@ const matchesMock = [
         id: 1,
         type: "PERDIDO",
         category: "Eletrônicos",
+        date: "2024-06-10",
         title: "iPhone 13 Pro Azul",
         description: "iPhone 13 Pro azul, com capinha transparente",
         location: "Biblioteca Central",
@@ -22,6 +23,7 @@ const matchesMock = [
       {
         id: 2,
         type: "ACHADO",
+        date: "2024-06-10",
         category: "Eletrônicos",
         title: "Celular iPhone Encontrado",
         description: "Encontrei um iPhone azul com capinha",
@@ -37,6 +39,7 @@ const matchesMock = [
       {
         id: 3,
         type: "PERDIDO",
+        date: "2024-06-08",
         category: "Acessórios",
         title: "Mochila Preta Jansport",
         description: "Mochila preta com patches de bandas de rock",
@@ -46,6 +49,7 @@ const matchesMock = [
       {
         id: 4,
         type: "ACHADO",
+        date: "2024-06-09",
         category: "Acessórios",
         title: "Mochila Encontrada",
         description: "Mochila preta com adesivos encontrada no corredor",
@@ -54,7 +58,7 @@ const matchesMock = [
       }
     ])
   }
-  
+
 ];
 
 const Matches = () => {
