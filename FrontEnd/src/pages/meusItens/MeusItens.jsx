@@ -76,7 +76,6 @@ const MeusItens = () => {
               <div className={style.items_list}>
                 {filteredItems.map((item) => {
                   const isLost = item.tipo === "PERDIDO" ? "PERDIDO" : "ACHADO";
-                  console.log(item);
                   return (
                     <ItemCard
                       key={item.id}
@@ -87,7 +86,7 @@ const MeusItens = () => {
                       date={item.dataEvento}
                       description={item.descricao}
                       location={item.localizacao}
-                      category={item?.categorias[0].nome}
+                      category={item?.categorias}
                       showOptions={true}
                     />
                   );

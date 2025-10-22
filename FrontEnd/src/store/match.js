@@ -17,8 +17,18 @@ const useMatchStore = create((set, get) => ({
       set({ matches: response.data, loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });
-    } finally {
-      set({ loading: false, error: null, response: null });
+    }
+  },
+  deleteMatch: async (idMatch) => {
+    set({ loading: true, error: null });
+    try {
+      const { token } = useAuthStore.getState();
+      const response = await Api.delete(`/match/${idMatch}`, API_HEADER(token));
+      console.log(response);
+      await get().getMatches();
+      set({ loading: false, erro: null, response: response.data });
+    } catch (error) {
+      set({ error: error.message, loading: false });
     }
   },
 }));
