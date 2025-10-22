@@ -12,10 +12,12 @@ import br.com.cefet.achadosperdidos.dto.match_api_integration.MatchAPIRequestDTO
 import br.com.cefet.achadosperdidos.dto.match_api_integration.PossibleMatchesResponseDTO;
 import br.com.cefet.achadosperdidos.exception.item.ItemNotFoundException;
 import br.com.cefet.achadosperdidos.exception.match.MatchGenericException;
+import br.com.cefet.achadosperdidos.exception.usuario.UserNotFoundException;
 import br.com.cefet.achadosperdidos.mappers.ItemMapper;
 import br.com.cefet.achadosperdidos.repositories.ItemRepository;
 import br.com.cefet.achadosperdidos.repositories.MatchRepository;
 
+import br.com.cefet.achadosperdidos.repositories.UsuarioRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,6 +37,7 @@ import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -56,6 +59,9 @@ public class MatchService {
     private MatchRepository matchRepository;
 
     @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
     private MatchPersistenceService matchPersistenceService;
 
     @Autowired
@@ -63,6 +69,8 @@ public class MatchService {
 
     public List<MatchResponseDTO> getAllUserMatches(Long userId){
         List<Match> userMatches = matchRepository.findAllByUsuarioId(userId);
+        Usuario usuario = usuarioRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
         List<MatchResponseDTO> matchResponseDTOList = new ArrayList<MatchResponseDTO>();
         for(Match match : userMatches){
@@ -75,9 +83,10 @@ public class MatchService {
             Item itemUsuario = isUsersItemAchado ? itemAchado : itemPerdido;
             Item itemOposto = isUsersItemAchado ? itemPerdido : itemAchado;
 
+
             MatchResponseDTO dto = new MatchResponseDTO();
-            dto.setItemUsuario(itemMapper.convertToDTO(itemUsuario));
-            dto.setItemOposto(itemMapper.convertToDTO(itemOposto));
+            dto.setItemUsuario(itemMapper.convertToItemMeusMatchesDTO(itemUsuario));
+            dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(itemOposto));
             dto.setConfirmacaoItemAchado(match.isConfirmacaoAchado());
             dto.setConfirmacaoItemPerdido(match.isConfirmacaoPerdido());
             matchResponseDTOList.add(dto);
