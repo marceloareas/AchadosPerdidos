@@ -55,6 +55,30 @@ const useItemStore = create((set, get) => ({
     }
   },
 
+  updateItem: async (id, formData) => {
+    set({ loading: true, erro: null });
+    try {
+      const { token } = useAuthStore.getState();
+      const response = await Api.patch(`/item/${id}`, formData, API_HEADER(token));
+
+      const updatedItemsUser = get().itemsUser.map((item) =>
+        item.id === id ? response.data : item
+      );
+      console.log("Payload enviado:", formData);
+      console.log("Item atualizado com sucesso:", response.data);
+      set({
+        itemsUser: updatedItemsUser,
+        loading: false,
+        erro: null,
+        item: response.data,
+      });
+      get().getUserItens();
+    } catch (err) {
+      console.error(err);
+      set({ loading: false, erro: err.response?.data || "Erro ao atualizar item" });
+    }
+  },
+
   deleteItem: async (id) => {
     set({ loading: true, erro: null });
     try {

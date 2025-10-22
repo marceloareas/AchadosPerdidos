@@ -46,7 +46,6 @@ const Cadastro = () => {
       const formToSend = {
         nome: formData.nome,
         email: formData.email,
-        senha: formData.senha,
       };
 
       await register(formToSend);

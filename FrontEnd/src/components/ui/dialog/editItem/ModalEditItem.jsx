@@ -21,7 +21,7 @@ const modalStyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 500,
+  width: "80%",
   maxHeight: "90vh",
   overflowY: "auto",
   bgcolor: "background.paper",
@@ -54,7 +54,7 @@ const ModalEditItem = ({ open, onClose, item }) => {
       setFormData({
         nome: item.nome || "",
         descricao: item.descricao || "",
-        categorias: item.categorias || [],
+        categorias: Array.isArray(item.categorias) ? item.categorias : [],
         localizacao: item.localizacao || "",
         dataEvento: item.dataEvento ? dayjs(item.dataEvento) : null,
       });
@@ -74,7 +74,6 @@ const ModalEditItem = ({ open, onClose, item }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // validação simples
     const newErrors = {};
     if (!formData.nome) newErrors.nome = "Campo obrigatório";
     if (!formData.descricao) newErrors.descricao = "Campo obrigatório";
@@ -89,16 +88,32 @@ const ModalEditItem = ({ open, onClose, item }) => {
 
     setIsLoading(true);
     try {
-      await updateItem(item.id, {
+      // Mantém categorias originais se o usuário não alterou
+      const categoriasEnviadas =
+        formData.categorias && formData.categorias.length > 0
+          ? formData.categorias
+          : Array.isArray(item.categorias)
+          ? item.categorias
+          : [];
+
+      const payload = {
         ...formData,
+        categorias:
+          item.tipo === "PERDIDO"
+            ? categoriasEnviadas
+            : categoriasEnviadas.length > 0
+            ? [categoriasEnviadas[0]]
+            : [],
         tipo: item.tipo,
         dataEvento: formData.dataEvento
           ? dayjs(formData.dataEvento).format("YYYY-MM-DDTHH:mm:ss")
           : null,
-      });
+      };
+
+      await updateItem(item.id, payload);
       onClose();
     } catch (err) {
-      console.error(err);
+      console.error("Erro ao atualizar item:", err);
     } finally {
       setIsLoading(false);
     }
@@ -145,15 +160,11 @@ const ModalEditItem = ({ open, onClose, item }) => {
               multiple={item?.tipo === "PERDIDO"}
               limitTags={maxCategories}
               options={categorias}
-              value={
-                item?.tipo === "PERDIDO"
-                  ? formData.categorias || []
-                  : formData.categorias?.[0] || null
-              }
-              getOptionLabel={(option) => option.nome || ""}
+              value={formData.categorias}
+              getOptionLabel={(option) => option?.nome || ""}
               onChange={(event, newValue) => {
-                if (item?.tipo === "PERDIDO") {
-                  handleInputChange("categorias", newValue);
+                if (item.tipo === "PERDIDO") {
+                  handleInputChange("categorias", newValue || []);
                 } else {
                   handleInputChange("categorias", newValue ? [newValue] : []);
                 }
@@ -200,7 +211,7 @@ const ModalEditItem = ({ open, onClose, item }) => {
             />
           </Box>
 
-          {/* Data do Evento - consertarrrr !!!! */}
+          {/* Data do Evento */}
           <Box className={style.formGroup}>
             <ResponsiveDatePickers
               value={formData.dataEvento}

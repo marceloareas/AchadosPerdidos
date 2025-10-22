@@ -60,12 +60,6 @@ const MeusItens = () => {
           <TabsContent value={activeTab} className={style.tabs_content}>
             {filteredItems.length === 0 ? (
               <div className={style.empty_state}>
-                <div className={style.empty_icon}>
-                  <Plus
-                    className={style.icon}
-                    onClick={() => navigate("/add-item")}
-                  />
-                </div>
                 <h3 className={style.empty_title}>Nenhum item encontrado</h3>
                 <p className={style.empty_subtitle}>
                   {activeTab === "all"
@@ -93,7 +87,7 @@ const MeusItens = () => {
                       date={item.dataEvento}
                       description={item.descricao}
                       location={item.localizacao}
-                      category={item.categorias[0].nome}
+                      category={item?.categorias[0].nome}
                       showOptions={true}
                     />
                   );

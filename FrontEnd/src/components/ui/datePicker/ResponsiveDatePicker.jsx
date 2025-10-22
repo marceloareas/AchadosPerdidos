@@ -7,7 +7,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { ptBR } from "@mui/x-date-pickers/locales";
 
-export default function ResponsiveDatePickers({ onChange }) {
+export default function ResponsiveDatePickers({ onChange, value }) {
   return (
     <LocalizationProvider
       dateAdapter={AdapterDayjs}
@@ -18,7 +18,7 @@ export default function ResponsiveDatePickers({ onChange }) {
     >
       <DemoContainer components={["DatePicker"]}>
         <DemoItem label={""}>
-          <DatePicker format="DD/MM/YYYY" onChange={onChange} />
+          <DatePicker format="DD/MM/YYYY" onChange={onChange} defaultValue={dayjs(value)} />
         </DemoItem>
       </DemoContainer>
     </LocalizationProvider>

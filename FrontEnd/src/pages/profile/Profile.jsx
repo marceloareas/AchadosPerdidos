@@ -15,10 +15,11 @@ const Profile = () => {
   const [formData, setFormData] = useState({
     nome: user?.nome || "",
     email: user?.email || "",
-    senha: "",
-    confirm_senha: ""
+    // senha: "",
+    // confirm_senha: ""
   });
   const onNavigate = useNavigate();
+  const {updateUser} = useUserStore()
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const { showNotification } = useNotification();
@@ -46,6 +47,28 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    try{
+      const formtoSend = {
+        nome: formData.nome,
+        email: formData.email,
+      }
+      await updateUser(formtoSend);
+      const{erro, response} = useUserStore.getState();
+      if(!erro){
+        setFormData({
+          nome:"",
+          email:""
+        })
+        showNotification("Usuário Atualizado com sucesso", "succes");
+        setTimeout(()=>{
+
+        }, 1500)
+      }
+
+    }catch(err){
+        console.log()
+    }
     
   };
 
@@ -57,7 +80,7 @@ const Profile = () => {
             <IoReturnUpBackOutline
               className={style.back_home}
               size={50}
-              onClick={() => onNavigate("/")}
+              onClick={() => onNavigate("/home")}
             />
           </section>
           <section className={style.mid_section}>
