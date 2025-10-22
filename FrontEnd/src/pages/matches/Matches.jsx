@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import MatchCard from "../../components/ui/matchCard/MatchCard";
 import style from "./Matches.module.scss";
 import Layout from "../../components/layout/Layout";
+import useMatchStore from "../../store/match";
 
 // Mock data para matches
 const matchesMock = [
@@ -62,6 +63,12 @@ const matchesMock = [
 ];
 
 const Matches = () => {
+  const { matches, getMatches } = useMatchStore();
+
+  useEffect(() => {
+    getMatches();
+  }, [])
+
   return (
     <Layout>
       <Box className={style.matchesPage}>
@@ -75,7 +82,7 @@ const Matches = () => {
         </Box>
 
         <Box className={style.matchList}>
-          {matchesMock.length === 0 ? (
+          {matches.length === 0 ? (
             <Box className={style.emptyState}>
               <Typography variant="h6">Nenhum match encontrado</Typography>
               <Typography variant="body2">
@@ -83,8 +90,8 @@ const Matches = () => {
               </Typography>
             </Box>
           ) : (
-            matchesMock.map((match) => (
-              <MatchCard key={match.id} match={match} />
+            matches.map((match) => (
+              <MatchCard key={1} match={match} />
             ))
           )}
         </Box>
@@ -92,5 +99,6 @@ const Matches = () => {
     </Layout>
   );
 };
+
 
 export default Matches;

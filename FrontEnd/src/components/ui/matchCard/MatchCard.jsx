@@ -7,29 +7,30 @@ import { Link } from "react-router-dom";
 import style from "./MatchCard.module.scss";
 
 const MatchCard = ({ match }) => {
-  const itens = Array.from(match.itens);
+  const itemUsuario = match.itemUsuario;
+  const itemOposto = match.itemOposto;
 
   return (
     <Card className={style.matchCard} variant="outlined">
       <CardContent className={style.matchCardContent}>
         {/* Item 1 */}
         <ItemCard
-          itemType={itens[0]?.type}
-          category={itens[0]?.category}
-          title={itens[0]?.title}
-          description={itens[0]?.description}
-          location={itens[0]?.location}
-          personName={itens[0]?.personName}
+          itemType={itemUsuario?.tipo}
+          category={itemUsuario?.categorias[0].nome}
+          title={itemUsuario?.nome}
+          description={itemUsuario?.descricao}
+          location={itemUsuario?.localizacao}
+          personName={itemUsuario?.personName}
         />
 
         {/* Item 2 */}
         <ItemCard
-          itemType={itens[1]?.type}
-          category={itens[1]?.category}
-          title={itens[1]?.title}
-          description={itens[1]?.description}
-          location={itens[1]?.location}
-          personName={itens[1]?.personName}
+          itemType={itemOposto?.tipo}
+          category={itemOposto?.categorias[0].nome}
+          title={itemOposto?.nome}
+          description={itemOposto?.descricao}
+          location={itemOposto?.localizacao}
+          personName={itemOposto?.personName}
         />
 
         {/* Botão de conversa */}
