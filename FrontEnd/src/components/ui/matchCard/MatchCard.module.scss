@@ -1,4 +1,5 @@
 .matchCard {
+  margin-top: 16px;
   margin-bottom: 16px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -8,6 +9,21 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.option_icon_delete {
+  display: flex;
+  position: relative;
+  left: 90%;
+  color: #f44336 !important;
+  margin-right: 0.5rem;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    color: #d32f2f !important;
+
+    transform: scale(1.1);
+  }
 }
 
 .matchChatLink {

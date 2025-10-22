@@ -19,7 +19,7 @@ const matchesMock = [
         title: "iPhone 13 Pro Azul",
         description: "iPhone 13 Pro azul, com capinha transparente",
         location: "Biblioteca Central",
-        personName: "Ana" // dar um jeito de pegar o nome do usuario no card de match
+        personName: "Ana", // dar um jeito de pegar o nome do usuario no card de match
       },
       {
         id: 2,
@@ -29,9 +29,9 @@ const matchesMock = [
         title: "Celular iPhone Encontrado",
         description: "Encontrei um iPhone azul com capinha",
         location: "Próximo à Biblioteca",
-        personName: "Maria"
-      }
-    ])
+        personName: "Maria",
+      },
+    ]),
   },
   {
     id: 2,
@@ -45,7 +45,7 @@ const matchesMock = [
         title: "Mochila Preta Jansport",
         description: "Mochila preta com patches de bandas de rock",
         location: "Lab. de Informática",
-        personName: "João"
+        personName: "João",
       },
       {
         id: 4,
@@ -55,11 +55,10 @@ const matchesMock = [
         title: "Mochila Encontrada",
         description: "Mochila preta com adesivos encontrada no corredor",
         location: "Corredor do 3º andar",
-        personName: "Ana"
-      }
-    ])
-  }
-
+        personName: "Ana",
+      },
+    ]),
+  },
 ];
 
 const Matches = () => {
@@ -67,7 +66,7 @@ const Matches = () => {
 
   useEffect(() => {
     getMatches();
-  }, [])
+  }, []);
 
   return (
     <Layout>
@@ -90,15 +89,14 @@ const Matches = () => {
               </Typography>
             </Box>
           ) : (
-            matches.map((match) => (
-              <MatchCard key={1} match={match} />
-            ))
+            Array.isArray(matches) &&
+            matches.length > 0 &&
+            matches.map((match) => <MatchCard key={1} match={match} />)
           )}
         </Box>
       </Box>
     </Layout>
   );
 };
-
 
 export default Matches;
