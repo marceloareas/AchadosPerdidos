@@ -18,7 +18,7 @@ def encontrar_possiveis_matches():
         resultados = match_service.find_matches(
             item_pivo=data['item_pivo'],
             itens_target=data['itens_target'],
-            limite=data.get('limite', 7.0)
+            limite=data.get('limite', 8.0)
         )
 
         return jsonify(resultados), 200
