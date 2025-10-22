@@ -2,6 +2,8 @@ package br.com.cefet.achadosperdidos.services;
 
 import java.util.List;
 
+import br.com.cefet.achadosperdidos.mappers.CategoriaMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.cefet.achadosperdidos.domain.model.Categoria;
@@ -11,23 +13,18 @@ import br.com.cefet.achadosperdidos.repositories.CategoriaRepository;
 @Service
 public class CategoriaService {
 
-    private final CategoriaRepository categoriaRepository;
+    @Autowired
+    private CategoriaMapper categoriaMapper;
 
-    public CategoriaService(CategoriaRepository categoriaRepository){
-        this.categoriaRepository = categoriaRepository;
-    }
+    @Autowired
+    private CategoriaRepository categoriaRepository;
 
     public List<CategoriaDTO> findAll(){
         List<Categoria> categorias = categoriaRepository.findAll();
         return categorias.stream()
-            .map(this::convertToResponseDTO)
+            .map(categoriaMapper::convertToResponseDTO)
             .toList();
     }
 
-    public CategoriaDTO convertToResponseDTO(Categoria categoria){
-        CategoriaDTO dto = new CategoriaDTO();
-        dto.setId(categoria.getId());
-        dto.setNome(categoria.getNome());
-        return dto;
-    }
+
 }

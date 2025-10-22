@@ -1,4 +1,4 @@
-package br.com.cefet.achadosperdidos.dto.match;
+package br.com.cefet.achadosperdidos.dto.match_api_integration;
 
 import br.com.cefet.achadosperdidos.domain.enums.TipoItemEnum;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MatchItemDTO {
+public class MatchAPIItemDTO {
     private Long id;
     private String nome;
     private List<String> categorias;

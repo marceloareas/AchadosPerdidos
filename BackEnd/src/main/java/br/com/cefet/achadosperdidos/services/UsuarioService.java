@@ -4,7 +4,9 @@ import java.util.List;
 
 import br.com.cefet.achadosperdidos.exception.auth.InvalidCredentials;
 import br.com.cefet.achadosperdidos.exception.usuario.UsuarioAlreadyExists;
+import br.com.cefet.achadosperdidos.mappers.UsuarioMapper;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,27 +19,25 @@ import br.com.cefet.achadosperdidos.exception.usuario.UserNotFoundException;
 @Service
 public class UsuarioService {
 
-    private final UsuarioRepository usuarioRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-    public UsuarioService(
-        UsuarioRepository usuarioRepository,
-        PasswordEncoder passwordEncoder
-    ) {
-        this.usuarioRepository = usuarioRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UsuarioMapper usuarioMapper;
 
     public List<UsuarioResponseDTO> findAll(){
         List<Usuario> usuarios = usuarioRepository.findAll();
         return usuarios.stream()
-            .map(this::convertToResponseDTO)
+            .map(usuarioMapper::convertToResponseDTO)
             .toList();
     }
 
     public UsuarioResponseDTO findById(Long id){
         return usuarioRepository.findById(id)
-            .map(this::convertToResponseDTO)
+            .map(usuarioMapper::convertToResponseDTO)
             .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
     }
 
@@ -61,7 +61,7 @@ public class UsuarioService {
         novoUsuario.setSenha(hashedSenha);
         
         Usuario usuarioSalvo = usuarioRepository.save(novoUsuario);
-        return convertToResponseDTO(usuarioSalvo);
+        return usuarioMapper.convertToResponseDTO(usuarioSalvo);
     }
 
     @Transactional
@@ -77,7 +77,7 @@ public class UsuarioService {
             usuario.setEmail(usuarioRequestDTO.getEmail());
 
         Usuario usuarioAtualizado = usuarioRepository.save(usuario);
-        return convertToResponseDTO(usuarioAtualizado);
+        return usuarioMapper.convertToResponseDTO(usuarioAtualizado);
     }
 
     @Transactional
@@ -108,13 +108,5 @@ public class UsuarioService {
         return "Usuário deletado com sucesso";
     }
 
-    public UsuarioResponseDTO convertToResponseDTO(Usuario usuario){
-        UsuarioResponseDTO dto = new UsuarioResponseDTO();
 
-        dto.setId(usuario.getId());
-        dto.setEmail(usuario.getEmail());
-        dto.setNome(usuario.getNome());
-
-        return dto;
-    }
 }

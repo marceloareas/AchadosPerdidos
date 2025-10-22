@@ -1,4 +1,4 @@
-package br.com.cefet.achadosperdidos.dto.match;
+package br.com.cefet.achadosperdidos.dto.match_api_integration;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,7 +16,7 @@ import java.util.Map;
 @Setter
 @AllArgsConstructor
 @ToString
-public class MatchesResponseDTO {
+public class PossibleMatchesResponseDTO {
     @JsonProperty("id_ItemPivo")
     private Long target_id;
 

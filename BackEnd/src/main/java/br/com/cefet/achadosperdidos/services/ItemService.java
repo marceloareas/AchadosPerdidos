@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import br.com.cefet.achadosperdidos.domain.enums.StatusItemEnum;
 import br.com.cefet.achadosperdidos.domain.enums.TipoItemEnum;
@@ -14,13 +13,13 @@ import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.dto.categoria.CategoriaDTO;
 import br.com.cefet.achadosperdidos.dto.item.ItemRequestDTO;
 import br.com.cefet.achadosperdidos.dto.item.ItemResponseDTO;
-import br.com.cefet.achadosperdidos.dto.match.ItemCreatedEvent;
-import br.com.cefet.achadosperdidos.dto.match.MatchItemDTO;
+import br.com.cefet.achadosperdidos.dto.match_api_integration.ItemCreatedEvent;
 import br.com.cefet.achadosperdidos.exception.auth.InvalidCredentials;
 import br.com.cefet.achadosperdidos.exception.auth.NotAuthorized;
 import br.com.cefet.achadosperdidos.exception.categoria.CategoriaLimitException;
 import br.com.cefet.achadosperdidos.exception.categoria.CategoriaNotFound;
 import br.com.cefet.achadosperdidos.exception.item.ItemNotFoundException;
+import br.com.cefet.achadosperdidos.mappers.ItemMapper;
 import br.com.cefet.achadosperdidos.repositories.CategoriaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,18 +48,21 @@ public class ItemService {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
+    @Autowired
+    private ItemMapper itemMapper;
+
     public List<ItemRecentementeRetornadoResponseDTO> getRecentItensReturned(){
         List<Item> mostRecentItens = this.itemRepository.findFirst2ByStatusOrderByDataDevolucaoDesc(StatusItemEnum.RECUPERADO);
 
 
         return mostRecentItens.stream()
-                .map(this::convertToRecentlyReturnedDTO)
+                .map(itemMapper::convertToRecentlyReturnedDTO)
                 .toList();
     }
 
     public List<ItemResponseDTO> getUserItens(Long userId){
         List<Item> itemList = this.itemRepository.findByUsuarioId(userId);
-        return itemList.stream().map(this::convertToDTO).toList();
+        return itemList.stream().map(itemMapper::convertToDTO).toList();
     }
 
     public ItemResponseDTO getItem(Long id, Usuario usuario){
@@ -72,7 +74,7 @@ public class ItemService {
 
         if(!item.get().getUsuario().getId().equals(usuario.getId())) throw new NotAuthorized("O item não pertence ao usuário.");
 
-        return convertToDTO(item.get());
+        return itemMapper.convertToDTO(item.get());
     }
 
     @Transactional
@@ -109,7 +111,7 @@ public class ItemService {
 
         eventPublisher.publishEvent(new ItemCreatedEvent(createdItem.getId()));
 
-        return convertToDTO(createdItem);
+        return itemMapper.convertToDTO(createdItem);
     }
 
     @Transactional
@@ -149,7 +151,7 @@ public class ItemService {
 
         Item itemAtualizado = itemRepository.save(item);
 
-        return convertToDTO(itemAtualizado);
+        return itemMapper.convertToDTO(itemAtualizado);
     }
 
     @Transactional
@@ -166,40 +168,7 @@ public class ItemService {
     }
 
 
-    public ItemRecentementeRetornadoResponseDTO convertToRecentlyReturnedDTO(Item item){
-        ItemRecentementeRetornadoResponseDTO dto = new ItemRecentementeRetornadoResponseDTO();
-        dto.setId(item.getId());
-        dto.setTipo(item.getTipo());
-        dto.setNome(item.getNome());
-        dto.setStatus(item.getStatus());
-        dto.setLocalizacao(item.getLocalizacao());
-        dto.setDescricao(item.getDescricao());
-        Optional<Categoria> categoriaOptional = item.getCategorias().stream().findFirst();
 
-        categoriaOptional.ifPresent(categoria -> {
-            CategoriaDTO categoriaDTO = new CategoriaDTO();
-            categoriaDTO.setId(categoria.getId());
-            categoriaDTO.setNome(categoria.getNome());
-            dto.setCategoria(categoriaDTO);
-        });
-
-        return dto;
-    }
-
-    public ItemResponseDTO convertToDTO(Item item){
-        ItemResponseDTO dto = new ItemResponseDTO();
-        dto.setId(item.getId());
-        dto.setTipo(item.getTipo());
-        dto.setNome(item.getNome());
-        dto.setStatus(item.getStatus());
-        dto.setLocalizacao(item.getLocalizacao());
-        dto.setDescricao(item.getDescricao());
-        dto.setDataEvento(item.getDataEvento());
-        List<CategoriaDTO> categorias = item.getCategorias().stream().map(categoriaService::convertToResponseDTO).toList();
-        dto.setCategorias(categorias);
-
-        return dto;
-    }
 
 
 }

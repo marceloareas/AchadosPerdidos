@@ -5,6 +5,7 @@ import java.util.Set;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 
 import lombok.Getter;
@@ -26,10 +27,12 @@ public class Match {
 
     @Getter
     @Setter
+    @Null
     private boolean confirmacaoPerdido;
 
     @Getter
     @Setter
+    @Null
     private boolean confirmacaoAchado;
 
     @NotNull

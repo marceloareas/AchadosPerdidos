@@ -4,12 +4,15 @@ import br.com.cefet.achadosperdidos.domain.enums.TipoItemEnum;
 import br.com.cefet.achadosperdidos.domain.model.Categoria;
 import br.com.cefet.achadosperdidos.domain.model.Item;
 import br.com.cefet.achadosperdidos.domain.model.Match;
-import br.com.cefet.achadosperdidos.dto.match.ItemCreatedEvent;
-import br.com.cefet.achadosperdidos.dto.match.MatchItemDTO;
-import br.com.cefet.achadosperdidos.dto.match.MatchRequestDTO;
-import br.com.cefet.achadosperdidos.dto.match.MatchesResponseDTO;
+import br.com.cefet.achadosperdidos.domain.model.Usuario;
+import br.com.cefet.achadosperdidos.dto.match.MatchResponseDTO;
+import br.com.cefet.achadosperdidos.dto.match_api_integration.ItemCreatedEvent;
+import br.com.cefet.achadosperdidos.dto.match_api_integration.MatchAPIItemDTO;
+import br.com.cefet.achadosperdidos.dto.match_api_integration.MatchAPIRequestDTO;
+import br.com.cefet.achadosperdidos.dto.match_api_integration.PossibleMatchesResponseDTO;
 import br.com.cefet.achadosperdidos.exception.item.ItemNotFoundException;
 import br.com.cefet.achadosperdidos.exception.match.MatchGenericException;
+import br.com.cefet.achadosperdidos.mappers.ItemMapper;
 import br.com.cefet.achadosperdidos.repositories.ItemRepository;
 import br.com.cefet.achadosperdidos.repositories.MatchRepository;
 
@@ -30,6 +33,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -54,6 +58,33 @@ public class MatchService {
     @Autowired
     private MatchPersistenceService matchPersistenceService;
 
+    @Autowired
+    private ItemMapper itemMapper;
+
+    public List<MatchResponseDTO> getAllUserMatches(Long userId){
+        List<Match> userMatches = matchRepository.findAllByUsuarioId(userId);
+
+        List<MatchResponseDTO> matchResponseDTOList = new ArrayList<MatchResponseDTO>();
+        for(Match match : userMatches){
+            // Otimizar isso no futuro colocando todas as propriedades dos itens na consulta do SQL.
+            Item itemAchado = match.getItemAchado();
+            Item itemPerdido = match.getItemPerdido();
+
+            boolean isUsersItemAchado = itemAchado.getUsuario().getId().equals(userId);
+
+            Item itemUsuario = isUsersItemAchado ? itemAchado : itemPerdido;
+            Item itemOposto = isUsersItemAchado ? itemPerdido : itemAchado;
+
+            MatchResponseDTO dto = new MatchResponseDTO();
+            dto.setItemUsuario(itemMapper.convertToDTO(itemUsuario));
+            dto.setItemOposto(itemMapper.convertToDTO(itemOposto));
+            dto.setConfirmacaoItemAchado(match.isConfirmacaoAchado());
+            dto.setConfirmacaoItemPerdido(match.isConfirmacaoPerdido());
+            matchResponseDTOList.add(dto);
+        }
+        return matchResponseDTOList;
+    }
+
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleItemCreationEvent(ItemCreatedEvent event) {
         System.out.println("Transação comitada. Disparando findMatches para o item: " + event.itemId());
@@ -72,7 +103,7 @@ public class MatchService {
             TipoItemEnum tipoItemCriado = item.getTipo();
 
             // Converter item para o tipo de itemPivo (formato da requisição para /llm/match/encontrar em match-api)
-            MatchItemDTO itemPivo = convertToMatchItem(item);
+            MatchAPIItemDTO itemPivo = convertToMatchItem(item);
 
             // Obter o tipo oposto do item
             TipoItemEnum tipoOposto = itemPivo.getTipo() == TipoItemEnum.PERDIDO ? TipoItemEnum.ACHADO : TipoItemEnum.PERDIDO;
@@ -81,17 +112,17 @@ public class MatchService {
             List<Item> itensTarget = itemRepository.findByTipoAndUsuario_IdNot(tipoOposto, item.getUsuario().getId());
 
             // Conversao dos itens do tipo oposto para o formato de requisicao para a API de Match
-            List<MatchItemDTO> itensTargetDTO = itensTarget.stream().map(this::convertToMatchItem).toList();
+            List<MatchAPIItemDTO> itensTargetDTO = itensTarget.stream().map(this::convertToMatchItem).toList();
 
             // Criar o DTO para a requisicao.
-            MatchRequestDTO requestDTO = new MatchRequestDTO(itemPivo, itensTargetDTO);
+            MatchAPIRequestDTO requestDTO = new MatchAPIRequestDTO(itemPivo, itensTargetDTO);
 
             System.out.println("api key:" + MATCH_API_KEY);
             //CHAMADA REATIVA
             Mono<String> responseMono = webClient.post()
                 .uri("http://match-api:5001/llm/match/encontrar")
                 .header("X-API-KEY", MATCH_API_KEY)
-                .body(Mono.just(requestDTO), MatchRequestDTO.class)
+                .body(Mono.just(requestDTO), MatchAPIRequestDTO.class)
                 .retrieve()
                 .bodyToMono(String.class)
                 .doOnSuccess(response -> System.out.println("resposta da requisicao:" + response))
@@ -119,9 +150,9 @@ public class MatchService {
      * Helper reativo para desserializar a resposta.
      * Falhar aqui irá parar o fluxo.
      */
-    private Mono<MatchesResponseDTO> deserializeResponse(String jsonResponse) {
+    private Mono<PossibleMatchesResponseDTO> deserializeResponse(String jsonResponse) {
         try {
-            MatchesResponseDTO matches = objectMapper.readValue(jsonResponse, MatchesResponseDTO.class);
+            PossibleMatchesResponseDTO matches = objectMapper.readValue(jsonResponse, PossibleMatchesResponseDTO.class);
             return Mono.just(matches);
         } catch (JsonProcessingException e) {
             System.err.println("Erro ao desserializar resposta: " + jsonResponse);
@@ -150,10 +181,10 @@ public class MatchService {
 
 
 
-    public MatchItemDTO convertToMatchItem(Item item){
+    public MatchAPIItemDTO convertToMatchItem(Item item){
             List<String> categorias = item.getCategorias().stream().map(Categoria::getNome).toList();
 
-            MatchItemDTO dto = new MatchItemDTO();
+            MatchAPIItemDTO dto = new MatchAPIItemDTO();
             dto.setId(item.getId());
             dto.setNome(item.getNome());
             dto.setDescricao(item.getDescricao());
