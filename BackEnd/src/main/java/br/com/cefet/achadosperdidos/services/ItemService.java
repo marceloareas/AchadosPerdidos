@@ -151,6 +151,8 @@ public class ItemService {
 
         Item itemAtualizado = itemRepository.save(item);
 
+        eventPublisher.publishEvent(new ItemCreatedEvent(itemAtualizado.getId()));
+
         return itemMapper.convertToDTO(itemAtualizado);
     }
 
