@@ -75,7 +75,11 @@ const Matches = () => {
           <Typography variant="h4" component="h1" gutterBottom>
             Matches
           </Typography>
-          <Typography variant="body1" color="textSecondary">
+          <Typography
+            variant="body1"
+            color="textSecondary"
+            className={style.typography}
+          >
             Encontramos {matches.length} correspondências para seus itens
           </Typography>
         </Box>

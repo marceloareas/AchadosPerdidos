@@ -49,6 +49,8 @@ const MatchCard = ({ match }) => {
           />
           {/* Item 1 */}
           <ItemCard
+            showDescription={false}
+            showOptions={false}
             itemType={itemUsuario?.tipo}
             category={itemUsuario?.categorias}
             title={itemUsuario?.nome}
@@ -59,6 +61,8 @@ const MatchCard = ({ match }) => {
 
           {/* Item 2 */}
           <ItemCard
+            showDescription={false}
+            showOptions={false}
             itemType={itemOposto?.tipo}
             category={itemOposto?.categorias}
             title={itemOposto?.nome}
