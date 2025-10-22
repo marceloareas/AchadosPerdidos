@@ -14,6 +14,7 @@ import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.repositories.UsuarioRepository;
 import br.com.cefet.achadosperdidos.dto.usuario.UsuarioResponseDTO;
 import br.com.cefet.achadosperdidos.dto.usuario.UsuarioRequestDTO;
+import br.com.cefet.achadosperdidos.dto.usuario.UsuarioUpdateRequestDTO;
 import br.com.cefet.achadosperdidos.exception.usuario.UserNotFoundException;
 
 @Service
@@ -65,7 +66,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    public UsuarioResponseDTO update(Long id, UsuarioRequestDTO usuarioRequestDTO){
+    public UsuarioResponseDTO update(Long id, UsuarioUpdateRequestDTO usuarioRequestDTO){
         Usuario usuario = usuarioRepository.findById(id)
             .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 

@@ -29,4 +29,25 @@ const itemSchema = Yup.object({
   // cor: Yup.string(),
 });
 
-export { registerSchema, loginSchema, itemSchema };
+const updateUserSchema = Yup.object({
+  nome: Yup.string().required("O nome é obrigatório."),
+  email: Yup.string()
+    .email("Digite um email válido.")
+    .required("O email é obrigatório."),
+});
+
+const updatePasswordSchema = Yup.object({
+  senha: Yup.string()
+    .required("A senha é obrigatória.")
+    .min(6, "A senha deve ter no mínimo 6 caracteres."),
+  confirmacaoSenha: Yup.string()
+    .oneOf([Yup.ref("senha"), null], "As senhas não coincidem.")
+    .required("Confirme sua senha."),
+});
+export {
+  registerSchema,
+  loginSchema,
+  itemSchema,
+  updatePasswordSchema,
+  updateUserSchema,
+};

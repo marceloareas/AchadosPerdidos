@@ -26,7 +26,6 @@ const useAuthStore = create((set, get) => ({
   login: async (formData) => {
     set({ loading: true, erro: null });
     try {
-    
       const response = await Api.post("/auth/login", formData);
       console.log(response);
 
@@ -38,18 +37,15 @@ const useAuthStore = create((set, get) => ({
         token: token,
       }));
 
-    
       const userResponse = await Api.get("/auth/me", {
         headers: { Authorization: token },
       });
 
       const { nome, email } = userResponse.data;
 
-     
       localStorage.setItem("user", JSON.stringify({ nome, email }));
       const { setUser } = useUserStore.getState();
       setUser({ nome, email });
-
     } catch (err) {
       set({ response: err.response?.data, loading: false, erro: true });
       console.log(err);
@@ -58,12 +54,10 @@ const useAuthStore = create((set, get) => ({
     }
   },
 
-
   logout: () => {
     localStorage.removeItem("Bearer-token");
     set({ token: null });
   },
-
 }));
 
 export default useAuthStore;

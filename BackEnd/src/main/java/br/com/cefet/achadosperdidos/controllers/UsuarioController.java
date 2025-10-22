@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 import br.com.cefet.achadosperdidos.dto.usuario.UsuarioRequestDTO;
+import br.com.cefet.achadosperdidos.dto.usuario.UsuarioUpdateRequestDTO;
 import br.com.cefet.achadosperdidos.dto.usuario.UsuarioResponseDTO;
 import br.com.cefet.achadosperdidos.services.UsuarioService;
 
@@ -41,7 +42,8 @@ public class UsuarioController{
     }
 
     @PatchMapping
-    public ResponseEntity<UsuarioResponseDTO> updateUser(@PathVariable Long id, @RequestBody UsuarioRequestDTO usuarioRequestDTO) {
+    public ResponseEntity<UsuarioResponseDTO> updateUser(@RequestBody UsuarioUpdateRequestDTO usuarioRequestDTO) {
+        System.out.println(usuarioRequestDTO);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario)auth.getPrincipal();
         UsuarioResponseDTO usuarioAtualizado = usuarioService.update(usuario.getId(), usuarioRequestDTO);
@@ -49,7 +51,7 @@ public class UsuarioController{
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<String> deleteUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario)auth.getPrincipal();
         String resposta = usuarioService.delete(usuario.getId());

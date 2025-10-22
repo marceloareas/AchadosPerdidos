@@ -5,31 +5,41 @@ import { BiSolidUserCircle } from "react-icons/bi";
 import { IoReturnUpBackOutline } from "react-icons/io5";
 import InputUpdate from "../../components/ui/inputUpdate/InputUpdate";
 import CustomButton from "../../components/ui/button/CustomButton.jsx";
+import ModalDelete from "../../components/ui/dialog/ModalDelete.jsx";
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../../utils/NotificationContext.jsx";
-import { registerSchema } from "../../validation/validation";
+import { updateUserSchema } from "../../validation/validation";
+import EditPasswordModal from "../../components/ui/dialog/editPassword/EditPasswordModal.jsx";
 import useUserStore from "../../store/user.js";
+import useAuthStore from "../../store/auth.js";
 
 const Profile = () => {
-  const { user } = useUserStore();
+  const { user } = useAuthStore();
   const [formData, setFormData] = useState({
     nome: user?.nome || "",
     email: user?.email || "",
-    // senha: "",
-    // confirm_senha: ""
   });
   const onNavigate = useNavigate();
-  const {updateUser} = useUserStore()
+  const { updateUser, deleteUser } = useUserStore();
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const { showNotification } = useNotification();
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+
+  const handleOpenDeleteModal = () => setOpenDeleteModal(true);
+  const handleCloseDeleteModal = () => setOpenDeleteModal(false);
+
+  const [openUpdatePassModal, setOpenUpdatePassModal] = useState(false);
+
+  const handleOpenUpdatePassModal = () => setOpenUpdatePassModal(true);
+  const handleCloseUpdatePassModal = () => setOpenUpdatePassModal(false);
 
   useEffect(() => {
     if (user) {
       setFormData((prev) => ({
         ...prev,
         nome: user.nome,
-        email: user.email
+        email: user.email,
       }));
     }
   }, [user]);
@@ -38,7 +48,7 @@ const Profile = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
     try {
-      await registerSchema.validateAt(field, { ...formData, [field]: value });
+      await updateUserSchema.validateAt(field, { ...formData, [field]: value });
       setErrors((prev) => ({ ...prev, [field]: null }));
     } catch (err) {
       setErrors((prev) => ({ ...prev, [field]: err.message }));
@@ -48,28 +58,35 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try{
+    try {
       const formtoSend = {
         nome: formData.nome,
         email: formData.email,
-      }
+      };
+      console.log(formtoSend);
       await updateUser(formtoSend);
-      const{erro, response} = useUserStore.getState();
-      if(!erro){
-        setFormData({
-          nome:"",
-          email:""
-        })
-        showNotification("Usuário Atualizado com sucesso", "succes");
-        setTimeout(()=>{
-
-        }, 1500)
+      const { erro, response } = useUserStore.getState();
+      if (!erro) {
+        showNotification(
+          response || "Usuário Atualizado com sucesso",
+          "success"
+        );
+        setTimeout(() => {
+          onNavigate("/");
+        }, 1500);
       }
-
-    }catch(err){
-        console.log()
+    } catch (err) {
+      console.log();
     }
-    
+  };
+
+  const handleDeleteUser = async (e) => {
+    e.preventDefault();
+    try {
+      await deleteUser();
+    } catch (erro) {
+      console.log();
+    }
   };
 
   return (
@@ -117,42 +134,9 @@ const Profile = () => {
                   <div className={style.error}>{errors.email}</div>
                 )}
               </div>
-
-              {/* Mantém os campos de senha normalmente */}
-              <div className={style.formGroup}>
-                <label htmlFor="senha" className={style.label}>
-                  Senha*
-                </label>
-                <InputUpdate
-                  type="password"
-                  id="senha"
-                  placeholder="Escreva sua senha"
-                  value={formData.senha}
-                  onChange={(e) => handleInputChange("senha", e.target.value)}
-                />
-                {errors.senha && (
-                  <div className={style.error}>{errors.senha}</div>
-                )}
-              </div>
-
-              <div className={style.formGroup}>
-                <label htmlFor="confirm_senha" className={style.label}>
-                  Confirmar senha*
-                </label>
-                <InputUpdate
-                  type="password"
-                  id="confirm_senha"
-                  placeholder="Confirme sua senha"
-                  value={formData.confirm_senha}
-                  onChange={(e) =>
-                    handleInputChange("confirm_senha", e.target.value)
-                  }
-                />
-                {errors.confirm_senha && (
-                  <div className={style.error}>{errors.confirm_senha}</div>
-                )}
-              </div>
-
+              <a className={style.link} onClick={handleOpenUpdatePassModal}>
+                Edite sua senha aqui
+              </a>
               <CustomButton
                 type="submit"
                 variant="default"
@@ -163,6 +147,7 @@ const Profile = () => {
                 {isLoading ? "Salvando..." : "Salvar"}
               </CustomButton>
               <CustomButton
+                onClick={handleOpenDeleteModal}
                 type="button"
                 variant="destructive"
                 size="lg"
@@ -172,6 +157,37 @@ const Profile = () => {
                 {isLoading ? "Excluindo..." : "Excluir Conta"}
               </CustomButton>
             </form>
+            <ModalDelete
+              open={openDeleteModal}
+              onClose={handleCloseDeleteModal}
+              title="Deseja mesmo deletar sua conta?"
+              content="Essa ação não poderá ser desfeita."
+            >
+              <CustomButton
+                onClick={handleCloseDeleteModal}
+                type="button"
+                variant="default"
+                size="lg"
+                className={style.submitButton}
+                disabled={isLoading}
+              >
+                {isLoading ? "Cancelando..." : "Cancelar"}
+              </CustomButton>
+              <CustomButton
+                onClick={handleDeleteUser}
+                type="button"
+                variant="destructive"
+                size="lg"
+                className={style.submitButton}
+                disabled={isLoading}
+              >
+                {isLoading ? "Excluindo..." : "Excluir Conta"}
+              </CustomButton>
+            </ModalDelete>
+            <EditPasswordModal
+              open={openUpdatePassModal}
+              onClose={handleCloseUpdatePassModal}
+            />
           </section>
         </main>
       </div>
