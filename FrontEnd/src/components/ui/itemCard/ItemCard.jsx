@@ -39,7 +39,6 @@ const ItemCard = ({
   const open = Boolean(anchorEl);
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
-
   const { showNotification } = useNotification();
 
   const [openModalDelete, setOpenDelete] = useState(false);
@@ -57,7 +56,9 @@ const ItemCard = ({
   const [isLoading, setIsLoading] = useState(false);
   const { deleteItem } = useItemStore();
   const previewDescription =
-    description?.length > 100 ? description.substring(0, 100) + "..." : description;
+    description?.length > 100
+      ? description.substring(0, 100) + "..."
+      : description;
 
   const handleDelete = async (id) => {
     try {
@@ -95,8 +96,15 @@ const ItemCard = ({
         <CardHeader
           title={
             <Box display="flex" flexDirection="column" gap={0.5}>
-              <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="h6" sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: "bold", fontSize: "1.2rem" }}
+                >
                   {title}
                 </Typography>
                 <Badge
@@ -112,7 +120,10 @@ const ItemCard = ({
                 />
               </Box>
               <Box>
-                <Badge badgeType="category" label={category} />
+                <Badge
+                  badgeType="category"
+                  label={category && category[0].nome}
+                />
               </Box>
             </Box>
           }
@@ -174,7 +185,12 @@ const ItemCard = ({
             </Typography>
           )}
           {location && (
-            <Box display="flex" alignItems="center" gap={0.5} mb={showDescription && description ? 1 : 0}>
+            <Box
+              display="flex"
+              alignItems="center"
+              gap={0.5}
+              mb={showDescription && description ? 1 : 0}
+            >
               <LocationOnIcon fontSize="small" color="action" />
               <Typography variant="body2" color="text.secondary">
                 {location}
@@ -201,7 +217,16 @@ const ItemCard = ({
       <ModalView
         open={openModalView}
         onClose={handleModalViewClose}
-        item={{ id, title, category, location, personName, description, date, type: itemType }}
+        item={{
+          id,
+          title,
+          category: category && category[0].nome,
+          location,
+          personName,
+          description,
+          date,
+          type: itemType,
+        }}
         onEdit={() => handleModalEditOpen()}
         onDelete={() => handleDelete(id)}
         showOptions={showOptions}
@@ -214,10 +239,22 @@ const ItemCard = ({
         title={"Deseja mesmo deletar este item?"}
         content={"Essa ação não poderá ser desfeita."}
       >
-        <CustomButton type="button" variant="default" size="lg" onClick={handleModalClose} disabled={isLoading}>
+        <CustomButton
+          type="button"
+          variant="default"
+          size="lg"
+          onClick={handleModalClose}
+          disabled={isLoading}
+        >
           {isLoading ? "Cancelar..." : "Cancelar"}
         </CustomButton>
-        <CustomButton type="button" variant="destructive" size="lg" onClick={() => handleDelete(id)} disabled={isLoading}>
+        <CustomButton
+          type="button"
+          variant="destructive"
+          size="lg"
+          onClick={() => handleDelete(id)}
+          disabled={isLoading}
+        >
           {isLoading ? "Deletando..." : "Deletar"}
         </CustomButton>
       </ModalDelete>
@@ -229,7 +266,7 @@ const ItemCard = ({
           id,
           nome: title,
           descricao: description,
-          categorias: category ? [{ nome: category }] : [],
+          categorias: category ? category : [],
           localizacao: location,
           dataEvento: date,
           tipo: itemType,

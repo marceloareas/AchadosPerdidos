@@ -49,8 +49,8 @@ const ModalView = ({
                     item.type === "PERDIDO"
                       ? "Item Perdido"
                       : item.type === "ACHADO"
-                        ? "Item Encontrado"
-                        : "Item Devolvido"
+                      ? "Item Encontrado"
+                      : "Item Devolvido"
                   }
                 />
               )}
@@ -63,7 +63,11 @@ const ModalView = ({
             <Box className={style.actions}>
               {showOptions && (
                 <>
-                  <IconButton size="small" onClick={() => onEdit(item.id)} className={style.iconButton}>
+                  <IconButton
+                    size="small"
+                    onClick={() => onEdit(item.id)}
+                    className={style.iconButton}
+                  >
                     <Edit size={20} />
                   </IconButton>
 
@@ -82,7 +86,6 @@ const ModalView = ({
                 <X size={20} />
               </IconButton>
             </Box>
-
           </Box>
         </DialogTitle>
 

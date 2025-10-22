@@ -89,7 +89,7 @@ const Home = () => {
             <Grid item key={index}>
               <ItemCard
                 itemType={"RECUPERADO"}
-                category={item.categoria.nome}
+                category={[item.categoria]}
                 title={item.nome}
                 location={item.localizacao}
                 // personName={item.personName} //mudar pra nome do usuario que cadastrou o item
