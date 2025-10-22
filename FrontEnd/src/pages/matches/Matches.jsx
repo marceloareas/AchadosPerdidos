@@ -77,7 +77,7 @@ const Matches = () => {
             Matches
           </Typography>
           <Typography variant="body1" color="textSecondary">
-            Encontramos {matchesMock.length} correspondências para seus itens
+            Encontramos {matches.length} correspondências para seus itens
           </Typography>
         </Box>
 
