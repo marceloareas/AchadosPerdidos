@@ -80,7 +80,7 @@ const Profile = () => {
             <IoReturnUpBackOutline
               className={style.back_home}
               size={50}
-              onClick={() => onNavigate("/home")}
+              onClick={() => onNavigate("/")}
             />
           </section>
           <section className={style.mid_section}>

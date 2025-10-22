@@ -51,7 +51,7 @@ const Login = () => {
         showNotification("Login realizado com sucesso!", "success");
         setTimeout(() => {
           setIsLoading(false);
-          onNavigate("/home");
+          onNavigate("/");
         }, 1500);
       } else {
         showNotification(response, "error");

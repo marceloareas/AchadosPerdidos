@@ -12,7 +12,7 @@ const Header = () => {
   const route = useLocation();
   const onNavigate = useNavigate();
 
-  const isHome = route.pathname === "/home";
+  const isHome = route.pathname === "/";
   const isMatches = route.pathname === "/matches";
   const isChat = route.pathname === "/chats";
   const isItens = route.pathname === "/itens";
@@ -34,7 +34,7 @@ const Header = () => {
       <div className={style.body_header}>
         <section
           className={style.left_section_header}
-          onClick={() => onNavigate("/home")}
+          onClick={() => onNavigate("/")}
         >
           <img className={style.logo_header} src={logo} alt="" />
           <span className={style.tittle_header}>A&P</span>
@@ -53,7 +53,7 @@ const Header = () => {
     <div className={style.body_header}>
       <section
         className={style.left_section_header}
-        onClick={() => onNavigate("/home")}
+        onClick={() => onNavigate("/")}
       >
         <img className={style.logo_header} src={logo} alt="" />
         <span className={style.tittle_header}>A&P</span>
@@ -67,7 +67,7 @@ const Header = () => {
           }
         >
           <NavLink
-            to="/home"
+            to="/"
             className={
               isHome
                 ? `${style.nav_header} ${style.nav_header_current}`

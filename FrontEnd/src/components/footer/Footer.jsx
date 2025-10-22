@@ -12,7 +12,7 @@ const Footer = () => {
   const route = useLocation();
   const onNavigate = useNavigate();
 
-  const isHome = route.pathname == "/home";
+  const isHome = route.pathname == "/";
   const isMatches = route.pathname == "/matches";
   const isChat = route.pathname == "/chats";
   const isItens = route.pathname == "/itens";
@@ -26,7 +26,7 @@ const Footer = () => {
               ? `${style.box_icons_footer} ${style.box_icons_footer_current}`
               : style.box_icons_footer
           }
-          onClick={() => onNavigate("/home")}
+          onClick={() => onNavigate("/")}
         >
           <FiHome className={style.icons_footer} />
           <span className={style.nav_footer}>Home</span>

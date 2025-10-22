@@ -13,14 +13,14 @@ import Login from "./pages/login/Login";
 import Profile from "./pages/profile/Profile";
 import ProtectedRoute from "./utils/protectedRoute/protectedRoute";
 import Landing from "./pages/landing/LandingPage";
+import HomeOrLanding from "./utils/HomeOrLanding";
 
 function App() {
   return (
     <>
       <Routes>
 
-        <Route path="/" element={<Landing />} />
-        <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="/" element={<HomeOrLanding />} />
         <Route path="/matches" element={<ProtectedRoute><Matches /></ProtectedRoute>} />
         <Route path="/itens" element={<ProtectedRoute><MeusItens /></ProtectedRoute>} />
         <Route path="/chats" element={<ProtectedRoute><Chats /></ProtectedRoute>} />
