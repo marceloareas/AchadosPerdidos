@@ -12,6 +12,7 @@ import br.com.cefet.achadosperdidos.dto.match_api_integration.MatchAPIRequestDTO
 import br.com.cefet.achadosperdidos.dto.match_api_integration.PossibleMatchesResponseDTO;
 import br.com.cefet.achadosperdidos.exception.item.ItemNotFoundException;
 import br.com.cefet.achadosperdidos.exception.match.MatchGenericException;
+import br.com.cefet.achadosperdidos.exception.match.MatchNotFoundException;
 import br.com.cefet.achadosperdidos.exception.usuario.UserNotFoundException;
 import br.com.cefet.achadosperdidos.mappers.ItemMapper;
 import br.com.cefet.achadosperdidos.repositories.ItemRepository;
@@ -37,6 +38,7 @@ import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -85,6 +87,7 @@ public class MatchService {
 
 
             MatchResponseDTO dto = new MatchResponseDTO();
+            dto.setId(match.getId());
             dto.setItemUsuario(itemMapper.convertToItemMeusMatchesDTO(itemUsuario));
             dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(itemOposto));
             dto.setConfirmacaoItemAchado(match.isConfirmacaoAchado());
@@ -153,6 +156,21 @@ public class MatchService {
         } catch( Exception e) {
             throw new MatchGenericException(e.getMessage());
         }
+    }
+
+    @Transactional
+    public String deleteMatch(Long matchId,Long userId){
+        Match match = matchRepository.findById(matchId).orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
+
+        Long itemAchadoUsuarioId = match.getItemAchado().getUsuario().getId();
+        Long itemPerdidoUsuarioId = match.getItemPerdido().getUsuario().getId();
+
+        if(!Objects.equals(itemAchadoUsuarioId, userId) && !Objects.equals(itemPerdidoUsuarioId, userId)){
+            throw new MatchGenericException("Match não pertence ao usuário");
+        }
+
+        matchRepository.delete(match);
+        return "Match deletado com sucesso";
     }
 
     /**

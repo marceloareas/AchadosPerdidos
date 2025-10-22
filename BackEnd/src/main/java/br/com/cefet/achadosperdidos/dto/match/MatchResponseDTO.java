@@ -10,6 +10,8 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class MatchResponseDTO {
+    private Long id;
+
     private ItemMeusMatchesResponseDTO itemUsuario;
     private ItemMeusMatchesResponseDTO itemOposto;
 
