@@ -10,6 +10,7 @@ import br.com.cefet.achadosperdidos.dto.match_api_integration.ItemCreatedEvent;
 import br.com.cefet.achadosperdidos.dto.match_api_integration.MatchAPIItemDTO;
 import br.com.cefet.achadosperdidos.dto.match_api_integration.MatchAPIRequestDTO;
 import br.com.cefet.achadosperdidos.dto.match_api_integration.PossibleMatchesResponseDTO;
+import br.com.cefet.achadosperdidos.exception.auth.InvalidCredentials;
 import br.com.cefet.achadosperdidos.exception.item.ItemNotFoundException;
 import br.com.cefet.achadosperdidos.exception.match.MatchGenericException;
 import br.com.cefet.achadosperdidos.exception.match.MatchNotFoundException;
@@ -166,7 +167,7 @@ public class MatchService {
         Long itemPerdidoUsuarioId = match.getItemPerdido().getUsuario().getId();
 
         if(!Objects.equals(itemAchadoUsuarioId, userId) && !Objects.equals(itemPerdidoUsuarioId, userId)){
-            throw new MatchGenericException("Match não pertence ao usuário");
+            throw new InvalidCredentials("Match não pertence ao usuário");
         }
 
         matchRepository.delete(match);
