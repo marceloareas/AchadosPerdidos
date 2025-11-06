@@ -30,8 +30,12 @@ const useUserStore = create((set, get) => ({
     set({ loading: true });
     try {
       const { token } = useAuthStore.getState();
-      await Api.delete(`/users`, API_HEADER(token));
-      useAuthStore.setState({ token: null, user: null });
+      const response = await Api.delete(`/users`, API_HEADER(token));
+      useAuthStore.setState({
+        token: null,
+        user: null,
+        response: response.data,
+      });
       localStorage.removeItem("Bearer-token");
     } catch (error) {
       set({ error: error.response?.data?.message || error.message });
@@ -48,12 +52,15 @@ const useUserStore = create((set, get) => ({
       if (!response) {
         set({ response: "Erro ao atualizar o usuário" });
       }
-      console.log(response);
-      const updatedUser = response.data;
+      const updatedUser = response.data.res;
       set((state) => ({
+        response: response.data.menssagem,
         users: state.users.map((u) => (u.id === userId ? updatedUser : u)),
-        user: updatedUser,
       }));
+      useAuthStore.setState({
+        user: updatedUser,
+      });
+      localStorage.setItem("user", JSON.stringify(updatedUser));
     } catch (error) {
       set({
         error: error.response?.data?.message || error.message,
@@ -65,6 +72,7 @@ const useUserStore = create((set, get) => ({
 
   updatePassword: async (passData) => {
     set({ loading: true, error: null });
+    console.log(passData);
     try {
       const { token } = useAuthStore.getState();
       const response = await Api.post(
@@ -72,7 +80,8 @@ const useUserStore = create((set, get) => ({
         passData,
         API_HEADER(token)
       );
-      set({ response: response.data });
+      console.log(response);
+      set({ response: response.data.menssagem });
     } catch (error) {
       set({
         error: error.response?.data?.message || error.message,

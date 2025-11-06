@@ -58,7 +58,7 @@ const EditPasswordModal = ({ open, onClose }) => {
       const { error, response } = useUserStore.getState();
       if (!error) {
         setIsLoading(false);
-        showNotification(response || "Senha atualizada com sucesso", "success");
+        showNotification(response, "success");
         onClose();
       }
     } catch (err) {

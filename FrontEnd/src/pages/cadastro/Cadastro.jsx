@@ -57,7 +57,7 @@ const Cadastro = () => {
           email: "",
           senha: "",
         });
-        showNotification("Cadastro realizado com sucesso!", "success");
+        showNotification(response, "success");
         setTimeout(() => {
           onNavigate("/login");
         }, 1500);

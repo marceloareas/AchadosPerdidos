@@ -14,12 +14,16 @@ const useAuthStore = create((set, get) => ({
     try {
       const response = await Api.post("/auth/register", formData);
       set((state) => ({
-        response: response.message,
+        response: response.data.menssagem,
         loading: false,
       }));
     } catch (err) {
       console.log(err);
-      set({ response: err.response.data, loading: false, erro: true });
+      set({
+        response: err.response.data,
+        loading: false,
+        erro: true,
+      });
     }
   },
 
@@ -29,10 +33,10 @@ const useAuthStore = create((set, get) => ({
       const response = await Api.post("/auth/login", formData);
       console.log(response);
 
-      const token = response.data.token;
+      const token = response.data.res.token;
       localStorage.setItem("Bearer-token", token);
       set(() => ({
-        response: response.message,
+        response: response.data.menssagem,
         loading: false,
         token: token,
       }));
@@ -44,19 +48,19 @@ const useAuthStore = create((set, get) => ({
       const { nome, email } = userResponse.data;
 
       localStorage.setItem("user", JSON.stringify({ nome, email }));
-      const { setUser } = useUserStore.getState();
-      setUser({ nome, email });
+      set({ user: userResponse.data });
     } catch (err) {
       set({ response: err.response?.data, loading: false, erro: true });
-      console.log(err);
-      console.log(get().erro);
-      console.log(get().response);
+      // console.log(err);
+      // console.log(get().erro);
+      // console.log(get().response);
     }
   },
 
   logout: () => {
     localStorage.removeItem("Bearer-token");
-    set({ token: null });
+    localStorage.removeItem("user");
+    set({ token: null, user: null });
   },
 }));
 
