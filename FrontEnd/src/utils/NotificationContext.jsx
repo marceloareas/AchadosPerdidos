@@ -34,12 +34,7 @@ export const NotificationProvider = ({ children }) => {
         TransitionComponent={SlideTransition}
         key={SlideTransition.name}
       >
-        <Alert
-          onClose={closeNotification}
-          variant="filled"
-          severity={severity}
-          sx={{ width: "60%" }}
-        >
+        <Alert onClose={closeNotification} variant="filled" severity={severity}>
           {message}
         </Alert>
       </Snackbar>
