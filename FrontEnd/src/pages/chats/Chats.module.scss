@@ -1,0 +1,19 @@
+@use '../../styles/variables.scss' as *;
+
+.titleChats,
+.listChats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 3% 2% 2% 2%;
+}
+
+.header {
+    margin-bottom: 24px;
+}
+
+.listChats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
