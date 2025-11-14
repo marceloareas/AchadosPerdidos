@@ -25,8 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -134,20 +132,6 @@ public class MatchService {
 
             // Criar o DTO para a requisicao.
             MatchAPIRequestDTO requestDTO = new MatchAPIRequestDTO(itemPivo, itensTargetDTO);
-
-            try {
-                String jsonPayload = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(requestDTO);
-                System.out.println("--- PAYLOAD ENVIADO PARA MATCH-API ---");
-                System.out.println(jsonPayload);
-                System.out.println("--------------------------------------");
-
-                // (Alternativa com Logger - BOAS PRÁTICAS)
-                // logger.info("--- PAYLOAD ENVIADO PARA MATCH-API --- \n{}", jsonPayload);
-                
-            } catch (JsonProcessingException e) {
-                System.err.println("Erro ao serializar DTO de match: " + e.getMessage());
-                // logger.error("Erro ao serializar DTO de match: ", e);
-            }
             
             System.out.println("api key:" + MATCH_API_KEY);
             //CHAMADA REATIVA
