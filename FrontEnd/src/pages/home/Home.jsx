@@ -61,7 +61,7 @@ const Home = () => {
 
         <button
           className={style.btn_home}
-          onClick={() => navigate("/add-item?type=lost")}
+          onClick={() => navigate("/add-item?type=PERDIDO")}
         >
           <FiPlus className={style.icon_plus_btn_home} />
           <div className={style.text_btn_home}>
@@ -72,7 +72,7 @@ const Home = () => {
 
         <button
           className={style.btn_home}
-          onClick={() => navigate("/add-item?type=found")}
+          onClick={() => navigate("/add-item?type=ACHADO")}
         >
           <FaSearch className={style.icon_search_btn_home} />
           <div className={style.text_btn_home}>
