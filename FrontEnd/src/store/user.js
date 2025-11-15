@@ -52,9 +52,9 @@ const useUserStore = create((set, get) => ({
       if (!response) {
         set({ response: "Erro ao atualizar o usuário" });
       }
-      const updatedUser = response.data.res;
+      const updatedUser = response.data.usuario;
       set((state) => ({
-        response: response.data.menssagem,
+        response: response.data.message,
         users: state.users.map((u) => (u.id === userId ? updatedUser : u)),
       }));
       useAuthStore.setState({
@@ -81,7 +81,7 @@ const useUserStore = create((set, get) => ({
         API_HEADER(token)
       );
       console.log(response);
-      set({ response: response.data.menssagem });
+      set({ response: response.data.message });
     } catch (error) {
       set({
         error: error.response?.data?.message || error.message,

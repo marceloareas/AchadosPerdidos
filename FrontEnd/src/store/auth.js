@@ -6,6 +6,7 @@ const useAuthStore = create((set, get) => ({
   token: localStorage.getItem("Bearer-token") || null,
   user: JSON.parse(localStorage.getItem("user")) || null,
   response: null,
+  response: null,
   loading: false,
   erro: null,
 
@@ -14,7 +15,7 @@ const useAuthStore = create((set, get) => ({
     try {
       const response = await Api.post("/auth/register", formData);
       set((state) => ({
-        response: response.data.menssagem,
+        response: response.data.message,
         loading: false,
       }));
     } catch (err) {
@@ -33,10 +34,10 @@ const useAuthStore = create((set, get) => ({
       const response = await Api.post("/auth/login", formData);
       console.log(response);
 
-      const token = response.data.res.token;
+      const token = response.data.token;
       localStorage.setItem("Bearer-token", token);
       set(() => ({
-        response: response.data.menssagem,
+        response: response.data.message,
         loading: false,
         token: token,
       }));

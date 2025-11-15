@@ -54,6 +54,7 @@ public class AuthController {
         
         ApiResponse<UsuarioResponseDTO> response = new ApiResponse<>(
             "Usuário registrado com sucesso!",
+            "usuario",
             usuarioResponseDTO
             );
             
@@ -73,7 +74,7 @@ public class AuthController {
                 updatePasswordRequestDTO.getConfirmacaoSenha()
                 );
                 
-            ApiResponse<String> response = new ApiResponse<>(resposta, null);
+            ApiResponse<String> response = new ApiResponse<>(resposta, null, null);
                 //     return ResponseEntity.ok(resposta);
         return ResponseEntity.ok(response);
     }

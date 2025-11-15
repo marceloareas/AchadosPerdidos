@@ -1,12 +1,42 @@
 package br.com.cefet.achadosperdidos.dto.res;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import java.util.HashMap;
+import java.util.Map;
 
-@Data
-@AllArgsConstructor
 public class ApiResponse<T> {
-    private String menssagem;
-    private T res;
+    private String message;
+
+    @JsonUnwrapped
+    private T data;
+    
+    private Map<String, Object> content = new HashMap<>();
+
+    public ApiResponse(String message, String key, T value) {
+        this.message = message;
+        
+        if(value != null && key != null){
+            this.content.put(key, value);
+        }
+    }
+
+    public ApiResponse(String message, T data){
+        this.message = message;
+        this.data = data;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public T getData(){
+        return data;
+    }
+
+    @JsonAnyGetter
+    public Map<String, Object> getContent() {
+        return content;
+    }
 }

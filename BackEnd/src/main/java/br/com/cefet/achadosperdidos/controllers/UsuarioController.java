@@ -49,7 +49,7 @@ public class UsuarioController{
         Usuario usuario = (Usuario)auth.getPrincipal();
         UsuarioResponseDTO usuarioAtualizado = usuarioService.update(usuario.getId(), usuarioRequestDTO);
 
-        ApiResponse<UsuarioResponseDTO> response = new ApiResponse<>("Usuário Atualizado com sucesso!", usuarioAtualizado);
+        ApiResponse<UsuarioResponseDTO> response = new ApiResponse<>("Usuário Atualizado com sucesso!","usuario", usuarioAtualizado);
         return ResponseEntity.ok(response);
         // return ResponseEntity.ok(usuarioAtualizado);
     }

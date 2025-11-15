@@ -171,7 +171,7 @@ public class MatchService {
         }
 
         matchRepository.delete(match);
-        return "Match deletado com sucesso";
+        return "Match deletado com sucesso!";
     }
 
     /**

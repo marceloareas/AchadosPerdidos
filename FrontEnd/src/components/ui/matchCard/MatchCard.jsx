@@ -24,13 +24,13 @@ const MatchCard = ({ match }) => {
   const handleDelete = async (id) => {
     try {
       await deleteMatch(id);
-      const { error, response } = useMatchStore.getState();
+      const { error, message } = useMatchStore.getState();
       handleModalClose();
       if (!error) {
-        showNotification(response, "success");
+        showNotification(message, "success");
         setIsLoading(true);
       } else {
-        showNotification(response, "error");
+        showNotification(message, "error");
         setTimeout(() => setIsLoading(false), 1000);
       }
     } catch (err) {
