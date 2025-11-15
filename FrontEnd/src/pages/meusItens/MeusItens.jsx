@@ -28,6 +28,13 @@ const MeusItens = () => {
     return item.tipo === activeTab;
   });
 
+  const navigateAddItem = (tab) => {
+    if (tab == "ACHADO") {
+      navigate("/add-item?type=ACHADO");
+    } else {
+      navigate("/add-item?type=PERDIDO");
+    }
+  };
   return (
     <Layout>
       <section className={style.titleMyItems}>
@@ -68,7 +75,10 @@ const MeusItens = () => {
                         activeTab === "PERDIDO" ? "perdidos" : "encontrados"
                       }`}
                 </p>
-                <CustomButton asChild onClick={() => navigate("/add-item")}>
+                <CustomButton
+                  asChild
+                  onClick={() => navigateAddItem(activeTab)}
+                >
                   Cadastrar Item
                 </CustomButton>
               </div>
