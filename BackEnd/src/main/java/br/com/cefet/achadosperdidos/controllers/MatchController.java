@@ -34,7 +34,7 @@ public class MatchController {
         Long userId = ((Usuario)auth.getPrincipal()).getId();
         String message = matchService.deleteMatch(matchId, userId);
 
-        ApiResponse<String> response = new ApiResponse(message, null, null)
+        ApiResponse<String> response = new ApiResponse(message, null, null);
         
         return ResponseEntity.ok(response);
     }
