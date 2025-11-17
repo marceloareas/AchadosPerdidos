@@ -1,0 +1,22 @@
+@use '../../../styles/variables.scss' as *;
+
+.MuiPaper-root {
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0) !important;
+    cursor: pointer;
+    transition: 0.5s ease-in-out !important;
+}
+
+.MuiPaper-root:hover {
+    // transform: scale(1.05);
+    background-color: $primary-color-transparent ;
+    transition: 0.5s ease-in-out;
+}
+
+.headerCard {
+    display: flex;
+    justify-content: space-between;
+}
+
+.horarioLastMessage {
+    line-height: 2.1 !important;
+}

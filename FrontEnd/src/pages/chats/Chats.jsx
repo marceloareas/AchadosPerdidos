@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Layout from "../../components/layout/Layout";
 import { Box, Typography } from "@mui/material";
 import style from "./Chats.module.scss";
 import ChatCard from "../../components/ui/chatCard/ChatCard";
+import ScrollListChats from "../../components/scrollListChats/ScrollListChats";
 
 const Chats = () => {
   const chats = [
@@ -12,12 +13,12 @@ const Chats = () => {
         {
           usuario: "usuario1",
           conteudo: "Olá, como você está?",
-          dateSend: "2025-11-10T08:00:00Z",
+          dateSend: "2025-11-15T08:00:00Z",
         },
         {
           usuario: "usuario2",
           conteudo: "Estou bem, e você?",
-          dateSend: "2025-11-10T08:01:00Z",
+          dateSend: "2025-11-15T15:21:00Z",
         },
       ],
       item: "ecobag",
@@ -41,7 +42,7 @@ const Chats = () => {
         {
           usuario: "usuario3",
           conteudo: "O pedido foi enviado?",
-          dateSend: "2025-11-10T09:00:00Z",
+          dateSend: "2025-11-14T09:00:00Z",
         },
       ],
       item: "chuteira vermelha",
@@ -92,7 +93,7 @@ const Chats = () => {
       id: 4,
       mensagem_texto: [
         {
-          usuario: "usuario6",
+          usuario: "usuario8",
           conteudo: "Temos algum novo pedido?",
           dateSend: "2025-11-10T11:00:00Z",
         },
@@ -102,7 +103,79 @@ const Chats = () => {
       mensagem_confirmacao: "SolicitacaoEntrega",
       usuarios_chat: [
         {
-          usuario_id: "usuario6",
+          usuario_id: "usuario8",
+          nome: "Pedro",
+        },
+        {
+          usuario_id: "usuario7",
+          nome: "Lucas",
+        },
+      ],
+      match_id: "match_4",
+    },
+    {
+      id: 5,
+      mensagem_texto: [
+        {
+          usuario: "usuario8",
+          conteudo: "Temos algum novo pedido?",
+          dateSend: "2025-11-10T11:00:00Z",
+        },
+      ],
+      item: "borracha do mário",
+      mensagem_imagem: null,
+      mensagem_confirmacao: "SolicitacaoEntrega",
+      usuarios_chat: [
+        {
+          usuario_id: "usuario8",
+          nome: "Pedro",
+        },
+        {
+          usuario_id: "usuario7",
+          nome: "Lucas",
+        },
+      ],
+      match_id: "match_4",
+    },
+    {
+      id: 6,
+      mensagem_texto: [
+        {
+          usuario: "usuario8",
+          conteudo: "Temos algum novo pedido?",
+          dateSend: "2025-11-10T11:00:00Z",
+        },
+      ],
+      item: "borracha do mário",
+      mensagem_imagem: null,
+      mensagem_confirmacao: "SolicitacaoEntrega",
+      usuarios_chat: [
+        {
+          usuario_id: "usuario8",
+          nome: "Pedro",
+        },
+        {
+          usuario_id: "usuario7",
+          nome: "Lucas",
+        },
+      ],
+      match_id: "match_4",
+    },
+    {
+      id: 7,
+      mensagem_texto: [
+        {
+          usuario: "usuario8",
+          conteudo: "Temos algum novo pedido?",
+          dateSend: "2025-11-10T11:00:00Z",
+        },
+      ],
+      item: "borracha do mário",
+      mensagem_imagem: null,
+      mensagem_confirmacao: "SolicitacaoEntrega",
+      usuarios_chat: [
+        {
+          usuario_id: "usuario8",
           nome: "Pedro",
         },
         {
@@ -113,7 +186,7 @@ const Chats = () => {
       match_id: "match_4",
     },
   ];
-
+  const [chatSelect, setChat] = useState(undefined);
   return (
     <Layout>
       <section className={style.titleChats}>
@@ -123,19 +196,13 @@ const Chats = () => {
           </Typography>
         </Box>
       </section>
-      <section className={style.listChats}>
-        {chats.map((chat) => {
-          return (
-            <ChatCard
-              key={chat.id}
-              item={chat.item}
-              idMatch={chat.match_id}
-              personName={chat.usuarios_chat[1].nome}
-              lastMessage={chat.mensagem_texto.slice(-1)[0]}
-            />
-          );
-        })}
-      </section>
+      <div className={style.chats}>
+        <ScrollListChats chats={chats} />
+        <span className={style.lineV} />
+        <section className={style.unitChat}>
+          {chatSelect ? <Box /> : <span> Selecione um chat para ver.</span>}
+        </section>
+      </div>
     </Layout>
   );
 };

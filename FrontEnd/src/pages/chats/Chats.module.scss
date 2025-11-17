@@ -1,19 +1,31 @@
 @use '../../styles/variables.scss' as *;
 
-.titleChats,
-.listChats {
+.titleChats {
+    @include flex-collumn();
+    margin: 1% 2% 0% 2%;
+}
+
+.chats {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 3% 2% 2% 2%;
+    height: calc(100vh - 170px);
+    overflow: hidden;
 }
 
 .header {
     margin-bottom: 24px;
 }
 
-.listChats {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+
+.lineV {
+    display: inline-block;
+    width: 2px;
+    height: 100%;
+    background-color: $primary-color;
+
+}
+
+@media(max-width:600px) {
+    .chats {
+        height: calc(100vh - 260px);
+    }
 }

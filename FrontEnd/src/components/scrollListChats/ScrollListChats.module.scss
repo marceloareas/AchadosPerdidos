@@ -1,0 +1,24 @@
+@use '../../styles/variables.scss' as *;
+
+.listChats {
+    width: 360px;
+    margin: 0% 0% 0% 3px;
+    gap: 5px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: $primary-color #e7e7e700;
+}
+
+.listChats::-webkit-scrollbar {
+    width: 10px;
+
+}
+
+.listChats::-webkit-scrollbar-track {
+    border-radius: 10px;
+}
+
+.listChats::-webkit-scrollbar-thumb {
+    background: $primary-color;
+    border-radius: 10px;
+}

@@ -1,37 +1,47 @@
 import React from "react";
 import dayjs from "dayjs";
 import { CardHeader, Card, CardContent, Typography, Box } from "@mui/material";
+import style from "./ChatCard.module.scss";
 
 const ChatCard = ({ id, item, idMatch, personName, lastMessage }) => {
-  // const item = item;
   const convertDate = (date) => {
-    return dayjs(date).format("DD/MM/YYYY");
+    const actualDateFormated = dayjs();
+    const dateFormated = dayjs(date);
+
+    if (actualDateFormated.isSame(dateFormated, "day")) {
+      return dateFormated.format("HH:mm");
+    } else if (
+      actualDateFormated.subtract(1, "day").isSame(dateFormated, "day")
+    ) {
+      return "Ontem";
+    }
+    return dateFormated.format("DD/MM/YYYY");
   };
   return (
     <>
-      <Card style={{ width: "450px" }}>
+      <Card
+        className={`${style["MuiPaper-root"]}`}
+        style={{ width: "350px", height: "125px" }}
+      >
         <CardHeader
           title={
-            <Box display="flex" gap={0.5}>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
+            <Box className={style.headerCard}>
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: "bold", fontSize: "1.2rem" }}
               >
-                <Typography
-                  variant="h6"
-                  sx={{ fontWeight: "bold", fontSize: "1.2rem" }}
-                >
-                  {item}
-                </Typography>
+                {item}
+              </Typography>
 
-                <Typography
-                  variant="h6"
-                  sx={{ fontWeight: "bold", fontSize: "1.2rem" }}
-                >
-                  - {convertDate(lastMessage.dateSend)}
-                </Typography>
-              </Box>
+              <Typography
+                className={style.horarioLastMessage}
+                sx={{
+                  color: "#706d6db2",
+                  fontSize: "0.9rem",
+                }}
+              >
+                {convertDate(lastMessage.dateSend)}
+              </Typography>
             </Box>
           }
         />
@@ -43,7 +53,7 @@ const ChatCard = ({ id, item, idMatch, personName, lastMessage }) => {
             sx={{ mb: 0.5 }}
             noWrap={true}
           >
-            {personName}:{lastMessage.conteudo}
+            {personName}: {lastMessage.conteudo}
           </Typography>
           {/* )}
           {lastMessage && (
