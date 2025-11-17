@@ -6,8 +6,15 @@
 
 .contentLayout {
     margin-top: 75px;
-    margin-bottom: 90px;
+    // margin-bottom: 90px;
     flex: 1;
-    min-height: calc(100vh - 165px);
+    min-height: calc(100vh - 75px);
     overflow-y: auto;
+}
+
+@media(max-width:600px) {
+    .contentLayout {
+        margin-bottom: 90px;
+        min-height: calc(100vh - 165px);
+    }
 }

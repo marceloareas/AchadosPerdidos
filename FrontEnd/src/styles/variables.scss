@@ -44,6 +44,7 @@
     text-decoration: none;
     font-weight: 600;
 }
+
 @mixin error {
     color: red;
 
@@ -51,3 +52,4 @@
 
 
 $primary-color: rgb(10, 73, 126);
+$primary-color-transparent: rgba(10, 73, 126, 0.25);
