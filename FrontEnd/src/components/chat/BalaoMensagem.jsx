@@ -1,15 +1,10 @@
 import style from "./Chat.module.scss";
-import useAuthStore from "../../store/auth";
 
-const BalaoMensagem = ({ conteudo }) => {
-  const { user } = useAuthStore.getState();
-  console.log(conteudo);
-  console.log(user);
-  console.log(conteudo.usuario == user.nome);
+const BalaoMensagem = ({ conteudo, currentUserId }) => {
   return (
     <div className={style.balao}>
       <section
-        className={conteudo.usuario == user.nome ? style.userMe : style.them}
+        className={conteudo.usuario === currentUserId ? style.userMe : style.them}
       >
         <p>{conteudo.conteudo}</p>
       </section>

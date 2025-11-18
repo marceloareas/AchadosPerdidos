@@ -7,6 +7,15 @@ import ScrollListChats from "../../components/scrollListChats/ScrollListChats";
 import Chat from "../../components/Chat/chat";
 
 const Chats = () => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const isMobile = windowWidth <= 600;
+
+  React.useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const chats = [
     {
       id: 1,
@@ -178,43 +187,47 @@ const Chats = () => {
     },
   ];
   const [chatSelect, setChat] = useState(undefined);
+  const [showList, setShowList] = useState(true);
 
   const selectChat = (chat) => {
-    console.log(chat);
     setChat(chat);
+    if (isMobile) {
+      setShowList(false);
+    }
   };
-  const [viewList, setview] = useState(true);
+
+  const handleBackToList = () => {
+    setShowList(true);
+    setChat(undefined);
+  };
   return (
     <Layout>
-      <section className={style.titleChats}>
-        <Box className={style.header}>
-          <Typography variant="h4" component="h1" gutterBottom>
-            Meus Chats
-          </Typography>
-        </Box>
-      </section>
       <div className={style.chats}>
-        {viewList ? (
+        {(!isMobile || showList) && (
           <>
             <ScrollListChats chats={chats} selectChat={selectChat} />
-            <span className={style.lineV} />
+            {!isMobile && <span className={style.lineV} />}
           </>
-        ) : (
-          <></>
         )}
-        <section className={style.unitChat}>
-          {chatSelect ? (
-            <Chat
-              item={chatSelect.item}
-              person={chatSelect.usuarios_chat[1]}
-              mensagens={chatSelect.mensagem_texto}
-            />
-          ) : (
-            <div className={style.notChat}>
-              <span> Selecione um chat para ver.</span>
-            </div>
-          )}
-        </section>
+        {(!isMobile || !showList) && (
+          <section className={style.unitChat}>
+            {chatSelect ? (
+              <Chat
+                item={chatSelect.item}
+                person={chatSelect.usuarios_chat[1]}
+                mensagens={chatSelect.mensagem_texto}
+                currentUserId="vinicao"
+                onBack={isMobile ? handleBackToList : null}
+              />
+            ) : (
+              !isMobile && (
+                <div className={style.notChat}>
+                  <span> Selecione um chat para ver.</span>
+                </div>
+              )
+            )}
+          </section>
+        )}
       </div>
     </Layout>
   );

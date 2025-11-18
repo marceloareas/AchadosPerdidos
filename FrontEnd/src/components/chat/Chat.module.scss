@@ -1,175 +1,186 @@
 @use '../../styles/variables.scss' as *;
 
 
+// Layout wrapper para o chat
+.chatLayout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+  position: relative;
+}
+
+
 //HEADER
 .headerChat {
-    display: flex;
-    // position: absolute;
-    width: 100%;
-    justify-content: flex-start;
-    gap: 45px;
-    box-shadow: 4px 2px 5px 2px rgba(0, 0, 0, 0.1);
+  display: flex;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  justify-content: flex-start;
+  gap: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  padding: 10px 12px;
+  align-items: center;
+  background: white;
+  z-index: 12;
 
-    .info {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        justify-content: flex-start;
-    }
+  .info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: flex-start;
+  }
 }
 
 .iconBackListChats {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    .back_chats {
-        position: relative;
-        left: 10%;
-        color: $primary-color;
-        cursor: pointer;
-    }
+  .back_chats {
+    position: relative;
+    left: 10%;
+    color: $primary-color;
+    cursor: pointer;
+  }
 }
 
-//CONTENT
-// .unitChat {
-//     display: flex;
-//     flex-direction: column;
-//     min-height: 100%;
-// }
 
+//CONTENT
 .contentChat {
-    margin-top: 10px;
-    flex: 1;
-    min-height: calc(100vh - 315px);
-    max-height: calc(100vh - 315px);
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: $primary-color #e7e7e700;
+  margin-top: 0; /* sem gap entre header e mensagens */
+  flex: 1 1 auto;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: $primary-color #e7e7e700;
+  padding: 8px 0; /* apenas espaçamento interno leve */
 }
 
 .contentChat::-webkit-scrollbar {
-    width: 10px;
-
+  width: 10px;
 }
 
 .contentChat::-webkit-scrollbar-track {
-    border-radius: 10px;
+  border-radius: 10px;
 }
 
 .contentChat::-webkit-scrollbar-thumb {
-    background: $primary-color;
-    border-radius: 10px;
+  background: $primary-color;
+  border-radius: 10px;
 }
 
-//INPUT
 
+//INPUT (fixo inferior)
 .wrapInputChat {
+  display: flex;
+  margin: 0 12px;
+  align-items: center;
+  gap: 15px;
+  position: relative; /* fica ao fim do .chatLayout pelo fluxo flex */
+  background: white;
+  z-index: 30;
+  padding: 12px 16px;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+
+  .inputMessage {
+    height: 40px;
+    font-size: 16px;
+    width: 100%;
+    border: none;
+    border-radius: 40px;
+    padding: 10px 14px;
+    background-color: #A8E2F2;
+  }
+
+  .inputMessage:focus {
+    outline: none;
+  }
+
+  .iconSendMessage {
     display: flex;
-    margin: 0px 5px;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
+    justify-content: center;
+    width: 50px;
+    padding: 10px;
+    font-size: 25.5px;
+    border: none;
+    border-radius: 50%;
+    background-color: #5C8DF6;
+  }
 
-    .inputMessage {
-        height: 30px;
-        font-size: 16px;
-        width: 100%;
-        border: none;
-        border-radius: 40px;
-        padding: 10px;
-        background-color: #A8E2F2;
-    }
-
-    .inputMessage:focus {
-        outline: none
-    }
-
-    .iconSendMessage {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 50px;
-        padding: 10px;
-        font-size: 25.5px;
-        border: none;
-        border-radius: 50%;
-        background-color: #5C8DF6;
-        // cursor: pointer;
-    }
-
-    .iconSendMessage:hover {
-        cursor: pointer;
-    }
+  .iconSendMessage:hover {
+    cursor: pointer;
+  }
 }
+
 
 //CONTENT MESSAGE
 .balao {
-    margin: 0 1%;
-    max-width: 100%;
+  margin: 0 1%;
+  max-width: 100%;
+  position: relative;
+  display: block;
+
+  p {
+    display: flex;
+    margin: 0 0 2px;
+    padding: 0.5em 1em 0.65em;
+    border-radius: 4px;
+    background: #e5e5ea;
+    max-width: max-content;
+    clear: both;
     position: relative;
-    display: block;
+  }
 
-    p {
-        display: flex;
-        margin: 0 0 2px;
-        padding: 0.5em 1em 0.65em;
-        border-radius: 4px;
-        background: #e5e5ea;
-        max-width: max-content;
-        clear: both;
-        position: relative;
-    }
+  .them p {
+    border-top-right-radius: 1em;
+    border-bottom-right-radius: 1em;
+  }
 
-    .them p {
-        // width: 50%;
-        border-top-right-radius: 1em;
-        border-bottom-right-radius: 1em;
-    }
+  .them p:last-child::after {
+    content: "";
+    position: absolute;
+    left: -0.5em;
+    bottom: 0;
+    width: 0.5em;
+    height: 1em;
+    border-right: 0.5em solid #e5e5ea;
+    border-bottom-right-radius: 1em 0.5em;
+  }
 
-    .them p:last-child::after {
-        content: "";
-        position: absolute;
-        left: -0.5em;
-        bottom: 0;
-        width: 0.5em;
-        height: 1em;
-        border-right: 0.5em solid #e5e5ea;
-        border-bottom-right-radius: 1em 0.5em;
-    }
+  .userMe p {
+    float: right;
+    background-color: #1289fe;
+    color: white;
+    border-top-left-radius: 1em;
+    border-bottom-left-radius: 1em;
+  }
 
-    .userMe p {
-        float: right;
-        background-color: #1289fe;
-        color: white;
-        border-top-left-radius: 1em;
-        border-bottom-left-radius: 1em;
-    }
+  .userMe p:last-child::after {
+    content: "";
+    position: absolute;
+    right: -0.5em;
+    bottom: 0;
+    width: 0.5em;
+    height: 1em;
+    border-left: 0.5em solid #1289fe;
+    border-bottom-left-radius: 1em 0.5em;
+  }
 
-    .userMe p:last-child::after {
-        content: "";
-        position: absolute;
-        right: -0.5em;
-        bottom: 0;
-        width: 0.5em;
-        height: 1em;
-        border-left: 0.5em solid #1289fe;
-        border-bottom-left-radius: 1em 0.5em;
-    }
+  p:first-child {
+    border-top-right-radius: 1em;
+    border-top-left-radius: 1em;
+  }
 
-    p:first-child {
-        border-top-right-radius: 1em;
-        border-top-left-radius: 1em;
-    }
+  p:last-child {
+    border-bottom-left-radius: 1em;
+    margin-bottom: 8px;
+  }
 
-    p:last-child {
-        border-bottom-left-radius: 1em;
-        margin-bottom: 8px;
-    }
-
-    .userMe p:last-child {
-        border-bottom-left-radius: 1em;
-        border-bottom-right-radius: 1em;
-        margin-bottom: 8px;
-    }
+  .userMe p:last-child {
+    border-bottom-left-radius: 1em;
+    border-bottom-right-radius: 1em;
+    margin-bottom: 8px;
+  }
 }

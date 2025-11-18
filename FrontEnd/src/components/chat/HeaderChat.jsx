@@ -3,7 +3,7 @@ import style from "./Chat.module.scss";
 import { IoReturnUpBackOutline } from "react-icons/io5";
 import { Typography, Box } from "@mui/material";
 
-const HeaderChat = ({ item, usuario }) => {
+const HeaderChat = ({ item, usuario, onBack }) => {
   // Responsividade
   const [windowWidth, setWidth] = useState(window.innerWidth);
   const sizePage = windowWidth > 600 ? false : true;
@@ -18,11 +18,11 @@ const HeaderChat = ({ item, usuario }) => {
   return (
     <section className={style.headerChat}>
       <div className={style.iconBackListChats}>
-        {sizePage && (
+        {sizePage && onBack && (
           <IoReturnUpBackOutline
             className={style.back_chats}
             size={45}
-            onClick={() => comeback()}
+            onClick={onBack}
           />
         )}
       </div>
