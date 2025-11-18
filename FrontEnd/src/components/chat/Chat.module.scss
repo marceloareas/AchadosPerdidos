@@ -41,6 +41,7 @@
 .contentChat {
     margin-top: 10px;
     flex: 1;
+    min-height: calc(100vh - 315px);
     max-height: calc(100vh - 315px);
     overflow-y: auto;
     scrollbar-width: thin;
@@ -104,7 +105,7 @@
 
 //CONTENT MESSAGE
 .balao {
-    margin: 0 10%;
+    margin: 0 1%;
     max-width: 100%;
     position: relative;
     display: block;
@@ -115,7 +116,7 @@
         padding: 0.5em 1em 0.65em;
         border-radius: 4px;
         background: #e5e5ea;
-        max-width: 65%;
+        max-width: max-content;
         clear: both;
         position: relative;
     }
