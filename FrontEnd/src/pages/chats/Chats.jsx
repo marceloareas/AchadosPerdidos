@@ -4,6 +4,7 @@ import { Box, Typography } from "@mui/material";
 import style from "./Chats.module.scss";
 import ChatCard from "../../components/ui/chatCard/ChatCard";
 import ScrollListChats from "../../components/scrollListChats/ScrollListChats";
+import Chat from "../../components/Chat/chat";
 
 const Chats = () => {
   const chats = [
@@ -64,14 +65,76 @@ const Chats = () => {
       id: 3,
       mensagem_texto: [
         {
-          usuario: "usuario4",
-          conteudo: "Sim, chegou tudo certo?",
+          usuario: "vinicao",
+          conteudo: "Ja enviei pelo uberFlash, ta bom?",
           dateSend: "2025-11-10T10:00:00Z",
         },
         {
           usuario: "usuario5",
-          conteudo: "Sim, obrigado!",
+          conteudo: "Ok, obrigada!",
           dateSend: "2025-11-10T10:05:00Z",
+        },
+        {
+          usuario: "vinicao",
+          conteudo: "Espero que esteja do estado que voce perdeu",
+          dateSend: "2025-11-10T10:08:00Z",
+        },
+        {
+          usuario: "vinicao",
+          conteudo: "Assim que chegar, te aviso.",
+          dateSend: "2025-11-10T10:10:00Z",
+        },
+        {
+          usuario: "vinicao",
+          conteudo: "E a senhora desce para buscar",
+          dateSend: "2025-11-10T10:14:00Z",
+        },
+        {
+          usuario: "usuario5",
+          conteudo: "Ta bom, muito obrigada!",
+          dateSend: "2025-11-10T10:15:00Z",
+        },
+        {
+          usuario: "usuario5",
+          conteudo:
+            "Este estojo estava com todos os meu documentos, ainda bem que você encontrou e conseguiu me devolver.",
+          dateSend: "2025-11-10T10:15:00Z",
+        },
+        {
+          usuario: "vinicao",
+          conteudo: "Ja enviei pelo uberFlash, ta bom?",
+          dateSend: "2025-11-10T10:00:00Z",
+        },
+        {
+          usuario: "usuario5",
+          conteudo: "Ok, obrigada!",
+          dateSend: "2025-11-10T10:05:00Z",
+        },
+        {
+          usuario: "vinicao",
+          conteudo: "Espero que esteja do estado que voce perdeu",
+          dateSend: "2025-11-10T10:08:00Z",
+        },
+        {
+          usuario: "vinicao",
+          conteudo: "Assim que chegar, te aviso.",
+          dateSend: "2025-11-10T10:10:00Z",
+        },
+        {
+          usuario: "vinicao",
+          conteudo: "E a senhora desce para buscar",
+          dateSend: "2025-11-10T10:14:00Z",
+        },
+        {
+          usuario: "usuario5",
+          conteudo: "Ta bom, muito obrigada!",
+          dateSend: "2025-11-10T10:15:00Z",
+        },
+        {
+          usuario: "usuario5",
+          conteudo:
+            "Este estojo estava com todos os meu documentos, ainda bem que você encontrou e conseguiu me devolver.",
+          dateSend: "2025-11-10T10:15:00Z",
         },
       ],
       item: "estojo",
@@ -79,8 +142,8 @@ const Chats = () => {
       mensagem_confirmacao: "SolicitacaoEntrega",
       usuarios_chat: [
         {
-          usuario_id: "usuario4",
-          nome: "Ana",
+          usuario_id: "id",
+          nome: "vinicao",
         },
         {
           usuario_id: "usuario5",
@@ -113,80 +176,14 @@ const Chats = () => {
       ],
       match_id: "match_4",
     },
-    {
-      id: 5,
-      mensagem_texto: [
-        {
-          usuario: "usuario8",
-          conteudo: "Temos algum novo pedido?",
-          dateSend: "2025-11-10T11:00:00Z",
-        },
-      ],
-      item: "borracha do mário",
-      mensagem_imagem: null,
-      mensagem_confirmacao: "SolicitacaoEntrega",
-      usuarios_chat: [
-        {
-          usuario_id: "usuario8",
-          nome: "Pedro",
-        },
-        {
-          usuario_id: "usuario7",
-          nome: "Lucas",
-        },
-      ],
-      match_id: "match_4",
-    },
-    {
-      id: 6,
-      mensagem_texto: [
-        {
-          usuario: "usuario8",
-          conteudo: "Temos algum novo pedido?",
-          dateSend: "2025-11-10T11:00:00Z",
-        },
-      ],
-      item: "borracha do mário",
-      mensagem_imagem: null,
-      mensagem_confirmacao: "SolicitacaoEntrega",
-      usuarios_chat: [
-        {
-          usuario_id: "usuario8",
-          nome: "Pedro",
-        },
-        {
-          usuario_id: "usuario7",
-          nome: "Lucas",
-        },
-      ],
-      match_id: "match_4",
-    },
-    {
-      id: 7,
-      mensagem_texto: [
-        {
-          usuario: "usuario8",
-          conteudo: "Temos algum novo pedido?",
-          dateSend: "2025-11-10T11:00:00Z",
-        },
-      ],
-      item: "borracha do mário",
-      mensagem_imagem: null,
-      mensagem_confirmacao: "SolicitacaoEntrega",
-      usuarios_chat: [
-        {
-          usuario_id: "usuario8",
-          nome: "Pedro",
-        },
-        {
-          usuario_id: "usuario7",
-          nome: "Lucas",
-        },
-      ],
-      match_id: "match_4",
-    },
   ];
   const [chatSelect, setChat] = useState(undefined);
+
+  const selectChat = (chat) => {
+    console.log(chat);
+    setChat(chat);
+  };
+  const [viewList, setview] = useState(true);
   return (
     <Layout>
       <section className={style.titleChats}>
@@ -197,10 +194,26 @@ const Chats = () => {
         </Box>
       </section>
       <div className={style.chats}>
-        <ScrollListChats chats={chats} />
-        <span className={style.lineV} />
+        {viewList ? (
+          <>
+            <ScrollListChats chats={chats} selectChat={selectChat} />
+            <span className={style.lineV} />
+          </>
+        ) : (
+          <></>
+        )}
         <section className={style.unitChat}>
-          {chatSelect ? <Box /> : <span> Selecione um chat para ver.</span>}
+          {chatSelect ? (
+            <Chat
+              item={chatSelect.item}
+              person={chatSelect.usuarios_chat[1]}
+              mensagens={chatSelect.mensagem_texto}
+            />
+          ) : (
+            <div className={style.notChat}>
+              <span> Selecione um chat para ver.</span>
+            </div>
+          )}
         </section>
       </div>
     </Layout>

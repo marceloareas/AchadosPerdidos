@@ -2,8 +2,17 @@ import React from "react";
 import dayjs from "dayjs";
 import { CardHeader, Card, CardContent, Typography, Box } from "@mui/material";
 import style from "./ChatCard.module.scss";
+import useAuthStore from "../../../store/auth";
 
-const ChatCard = ({ id, item, idMatch, personName, lastMessage }) => {
+const ChatCard = ({
+  id,
+  item,
+  idMatch,
+  usuario,
+  lastMessage,
+  handleSelect,
+}) => {
+  const { user } = useAuthStore.getState();
   const convertDate = (date) => {
     const actualDateFormated = dayjs();
     const dateFormated = dayjs(date);
@@ -22,6 +31,7 @@ const ChatCard = ({ id, item, idMatch, personName, lastMessage }) => {
       <Card
         className={`${style["MuiPaper-root"]}`}
         style={{ width: "350px", height: "125px" }}
+        onClick={handleSelect}
       >
         <CardHeader
           title={
@@ -53,19 +63,9 @@ const ChatCard = ({ id, item, idMatch, personName, lastMessage }) => {
             sx={{ mb: 0.5 }}
             noWrap={true}
           >
-            {personName}: {lastMessage.conteudo}
+            {user.nome == lastMessage.usuario ? "Você" : usuario.nome}:{" "}
+            {lastMessage.conteudo}
           </Typography>
-          {/* )}
-          {lastMessage && (
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ mb: 0.5 }}
-              noWrap={true}
-            >
-              {lastMessage.conteudo}
-            </Typography> 
-          )}*/}
         </CardContent>
       </Card>
     </>

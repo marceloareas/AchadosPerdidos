@@ -1,16 +1,17 @@
 import style from "./ScrollListChats.module.scss";
 import ChatCard from "../ui/chatCard/ChatCard";
 
-const ScrollListChats = ({ chats }) => {
+const ScrollListChats = ({ chats, selectChat }) => {
   return (
     <section className={style.listChats}>
       {chats.map((chat) => {
         return (
           <ChatCard
+            handleSelect={() => selectChat(chat)}
             key={chat.id}
             item={chat.item}
             idMatch={chat.match_id}
-            personName={chat.usuarios_chat[1].nome}
+            usuario={chat.usuarios_chat[1]}
             lastMessage={chat.mensagem_texto.slice(-1)[0]}
           />
         );
