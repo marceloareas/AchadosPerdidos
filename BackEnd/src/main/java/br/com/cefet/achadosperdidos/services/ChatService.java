@@ -13,6 +13,7 @@ import br.com.cefet.achadosperdidos.domain.model.Match;
 import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.dto.chat.ChatResponseDTO;
 import br.com.cefet.achadosperdidos.dto.chat.CreateChatResponseDTO;
+import br.com.cefet.achadosperdidos.dto.mensagem.BaseMensagemDTO;
 import br.com.cefet.achadosperdidos.dto.res.ApiResponse;
 import br.com.cefet.achadosperdidos.mappers.ChatMapper;
 import br.com.cefet.achadosperdidos.repositories.ChatRespository;
@@ -51,5 +52,20 @@ public class ChatService {
         chatRespository.save(chat);
 
         return new ApiResponse<CreateChatResponseDTO>("Chat criado com sucesso.", chatMapper.convertToCreateChatResponseDTO(chat, false));
+    }
+
+    @Transactional
+    public ApiResponse<String> enviarMensagem(Long chat_id, BaseMensagemDTO mensagem){
+        
+        
+        //todo:  instanciar mensagem com factory
+
+        //todo:  save na mensagem com ChatRepository
+
+        //todo:  Enviar mensagem para 
+        
+
+
+        return new ApiResponse<String>("Mensagem enviada com sucesso.", null);
     }
 }
