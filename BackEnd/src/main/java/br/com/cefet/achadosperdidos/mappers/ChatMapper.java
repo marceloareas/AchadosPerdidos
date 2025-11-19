@@ -1,9 +1,12 @@
 package br.com.cefet.achadosperdidos.mappers;
 
+import org.springframework.stereotype.Component;
+
 import br.com.cefet.achadosperdidos.domain.model.Chat;
 import br.com.cefet.achadosperdidos.dto.chat.ChatResponseDTO;
 import br.com.cefet.achadosperdidos.dto.chat.CreateChatResponseDTO;
 
+@Component
 public class ChatMapper {
     
 
