@@ -1,6 +1,8 @@
 @use '../../styles/variables.scss' as *;
 
 .listChats {
+    display: flex;
+    flex-direction: column;
     width: 360px;
     margin: 0% 0% 0% 3px;
     gap: 5px;
@@ -21,4 +23,12 @@
 .listChats::-webkit-scrollbar-thumb {
     background: $primary-color;
     border-radius: 10px;
+}
+
+@media(max-width:600px) {
+    .listChats {
+        width: 100%;
+        align-items: center;
+        margin: 0% 5px 5px 3px;
+    }
 }

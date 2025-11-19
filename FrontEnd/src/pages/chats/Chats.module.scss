@@ -2,7 +2,8 @@
 
 .chats {
     display: flex;
-    height: calc(100vh - 70px);
+    margin-top: 5px;
+    height: calc(100vh - 80px);
     overflow: hidden;
 }
 
@@ -35,11 +36,11 @@
 
 @media(max-width:600px) {
     .chats {
-        height: calc(100vh - 70px);
+        height: calc(100vh - 165px);
     }
 
     .unitChat {
         width: 100vw;
-        min-height: calc(100vh - 70px);
+        min-height: calc(100vh - 165px);
     }
 }
