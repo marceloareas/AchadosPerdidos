@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import style from "./Chat.module.scss";
 import { IoReturnUpBackOutline } from "react-icons/io5";
 import { Typography, Box } from "@mui/material";
+import CustomButton from "../ui/button/CustomButton.jsx";
 
 const HeaderChat = ({ item, usuario, onBack }) => {
   // Responsividade
@@ -43,6 +44,15 @@ const HeaderChat = ({ item, usuario, onBack }) => {
           {usuario}
         </Typography>
       </div>
+      {/* <div className={style.devolucao_btn}> */}
+      <CustomButton
+        className={`${style["MuiButtonBase-root"]}`}
+        variant={"outline"}
+        size={"sm"}
+      >
+        Confirmar Devolução
+      </CustomButton>
+      {/* </div> */}
     </section>
   );
 };
