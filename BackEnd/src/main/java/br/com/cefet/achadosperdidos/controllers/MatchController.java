@@ -28,6 +28,43 @@ public class MatchController {
         return ResponseEntity.ok(match_list);
     }
 
+    @GetMapping("/active")
+    public ResponseEntity<List<MatchResponseDTO>> getActiveMatches(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = ((Usuario)auth.getPrincipal()).getId();
+        List<MatchResponseDTO> matches = matchService.getAllActiveUserMaches(userId);
+        return ResponseEntity.ok(matches);
+    }
+
+    @GetMapping("/archived")
+    public ResponseEntity<List<MatchResponseDTO>> getArchivedMatches(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = ((Usuario)auth.getPrincipal()).getId();
+        List<MatchResponseDTO> matches = matchService.getAllArchivedUserMaches(userId);
+        return ResponseEntity.ok(matches);
+    }
+
+    // ARQUIVAR MATCH
+    @PostMapping("/{matchId}/archive")
+    public ResponseEntity<ApiResponse<String>> archiveMatch(@PathVariable Long matchId){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = ((Usuario)auth.getPrincipal()).getId();
+
+        matchService.archiveMatch(matchId, userId);
+        return ResponseEntity.ok(new ApiResponse<>("Match arquivado!", null, null));
+
+    }
+    // ATIVAR MATCH (DESARQUIVAR)
+    @PostMapping("/{matchId}/activate")
+    public ResponseEntity<ApiResponse<String>> activateMatch(@PathVariable Long matchId){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = ((Usuario)auth.getPrincipal()).getId();
+
+        matchService.activateMatch(matchId, userId);
+        return ResponseEntity.ok(new ApiResponse<>("Match ativado!", null, null));
+
+    }
+
     @DeleteMapping("/{matchId}")
     public ResponseEntity<ApiResponse<String>> deleteMatch(@PathVariable Long matchId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -38,5 +75,6 @@ public class MatchController {
         
         return ResponseEntity.ok(response);
     }
+
 
 }

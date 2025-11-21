@@ -54,11 +54,40 @@ public class Match {
     @Setter
     private Chat chat;
 
+    private boolean arquivadoPorItemPerdido = false;
+    private boolean arquivadoPorItemAchado = false;
+
     public Match(Long id, Boolean confirmacaoPerdido, Boolean confirmacaoAchado){
         this.id = id;
         this.confirmacaoPerdido = confirmacaoPerdido;
         this.confirmacaoAchado = confirmacaoAchado;
     }
 
+    // ver se o match foi arquivado pelo usuario
+    public boolean isArquivadoPorUsuario(Long usuarioId) {
+        if (itemPerdido.getUsuario().getId().equals(usuarioId)) {
+            return arquivadoPorItemPerdido;
+        } else if (itemAchado.getUsuario().getId().equals(usuarioId)) {
+            return arquivadoPorItemAchado;
+        }
+        return false;
+    }
+
+    // arquivar o match para o usuario
+    public void arquivarPorUsuario(Long usuarioId) {
+        if (itemPerdido.getUsuario().getId().equals(usuarioId)) {
+            this.arquivadoPorItemPerdido = true;
+        } else if (itemAchado.getUsuario().getId().equals(usuarioId)) {
+            this.arquivadoPorItemAchado = true;
+        }
+    }
+    // desarquivar o match para o usuario
+    public void desarquivarPorUsuario(Long usuarioId) {
+        if (itemPerdido.getUsuario().getId().equals(usuarioId)) {
+            this.arquivadoPorItemPerdido = false;
+        } else if (itemAchado.getUsuario().getId().equals(usuarioId)) {
+            this.arquivadoPorItemAchado = false;
+        }
+    }
     
 }
