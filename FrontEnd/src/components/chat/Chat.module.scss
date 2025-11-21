@@ -56,21 +56,11 @@
     }
   }
 
-  // .devolucao_btn {
-  //   display: flex;
-  //   align-items: center;
-  //   justify-content: flex-end;
-  //   // width: calc(100% - 102px);
-  //   margin-right: 3%;
 
   .MuiButtonBase-root {
     position: relative;
     margin-left: auto;
     margin-right: 40px;
-
-    // @media(max-width:1400px) {
-    //   left: 45%;
-    // }
 
     @media(max-width:900px) {
       font-size: 0.625rem !important;
@@ -81,22 +71,8 @@
       font-size: 0.575rem !important;
       margin-right: 10px;
     }
-
-    // @media(max-width:685px) {
-    //   left: 5%;
-    // }
-
-    // @media(max-width:600px) {
-    //   left: 25%;
-    // }
-
-    // @media(max-width:430px) {
-    //   left: 12%;
-    // }
   }
 
-
-  // }
 }
 
 
