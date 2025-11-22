@@ -54,13 +54,19 @@ public class Match {
     @Setter
     private Chat chat;
 
+    @Getter
+    @Setter
     private boolean arquivadoPorItemPerdido = false;
+    @Getter
+    @Setter
     private boolean arquivadoPorItemAchado = false;
 
-    public Match(Long id, Boolean confirmacaoPerdido, Boolean confirmacaoAchado){
+    public Match(Long id, Boolean confirmacaoPerdido, Boolean confirmacaoAchado, Boolean arquivadoPorItemAchado, Boolean arquivadoPorItemPerdido) {
         this.id = id;
         this.confirmacaoPerdido = confirmacaoPerdido;
         this.confirmacaoAchado = confirmacaoAchado;
+        this.arquivadoPorItemAchado = arquivadoPorItemAchado;
+        this.arquivadoPorItemPerdido = arquivadoPorItemPerdido;
     }
 
     // ver se o match foi arquivado pelo usuario

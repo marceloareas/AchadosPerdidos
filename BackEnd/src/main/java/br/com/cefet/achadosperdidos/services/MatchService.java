@@ -93,6 +93,8 @@ public class MatchService {
             dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(itemOposto));
             dto.setConfirmacaoItemAchado(match.isConfirmacaoAchado());
             dto.setConfirmacaoItemPerdido(match.isConfirmacaoPerdido());
+            dto.setArquivadoPorItemAchado(match.isArquivadoPorItemAchado());
+            dto.setArquivadoPorItemPerdido(match.isArquivadoPorItemPerdido());
             matchResponseDTOList.add(dto);
         }
         return matchResponseDTOList;
@@ -216,6 +218,8 @@ public class MatchService {
             dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(itemOposto));
             dto.setConfirmacaoItemAchado(match.isConfirmacaoAchado());
             dto.setConfirmacaoItemPerdido(match.isConfirmacaoPerdido());
+            dto.setArquivadoPorItemAchado(match.isArquivadoPorItemAchado());
+            dto.setArquivadoPorItemPerdido(match.isArquivadoPorItemPerdido());
             matchResponseDTOList.add(dto);
         }
         return matchResponseDTOList;
@@ -244,6 +248,8 @@ public class MatchService {
             dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(itemOposto));
             dto.setConfirmacaoItemAchado(match.isConfirmacaoAchado());
             dto.setConfirmacaoItemPerdido(match.isConfirmacaoPerdido());
+            dto.setArquivadoPorItemAchado(match.isArquivadoPorItemAchado());
+            dto.setArquivadoPorItemPerdido(match.isArquivadoPorItemPerdido());
             matchResponseDTOList.add(dto);
         }
         return matchResponseDTOList;
