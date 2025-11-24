@@ -18,43 +18,75 @@
   top: 0;
   width: 100%;
   justify-content: flex-start;
-  gap: 20px;
+  gap: 5%;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-  padding: 10px 12px;
+  padding: 10px 0px;
   align-items: center;
   background: white;
   z-index: 12;
 
   .info {
     display: flex;
+    width: fit-content;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 2%;
     flex-direction: column;
     gap: 5px;
     justify-content: flex-start;
+
+    h6 {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
-}
 
-.iconBackListChats {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  .iconBackListChats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  .back_chats {
+    .back_chats {
+      position: relative;
+      left: 10%;
+      color: $primary-color;
+      cursor: pointer;
+    }
+  }
+
+
+  .MuiButtonBase-root {
     position: relative;
-    left: 10%;
-    color: $primary-color;
-    cursor: pointer;
+    margin-left: auto;
+    margin-right: 40px;
+
+    @media(max-width:900px) {
+      font-size: 0.625rem !important;
+      margin-right: 20px;
+    }
+
+    @media(max-width:700px) {
+      font-size: 0.575rem !important;
+      margin-right: 10px;
+    }
   }
+
 }
+
 
 
 //CONTENT
 .contentChat {
-  margin-top: 0; /* sem gap entre header e mensagens */
+  margin-top: 0;
+  /* sem gap entre header e mensagens */
   flex: 1 1 auto;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: $primary-color #e7e7e700;
-  padding: 8px 0; /* apenas espaçamento interno leve */
+  padding: 8px 0;
+  /* apenas espaçamento interno leve */
 }
 
 .contentChat::-webkit-scrollbar {
@@ -74,23 +106,46 @@
 //INPUT (fixo inferior)
 .wrapInputChat {
   display: flex;
-  margin: 0 12px;
-  align-items: center;
+  // margin: 0 12px 15px 12px;
+  margin: 5px 12px 25px 12px;
+  align-items: flex-end;
   gap: 15px;
-  position: relative; /* fica ao fim do .chatLayout pelo fluxo flex */
-  background: white;
-  z-index: 30;
-  padding: 12px 16px;
-  box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+  // background-color: white;
+  border-radius: 40px;
+  background: $primary-color-transparent;
+  // padding: 12px 16px;
+  padding: 7px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
 
   .inputMessage {
-    height: 40px;
-    font-size: 16px;
+    flex: 1;
+    display: block;
     width: 100%;
+    min-height: 20px;
+    max-height: 96px;
+    font-size: 18px;
+    line-height: 1.1;
+    resize: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    white-space: pre-wrap;
+    word-break: break-word;
+
+    outline: none;
+    scrollbar-width: none;
     border: none;
-    border-radius: 40px;
-    padding: 10px 14px;
-    background-color: #A8E2F2;
+    // border-radius: 40px;
+    // padding: 10px 14px;
+    // background-color: #A8E2F2;
+    // padding: 5px 10px;
+    padding: 0px 15px 10px 15px;
+    background-color: transparent;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
   }
 
   .inputMessage:focus {
@@ -98,12 +153,13 @@
   }
 
   .iconSendMessage {
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 50px;
+    width: 40px;
     padding: 10px;
-    font-size: 25.5px;
+    font-size: 20px;
     border: none;
     border-radius: 50%;
     background-color: #5C8DF6;
@@ -117,8 +173,8 @@
 
 //CONTENT MESSAGE
 .balao {
-  margin: 0 1%;
-  max-width: 100%;
+  margin: 0 1% 0 2%;
+  max-width: 95%;
   position: relative;
   display: block;
 

@@ -16,4 +16,10 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
 
     @Query("SELECT m FROM Match m WHERE m.itemAchado.usuario.id = :userId OR m.itemPerdido.usuario.id = :userId")
     List<Match> findAllByUsuarioId(@Param("userId") Long userId);
+
+    @Query("SELECT m FROM Match m WHERE (m.itemPerdido.usuario.id = :userId AND m.arquivadoPorItemPerdido = false) OR (m.itemAchado.usuario.id = :userId AND m.arquivadoPorItemAchado = false)")
+    List<Match> findAllActiveByUsuarioId(@Param("userId") Long userId);         
+    
+    @Query("SELECT m FROM Match m WHERE (m.itemPerdido.usuario.id = :userId AND m.arquivadoPorItemPerdido = true) OR (m.itemAchado.usuario.id = :userId AND m.arquivadoPorItemAchado = true)")
+    List<Match> findAllArchivedByUsuarioId(@Param("userId") Long userId);  
 }

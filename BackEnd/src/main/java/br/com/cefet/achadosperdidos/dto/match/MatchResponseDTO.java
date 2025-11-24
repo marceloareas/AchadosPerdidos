@@ -17,4 +17,7 @@ public class MatchResponseDTO {
 
     private Boolean confirmacaoItemPerdido;
     private Boolean confirmacaoItemAchado;
+
+    private Boolean arquivadoPorItemPerdido;
+    private Boolean arquivadoPorItemAchado;
 }

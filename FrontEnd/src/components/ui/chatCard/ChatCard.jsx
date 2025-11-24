@@ -28,11 +28,7 @@ const ChatCard = ({
   };
   return (
     <>
-      <Card
-        className={`${style["MuiPaper-root"]}`}
-        style={{ width: "350px", height: "125px" }}
-        onClick={handleSelect}
-      >
+      <Card className={`${style["MuiPaper-root"]}`} onClick={handleSelect}>
         <CardHeader
           title={
             <Box className={style.headerCard}>
