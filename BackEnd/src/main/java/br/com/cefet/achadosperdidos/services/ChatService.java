@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import br.com.cefet.achadosperdidos.domain.model.Chat;
@@ -15,6 +16,7 @@ import br.com.cefet.achadosperdidos.dto.chat.ChatResponseDTO;
 import br.com.cefet.achadosperdidos.dto.chat.CreateChatResponseDTO;
 import br.com.cefet.achadosperdidos.dto.mensagem.BaseMensagemDTO;
 import br.com.cefet.achadosperdidos.dto.res.ApiResponse;
+import br.com.cefet.achadosperdidos.exception.match.MatchNotFoundException;
 import br.com.cefet.achadosperdidos.mappers.ChatMapper;
 import br.com.cefet.achadosperdidos.repositories.ChatRespository;
 import br.com.cefet.achadosperdidos.repositories.MatchRepository;
@@ -33,13 +35,21 @@ public class ChatService {
     private ChatMapper chatMapper;
 
     @Transactional
-    public ApiResponse<CreateChatResponseDTO> createChat(Long match_id){
+    public ApiResponse<CreateChatResponseDTO> getChat(Long match_id, Usuario usuario){
+        Match match = matchRepository.findById(match_id).orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
+
+
+        boolean isUsuarioItemAchado = usuario.getId().equals(match.getItemAchado().getUsuario().getId());
+        boolean isUsuarioItemPerdido = usuario.getId().equals(match.getItemPerdido().getUsuario().getId());
+        if(!isUsuarioItemAchado && !isUsuarioItemPerdido) throw new BadCredentialsException("Chat não pertence ao usuario.");
+        
+
         Optional<Chat> alreadyExistingChat = chatRespository.findByMatchId(match_id);
 
-        if(alreadyExistingChat.isPresent()) return new ApiResponse<CreateChatResponseDTO>("Chat já existe.", chatMapper.convertToCreateChatResponseDTO(alreadyExistingChat.get(), true));
+        if(alreadyExistingChat.isPresent()) return new ApiResponse<CreateChatResponseDTO>("Chat encontrado com sucesso.", chatMapper.convertToCreateChatResponseDTO(alreadyExistingChat.get(), true));
 
         Chat chat = new Chat();
-        Match match = matchRepository.getById(match_id);
+
         chat.setMatch(match);
 
         //todo: refatorar essa logica.
