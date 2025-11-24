@@ -16,6 +16,7 @@ import br.com.cefet.achadosperdidos.dto.chat.ChatResponseDTO;
 import br.com.cefet.achadosperdidos.dto.chat.CreateChatResponseDTO;
 import br.com.cefet.achadosperdidos.dto.mensagem.BaseMensagemDTO;
 import br.com.cefet.achadosperdidos.dto.res.ApiResponse;
+import br.com.cefet.achadosperdidos.exception.auth.NotAuthorized;
 import br.com.cefet.achadosperdidos.exception.match.MatchNotFoundException;
 import br.com.cefet.achadosperdidos.mappers.ChatMapper;
 import br.com.cefet.achadosperdidos.repositories.ChatRespository;
@@ -41,7 +42,7 @@ public class ChatService {
 
         boolean isUsuarioItemAchado = usuario.getId().equals(match.getItemAchado().getUsuario().getId());
         boolean isUsuarioItemPerdido = usuario.getId().equals(match.getItemPerdido().getUsuario().getId());
-        if(!isUsuarioItemAchado && !isUsuarioItemPerdido) throw new BadCredentialsException("Chat não pertence ao usuario.");
+        if(!isUsuarioItemAchado && !isUsuarioItemPerdido) throw new NotAuthorized("Chat não pertence ao usuario.");
         
 
         Optional<Chat> alreadyExistingChat = chatRespository.findByMatchId(match_id);
