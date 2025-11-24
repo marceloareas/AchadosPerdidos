@@ -2,9 +2,12 @@ package br.com.cefet.achadosperdidos.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.dto.chat.ChatResponseDTO;
 import br.com.cefet.achadosperdidos.dto.chat.CreateChatResponseDTO;
 import br.com.cefet.achadosperdidos.dto.mensagem.BaseMensagemDTO;
@@ -26,9 +29,11 @@ public class ChatController {
     @Autowired
     private ChatService chatService;
     
-    @PostMapping("/{match_id}")
-    public ResponseEntity<ApiResponse<CreateChatResponseDTO>> createChat(@PathVariable("match_id") Long match_id){
-        ApiResponse<CreateChatResponseDTO> response = chatService.createChat(match_id);
+    @GetMapping("/{match_id}")
+    public ResponseEntity<ApiResponse<CreateChatResponseDTO>> getChat(@PathVariable("match_id") Long match_id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario)auth.getPrincipal();
+        ApiResponse<CreateChatResponseDTO> response = chatService.getChat(match_id, usuario);
         return ResponseEntity.ok(response);
     }
 
