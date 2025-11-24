@@ -1,20 +1,27 @@
 package br.com.cefet.achadosperdidos.services.factories;
 
 import br.com.cefet.achadosperdidos.domain.enums.TipoMensagemEnum;
+import br.com.cefet.achadosperdidos.domain.model.BaseMensagem;
+import br.com.cefet.achadosperdidos.domain.model.mensagens.MensagemConfirmacao;
+import br.com.cefet.achadosperdidos.domain.model.mensagens.MensagemTexto;
 import br.com.cefet.achadosperdidos.dto.mensagem.BaseMensagemDTO;
 
 public class MensagemFactory {
 
-    MensagemFactory (Long chat_id, BaseMensagemDTO mensagemDTO){
+    public BaseMensagem criarMensagem (Long chat_id, BaseMensagemDTO mensagemDTO){
         Long remetenteId = mensagemDTO.getRemetenteId();
         String conteudo = mensagemDTO.getConteudo();
 
         TipoMensagemEnum tipoDTO = mensagemDTO.getTipo();
 
-        // todo: fazer o factory dependendo do tipo
-        // return switch(tipoDTO){
-
-        // }
+         return switch(tipoDTO){
+             case TEXTO ->
+                new MensagemTexto(tipoDTO, mensagemDTO.getChat_id(), mensagemDTO.getDataEnvio(), mensagemDTO.getRemetenteId(), mensagemDTO.getConteudo());
+             case CONFIRMACAO -> {
+                 yield new MensagemConfirmacao(tipoDTO, mensagemDTO.getChat_id(), mensagemDTO.getDataEnvio(), mensagemDTO.getRemetenteId(), mensagemDTO.getConteudo());
+             }
+             default -> throw new IllegalArgumentException("Tipo de mensagem não suportado.");
+         };
     }
     
 }

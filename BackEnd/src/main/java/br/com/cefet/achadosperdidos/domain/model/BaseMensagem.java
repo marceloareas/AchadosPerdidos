@@ -11,6 +11,13 @@ import lombok.Setter;
 
 @Document(collection = "mensagens")
 public class BaseMensagem {
+    public BaseMensagem(TipoMensagemEnum tipo, Long chatId, LocalDateTime dataEnvio, Long remetenteId, String conteudo) {
+        this.tipo = tipo;
+        this.chatId = chatId;
+        this.dataEnvio = dataEnvio;
+        this.remetenteId = remetenteId;
+        this.conteudo = conteudo;
+    }
 
     @Id
     @Getter

@@ -1,25 +1,26 @@
 package br.com.cefet.achadosperdidos.services;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import br.com.cefet.achadosperdidos.domain.model.BaseMensagem;
+import br.com.cefet.achadosperdidos.dto.chat.ChatComMensagensDTO;
+import br.com.cefet.achadosperdidos.dto.chat.MeusChatsResponseDTO;
+import br.com.cefet.achadosperdidos.repositories.MensagemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import br.com.cefet.achadosperdidos.domain.model.Chat;
 import br.com.cefet.achadosperdidos.domain.model.Match;
 import br.com.cefet.achadosperdidos.domain.model.Usuario;
-import br.com.cefet.achadosperdidos.dto.chat.ChatResponseDTO;
-import br.com.cefet.achadosperdidos.dto.chat.CreateChatResponseDTO;
 import br.com.cefet.achadosperdidos.dto.mensagem.BaseMensagemDTO;
 import br.com.cefet.achadosperdidos.dto.res.ApiResponse;
 import br.com.cefet.achadosperdidos.exception.auth.NotAuthorized;
 import br.com.cefet.achadosperdidos.exception.match.MatchNotFoundException;
 import br.com.cefet.achadosperdidos.mappers.ChatMapper;
-import br.com.cefet.achadosperdidos.repositories.ChatRespository;
+import br.com.cefet.achadosperdidos.repositories.ChatRepository;
 import br.com.cefet.achadosperdidos.repositories.MatchRepository;
 import jakarta.transaction.Transactional;
 
@@ -27,16 +28,26 @@ import jakarta.transaction.Transactional;
 public class ChatService {
 
     @Autowired
-    private ChatRespository chatRespository;
+    private ChatRepository chatRepository;
 
     @Autowired
     private MatchRepository matchRepository;
 
     @Autowired
+    private MensagemRepository mensagemRepository;
+
+    @Autowired
     private ChatMapper chatMapper;
 
+//    @Transactional
+//    public ApiResponse<MeusChatsResponseDTO> getChats(Long userId){
+//        List<Chat> chatList = this.chatRepository.findByUsuarioId(userId);
+////        return chatList.stream().map(ChatMapper::)
+//    }
+
+
     @Transactional
-    public ApiResponse<CreateChatResponseDTO> getChat(Long match_id, Usuario usuario){
+    public ApiResponse<ChatComMensagensDTO> getChat(Long match_id, Usuario usuario){
         Match match = matchRepository.findById(match_id).orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
 
 
@@ -45,9 +56,14 @@ public class ChatService {
         if(!isUsuarioItemAchado && !isUsuarioItemPerdido) throw new NotAuthorized("Chat não pertence ao usuario.");
         
 
-        Optional<Chat> alreadyExistingChat = chatRespository.findByMatchId(match_id);
+        Optional<Chat> alreadyExistingChat = chatRepository.findByMatchId(match_id);
 
-        if(alreadyExistingChat.isPresent()) return new ApiResponse<CreateChatResponseDTO>("Chat encontrado com sucesso.", chatMapper.convertToCreateChatResponseDTO(alreadyExistingChat.get(), true));
+        if(alreadyExistingChat.isPresent()) {
+            Chat chat = alreadyExistingChat.get();
+            List<BaseMensagem> mensagens = mensagemRepository.findByChatIdOrderByDataEnvioAsc(chat.getId());
+
+            return new ApiResponse<ChatComMensagensDTO>("Chat encontrado com sucesso.", chatMapper.convertToChatComMensagensDTO(chat, mensagens));
+        }
 
         Chat chat = new Chat();
 
@@ -60,9 +76,9 @@ public class ChatService {
 
         chat.setUsuarios(usuarios);
 
-        chatRespository.save(chat);
+        chatRepository.save(chat);
 
-        return new ApiResponse<CreateChatResponseDTO>("Chat criado com sucesso.", chatMapper.convertToCreateChatResponseDTO(chat, false));
+        return new ApiResponse<ChatComMensagensDTO>("Chat criado com sucesso.", chatMapper.convertToChatComMensagensDTO(chat, null));
     }
 
     @Transactional
