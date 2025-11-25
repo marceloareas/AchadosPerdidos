@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table(name = "chats")
+@Table(name = "chat")
 @NoArgsConstructor
 public class Chat {
 
