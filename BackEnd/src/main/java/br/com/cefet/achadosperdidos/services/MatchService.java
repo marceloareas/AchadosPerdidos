@@ -1,5 +1,6 @@
 package br.com.cefet.achadosperdidos.services;
 
+import br.com.cefet.achadosperdidos.domain.enums.StatusItemEnum;
 import br.com.cefet.achadosperdidos.domain.enums.TipoItemEnum;
 import br.com.cefet.achadosperdidos.domain.model.Categoria;
 import br.com.cefet.achadosperdidos.domain.model.Item;
@@ -186,6 +187,60 @@ public class MatchService {
         matchRepository.save(match);
     }  
     
+    // CONFIRMAÇÃO DE USUÁRIO NO MATCH
+    @Transactional
+    public MatchResponseDTO confirmMatch(Long matchId, Long userId){
+
+        // 1. Busca o match
+        Match match = matchRepository.findById(matchId)
+        .orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
+
+        // 2. Verifica qual usuário fez a requisição
+        boolean isUsuarioItemAchado = match.getItemAchado().getUsuario().getId().equals(userId);
+        boolean isUsuarioItemPerdido = match.getItemPerdido().getUsuario().getId().equals(userId);
+
+        // 3. Erro caso os usuários do match não estejam envolvidos na requisição
+        if(!isUsuarioItemAchado && !isUsuarioItemPerdido){
+            throw new InvalidCredentials("Usuário não pertence a esse match.");
+        }
+
+        // 4. Atualiza a flag de confirmação com base no usuário da requisição
+        if(isUsuarioItemAchado){
+            match.setConfirmacaoAchado(true);
+        }
+        else{
+            match.setConfirmacaoPerdido(true);
+        }
+
+        // 5. Verifica se as flags de confimação dos usuários estão ambas true
+        // Se positivo, vamos mudar o status dos itens e no futuro arquivar o chat
+        if(match.isConfirmacaoAchado() && match.isConfirmacaoPerdido()){
+            Item itemAchado = match.getItemAchado();
+            itemAchado.setStatus(StatusItemEnum.RECUPERADO);
+            itemAchado.setDataDevolucao(java.time.LocalDateTime.now());
+
+            Item itemPerdido = match.getItemPerdido();
+            itemPerdido.setStatus(StatusItemEnum.RECUPERADO);
+            itemPerdido.setDataDevolucao(java.time.LocalDateTime.now());
+
+            itemRepository.save(itemAchado);
+            itemRepository.save(itemPerdido);
+
+            // APLICAR LÓGICA DE ARQUIVAMENTO DO MATCH OU DELEÇÃO
+        }
+
+        Match matchSalvo = matchRepository.save(match);
+
+        MatchResponseDTO dto = new MatchResponseDTO();
+        dto.setId(matchSalvo.getId());
+        dto.setItemUsuario(itemMapper.convertToItemMeusMatchesDTO(isUsuarioItemAchado ? matchSalvo.getItemAchado() : matchSalvo.getItemPerdido()));
+        dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(isUsuarioItemAchado ? matchSalvo.getItemPerdido() : matchSalvo.getItemAchado()));
+        dto.setConfirmacaoItemAchado(matchSalvo.isConfirmacaoAchado());
+        dto.setConfirmacaoItemPerdido(matchSalvo.isConfirmacaoPerdido());
+
+        return dto;
+    }
+
     @Transactional
     public void activateMatch(Long matchId, Long userId) {
         Match match = matchRepository.findById(matchId)
