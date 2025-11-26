@@ -9,6 +9,7 @@ import br.com.cefet.achadosperdidos.domain.model.BaseMensagem;
 import br.com.cefet.achadosperdidos.dto.chat.ChatComMensagensDTO;
 import br.com.cefet.achadosperdidos.dto.chat.MeusChatsResponseDTO;
 import br.com.cefet.achadosperdidos.repositories.MensagemRepository;
+import br.com.cefet.achadosperdidos.services.factories.MensagemFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -82,9 +83,12 @@ public class ChatService {
     }
 
     @Transactional
-    public ApiResponse<String> enviarMensagem(Long chat_id, BaseMensagemDTO mensagem){
-        
-        
+    public ApiResponse<String> enviarMensagem(Long chat_id, BaseMensagemDTO mensagemDTO){
+
+        MensagemFactory mensagemFactory = new MensagemFactory();
+        BaseMensagem mensagem = mensagemFactory.criarMensagem(chat_id, mensagemDTO);
+
+        mensagemRepository.save(mensagem);
         //todo:  instanciar mensagem com factory
 
         //todo:  save na mensagem com ChatRepository

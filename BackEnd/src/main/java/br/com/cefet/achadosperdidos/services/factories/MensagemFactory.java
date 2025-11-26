@@ -16,10 +16,10 @@ public class MensagemFactory {
 
          return switch(tipoDTO){
              case TEXTO ->
-                new MensagemTexto(tipoDTO, mensagemDTO.getChat_id(), mensagemDTO.getDataEnvio(), mensagemDTO.getRemetenteId(), mensagemDTO.getConteudo());
-             case CONFIRMACAO -> {
-                 yield new MensagemConfirmacao(tipoDTO, mensagemDTO.getChat_id(), mensagemDTO.getDataEnvio(), mensagemDTO.getRemetenteId(), mensagemDTO.getConteudo());
-             }
+                     new MensagemTexto(tipoDTO, chat_id, mensagemDTO.getDataEnvio(), mensagemDTO.getRemetenteId(), mensagemDTO.getConteudo());
+             case CONFIRMACAO ->
+                     new MensagemConfirmacao(tipoDTO, chat_id, mensagemDTO.getDataEnvio(), mensagemDTO.getRemetenteId(), mensagemDTO.getConteudo());
+
              default -> throw new IllegalArgumentException("Tipo de mensagem não suportado.");
          };
     }

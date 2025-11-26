@@ -23,7 +23,6 @@ public class MensagemMapper {
 
     public MensagemTextoDTO mapMensagemTextoParaDTO(MensagemTexto mensagemTexto){
         MensagemTextoDTO dto = new MensagemTextoDTO();
-        dto.setChat_id(mensagemTexto.getChatId());
         dto.setTipo(mensagemTexto.getTipo());
         dto.setConteudo(mensagemTexto.getConteudo());
         dto.setDataEnvio(mensagemTexto.getDataEnvio());
@@ -34,7 +33,6 @@ public class MensagemMapper {
 
     public MensagemConfirmacaoDTO mapMensagemConfirmacaoParaDTO(MensagemConfirmacao mensagemConfirmacao){
         MensagemConfirmacaoDTO dto = new MensagemConfirmacaoDTO();
-        dto.setChat_id(mensagemConfirmacao.getChatId());
         dto.setTipo(mensagemConfirmacao.getTipo());
         dto.setConteudo(mensagemConfirmacao.getConteudo());
         dto.setDataEnvio(mensagemConfirmacao.getDataEnvio());

@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BaseMensagemDTO {
-    private Long chat_id;
     private LocalDateTime dataEnvio;
     private TipoMensagemEnum tipo;
     private Long remetenteId;

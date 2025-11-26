@@ -2,6 +2,7 @@ package br.com.cefet.achadosperdidos.domain.model;
 
 import java.time.LocalDateTime;
 
+import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import br.com.cefet.achadosperdidos.domain.enums.TipoMensagemEnum;
@@ -9,6 +10,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+@ToString
 @Document(collection = "mensagens")
 public class BaseMensagem {
     public BaseMensagem(TipoMensagemEnum tipo, Long chatId, LocalDateTime dataEnvio, Long remetenteId, String conteudo) {

@@ -27,7 +27,7 @@ public class ChatController {
 
     @Autowired
     private ChatService chatService;
-    
+
     @GetMapping("/{match_id}")
     public ResponseEntity<ApiResponse<ChatComMensagensDTO>> getChat(@PathVariable("match_id") Long match_id){
         //todo: retornar uma lista de mensagens junto do chat.
@@ -47,11 +47,12 @@ public class ChatController {
 //        return ResponseEntity.ok(response);
 //    }
 
-
-    @PostMapping("/{chat_id}/mensagem")
-    public ApiResponse<String> enviarMensagem(@PathVariable("chat_id") Long chat_id, @RequestBody BaseMensagemDTO mensagem) {
+    @PostMapping("/mensagem/{chat_id}")
+    public ResponseEntity<ApiResponse<String>> enviarMensagem(@PathVariable("chat_id") Long chat_id, @RequestBody BaseMensagemDTO mensagem) {
         ApiResponse<String> response = chatService.enviarMensagem(chat_id, mensagem);
-        return response;
+        return ResponseEntity.ok(response);
     }
+
+
     
 }
