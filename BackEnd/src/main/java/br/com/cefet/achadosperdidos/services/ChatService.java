@@ -49,8 +49,7 @@ public class ChatService {
                 mensagemRepository.findByChatIdOrderByDataEnvioAsc(chat.getId());
 
             return chatMapper.convertToChatVitrineResponseDTO(chat, mensagens);
-        });
-        .toList();
+        }).toList();
 
     MeusChatsResponseDTO meusChats = new MeusChatsResponseDTO();
     meusChats.setChats(chatVitrine);
