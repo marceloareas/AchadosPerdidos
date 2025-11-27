@@ -56,23 +56,25 @@ public class ChatMapper {
 
     }
 
-//    public MeusChatsResponseDTO convertToMeusChatsResponseDTO(Chat chat, List<BaseMensagem> mensagens){
-//
-//        Match matchCorrespondente = chat.getMatch();
-//
-//        ChatVitrineResponseDTO chatVitrineResponseDTO = new ChatVitrineResponseDTO();
-//        chatVitrineResponseDTO.setId(chat.getId());
-//        chatVitrineResponseDTO.setMatch_id(matchCorrespondente.getId());
-//
-//        Set<Usuario> usuarioSet = new HashSet<>();
-//        usuarioSet.add(matchCorrespondente.getItemPerdido().getUsuario());
-//        usuarioSet.add(matchCorrespondente.getItemAchado().getUsuario());
-//        chatVitrineResponseDTO.setUsuarios(usuarioSet);
-//
-//        chatVitrineResponseDTO.setNomeItemPerdido(matchCorrespondente.getItemPerdido().getNome());
-//        chatVitrineResponseDTO.setNomeItemAchado(matchCorrespondente.getItemAchado().getNome());
-//
-//    }
+   public ChatVitrineResponseDTO convertToChatVitrineResponseDTO(Chat chat, List<BaseMensagem> mensagens){
+
+        Match matchCorrespondente = chat.getMatch();
+
+        ChatVitrineResponseDTO chatVitrineResponseDTO = new ChatVitrineResponseDTO();
+        chatVitrineResponseDTO.setId(chat.getId());
+        chatVitrineResponseDTO.setMatch_id(matchCorrespondente.getId());
+
+        Set<suarioResponseDTO> usuarioSet = new HashSet<>();
+        usuarioSet.add(matchCorrespondente.getItemPerdido().getUsuario());
+        usuarioSet.add(matchCorrespondente.getItemAchado().getUsuario());
+        chatVitrineResponseDTO.setUsuarios(usuarioSet);
+
+        chatVitrineResponseDTO.setNomeItemPerdido(matchCorrespondente.getItemPerdido().getNome());
+        chatVitrineResponseDTO.setNomeItemAchado(matchCorrespondente.getItemAchado().getNome());
+        chatVitrineResponseDTO.setUltimaMensagem(mensagemMapper.mapMensagemParaDTO(mensagens.get(mensagens.size() - 1)));
+
+        return chatVitrineResponseDTO;
+   }
 
 //    public CreateChatResponseDTO convertToCreateChatResponseDTO(Chat chat, Boolean jaExiste) {
 //        CreateChatResponseDTO dto = new CreateChatResponseDTO();

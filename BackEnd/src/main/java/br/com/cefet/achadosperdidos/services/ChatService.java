@@ -40,11 +40,22 @@ public class ChatService {
     @Autowired
     private ChatMapper chatMapper;
 
-//    @Transactional
-//    public ApiResponse<MeusChatsResponseDTO> getChats(Long userId){
-//        List<Chat> chatList = this.chatRepository.findByUsuarioId(userId);
-////        return chatList.stream().map(ChatMapper::)
-//    }
+   @Transactional
+   public ApiResponse<MeusChatsResponseDTO> getChats(Long userId){
+    List<Chat> chatList = this.chatRepository.findByUsuarioId(userId);
+    List<ChatVitrineResponseDTO> chatVitrine = chatList.stream()
+        .map(chat -> {
+            List<BaseMensagem> mensagens =
+                mensagemRepository.findByChatIdOrderByDataEnvioAsc(chat.getId());
+
+            return chatMapper.convertToChatVitrineResponseDTO(chat, mensagens);
+        });
+        .toList();
+
+    MeusChatsResponseDTO meusChats = new MeusChatsResponseDTO();
+    meusChats.setChats(chatVitrine);
+        return new ApiResponse<MeusChatsResponseDTO>("Chats encontrados.", meusChats);
+    }
 
 
     @Transactional

@@ -38,14 +38,14 @@ public class ChatController {
     }
 
     //todo: pegar todos os chats ( com a ultima mensagem enviada ).
-//    @GetMapping
-//    public ResponseEntity<ApiResponse<MeusChatsResponseDTO>> getChats(){
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        Usuario usuario = (Usuario)auth.getPrincipal();
-//        Long userId = usuario.getId();
-//        ApiResponse<MeusChatsResponseDTO> response = chatService.getChats(userId);
-//        return ResponseEntity.ok(response);
-//    }
+   @GetMapping
+   public ResponseEntity<ApiResponse<MeusChatsResponseDTO>> getChats(){
+       Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+       Usuario usuario = (Usuario)auth.getPrincipal();
+       Long userId = usuario.getId();
+       ApiResponse<MeusChatsResponseDTO> response = chatService.getChats(userId);
+       return ResponseEntity.ok(response);
+   }
 
     @PostMapping("/mensagem/{chat_id}")
     public ResponseEntity<ApiResponse<String>> enviarMensagem(@PathVariable("chat_id") Long chat_id, @RequestBody BaseMensagemDTO mensagem) {
