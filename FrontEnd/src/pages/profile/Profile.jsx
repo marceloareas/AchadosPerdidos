@@ -67,10 +67,7 @@ const Profile = () => {
       await updateUser(formtoSend);
       const { erro, response } = useUserStore.getState();
       if (!erro) {
-        showNotification(
-          response || "Usuário Atualizado com sucesso",
-          "success"
-        );
+        showNotification(response, "success");
         setTimeout(() => {
           onNavigate("/");
         }, 1500);

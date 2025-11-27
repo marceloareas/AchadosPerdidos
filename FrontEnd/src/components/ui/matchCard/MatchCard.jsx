@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Card, CardContent } from "@mui/material";
-import { Trash2 } from "lucide-react";
+import { Trash2, Archive, ArchiveRestore } from "lucide-react";
 import ItemCard from "../itemCard/ItemCard";
 import CustomButton from "../button/CustomButton";
 import { MessageCircle } from "lucide-react";
@@ -13,28 +13,62 @@ import useMatchStore from "../../../store/match";
 const MatchCard = ({ match }) => {
   const itemUsuario = match.itemUsuario;
   const itemOposto = match.itemOposto;
-  console.log(match);
-  const [openModalDelete, setOpenDelete] = useState(false);
-  const handleModalOpen = () => setOpenDelete(true);
-  const handleModalClose = () => setOpenDelete(false);
-  const { showNotification } = useNotification();
-  const [isLoading, setIsLoading] = useState(false);
-  const { deleteMatch } = useMatchStore();
 
-  const handleDelete = async (id) => {
+  const [openModal, setOpenModal] = useState(false);
+  const [modalType, setModalType] = useState(null); 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleModalOpen = (type) => {
+    setModalType(type);
+    setOpenModal(true);
+  };
+  const handleModalClose = () => setOpenModal(false);
+
+  const { showNotification } = useNotification();
+
+  const { deleteMatch, matchArchive, matchActivate } = useMatchStore();
+
+  const isUsersItemAchado = itemUsuario.tipo === "ACHADO";
+  const isArchived = isUsersItemAchado
+    ? match.arquivadoPorItemAchado
+    : match.arquivadoPorItemPerdido;
+
+  const handleDelete = async () => {
+    setIsLoading(true);
     try {
-      await deleteMatch(id);
-      const { error, response } = useMatchStore.getState();
+      await deleteMatch(match.id);
+      showNotification("Match deletado!", "success");
+      await get().getMatchesAtivos();
+      await get().getMatchesArquivados();
       handleModalClose();
-      if (!error) {
-        showNotification(response, "success");
-        setIsLoading(true);
-      } else {
-        showNotification(response, "error");
-        setTimeout(() => setIsLoading(false), 1000);
-      }
     } catch (err) {
-      showNotification(err, "error");
+      showNotification("Erro ao deletar.", "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleArchive = async () => {
+    setIsLoading(true);
+    try {
+      await matchArchive(match.id);
+      showNotification("Match arquivado!", "success");
+      handleModalClose();
+    } catch (err) {
+      showNotification("Erro ao arquivar.", "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRestore = async () => {
+    setIsLoading(true);
+    try {
+      await matchActivate(match.id);
+      showNotification("Match restaurado!", "success");
+    } catch (err) {
+      showNotification("Erro ao restaurar.", "error");
+    } finally {
       setIsLoading(false);
     }
   };
@@ -43,11 +77,20 @@ const MatchCard = ({ match }) => {
     <>
       <Card className={style.matchCard} variant="outlined">
         <CardContent className={style.matchCardContent}>
-          <Trash2
-            className={style.option_icon_delete}
-            onClick={handleModalOpen}
-          />
-          {/* Item 1 */}
+          {/* --- Ícone de ação --- */}
+          {!isArchived ? (
+            <Archive
+              className={style.option_icon_delete}
+              onClick={() => handleModalOpen("archive")}
+            />
+          ) : (
+            <Trash2
+              className={style.option_icon_delete}
+              onClick={() => handleModalOpen("delete")}
+            />
+          )}
+
+          {/* Item do usuário */}
           <ItemCard
             showDescription={false}
             showOptions={false}
@@ -59,7 +102,7 @@ const MatchCard = ({ match }) => {
             personName={itemUsuario?.personName}
           />
 
-          {/* Item 2 */}
+          {/* Item da outra pessoa */}
           <ItemCard
             showDescription={false}
             showOptions={false}
@@ -71,24 +114,44 @@ const MatchCard = ({ match }) => {
             personName={itemOposto?.personName}
           />
 
-          {/* Botão de conversa */}
-          <Link to={`/chat/${match.id}`} className={style.matchChatLink}>
+          {!isArchived ? (
+            <Link to={`/chat/${match.id}`} className={style.matchChatLink}>
+              <CustomButton
+                variant={"default"}
+                className={style.matchChatButton}
+                fullWidth
+              >
+                <MessageCircle className={style.icon} />
+                {match.chat ? "Continuar conversa" : "Iniciar conversa"}
+              </CustomButton>
+            </Link>
+          ) : (
             <CustomButton
               variant={"default"}
               className={style.matchChatButton}
               fullWidth
+              onClick={handleRestore}
             >
-              <MessageCircle className={style.icon} />
-              {match.chat ? "Continuar conversa" : "Iniciar conversa"}
+              <ArchiveRestore className={style.icon} />
+              Restaurar Match
             </CustomButton>
-          </Link>
+          )}
         </CardContent>
       </Card>
+
       <ModalDelete
-        open={openModalDelete}
+        open={openModal}
         onClose={handleModalClose}
-        title={"Desejas recusar/deletar este match?"}
-        content={"Essa operação não poderá ser desfeita."}
+        title={
+          modalType === "delete"
+            ? "Deseja deletar este match?"
+            : "Deseja arquivar este match?"
+        }
+        content={
+          modalType === "delete"
+            ? "Essa operação não poderá ser desfeita."
+            : "Você poderá restaurar o match depois."
+        }
       >
         <CustomButton
           type="button"
@@ -97,16 +160,23 @@ const MatchCard = ({ match }) => {
           onClick={handleModalClose}
           disabled={isLoading}
         >
-          {isLoading ? "Cancelar..." : "Cancelar"}
+          {isLoading ? "Cancelando..." : "Cancelar"}
         </CustomButton>
+
         <CustomButton
           type="button"
-          variant="destructive"
+          variant={modalType === "delete" ? "destructive" : "default"}
           size="lg"
-          onClick={() => handleDelete(match.id)}
+          onClick={modalType === "delete" ? handleDelete : handleArchive}
           disabled={isLoading}
         >
-          {isLoading ? "Deletando..." : "Deletar"}
+          {isLoading
+            ? modalType === "delete"
+              ? "Deletando..."
+              : "Arquivando..."
+            : modalType === "delete"
+            ? "Deletar"
+            : "Arquivar"}
         </CustomButton>
       </ModalDelete>
     </>

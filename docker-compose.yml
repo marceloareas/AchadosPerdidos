@@ -35,7 +35,7 @@ services:
     networks:
       - bridge_achados
   postgresql_db:
-    container_name: achados-postgresql
+    container_name: achados_postgresql
     image: postgres:14
     ports:
       - "${DB_PORT}:5432"
@@ -56,7 +56,7 @@ services:
       - bridge_achados
   mongo_db:
     image: mongo:7
-    container_name: achados-mongo
+    container_name: achados_mongo
     ports:
       - "27017:27017"
     volumes:
@@ -91,6 +91,26 @@ services:
       - ollama_data:/root/.ollama
     networks:
       - bridge_achados
+  rabbitmq:
+    container_name: achados_rabbitmq
+    image: rabbitmq:3.12-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-guest}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD:-guest}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bridge_achados
+      
+    
 
 
 volumes:
@@ -99,6 +119,8 @@ volumes:
   datalake_mongo:
     driver: local
   ollama_data:
+    driver: local
+  rabbitmq_data:
     driver: local
 
 networks:

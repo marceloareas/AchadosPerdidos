@@ -94,6 +94,8 @@ public class MatchService {
             dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(itemOposto));
             dto.setConfirmacaoItemAchado(match.isConfirmacaoAchado());
             dto.setConfirmacaoItemPerdido(match.isConfirmacaoPerdido());
+            dto.setArquivadoPorItemAchado(match.isArquivadoPorItemAchado());
+            dto.setArquivadoPorItemPerdido(match.isArquivadoPorItemPerdido());
             matchResponseDTOList.add(dto);
         }
         return matchResponseDTOList;
@@ -174,7 +176,86 @@ public class MatchService {
         }
 
         matchRepository.delete(match);
-        return "Match deletado com sucesso";
+        return "Match deletado com sucesso!";
+    }
+
+    // ARQUIVAMENTO DE MATCHS 
+    @Transactional
+    public void archiveMatch(Long matchId, Long userId) {
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
+
+        match.arquivarPorUsuario(userId);
+        matchRepository.save(match);
+    }  
+    
+    @Transactional
+    public void activateMatch(Long matchId, Long userId) {
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
+
+        match.desarquivarPorUsuario(userId);
+        matchRepository.save(match);
+    }   
+
+    // OBTER MATCHES ATIVOS DO USUARIO
+    public List<MatchResponseDTO> getAllActiveUserMaches(Long userd){
+        List<Match> userMatches = matchRepository.findAllActiveByUsuarioId(userd);
+       List<MatchResponseDTO> matchResponseDTOList = new ArrayList<MatchResponseDTO>();
+        for(Match match : userMatches){
+            // pula matches arquivados por esse usuario
+            if(match.isArquivadoPorUsuario(userd)){
+                continue;
+            }
+            Item itemAchado = match.getItemAchado();
+            Item itemPerdido = match.getItemPerdido();
+
+            boolean isUsersItemAchado = itemAchado.getUsuario().getId().equals(userd);
+
+            Item itemUsuario = isUsersItemAchado ? itemAchado : itemPerdido;
+            Item itemOposto = isUsersItemAchado ? itemPerdido : itemAchado;
+
+            MatchResponseDTO dto = new MatchResponseDTO();
+            dto.setId(match.getId());
+            dto.setItemUsuario(itemMapper.convertToItemMeusMatchesDTO(itemUsuario));
+            dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(itemOposto));
+            dto.setConfirmacaoItemAchado(match.isConfirmacaoAchado());
+            dto.setConfirmacaoItemPerdido(match.isConfirmacaoPerdido());
+            dto.setArquivadoPorItemAchado(match.isArquivadoPorItemAchado());
+            dto.setArquivadoPorItemPerdido(match.isArquivadoPorItemPerdido());
+            matchResponseDTOList.add(dto);
+        }
+        return matchResponseDTOList;
+    }
+
+    // OBTER MATCHES ARQUIVADOS DO USUARIO
+    public List<MatchResponseDTO> getAllArchivedUserMaches(Long userd){
+        List<Match> userMatches = matchRepository.findAllArchivedByUsuarioId(userd);
+       List<MatchResponseDTO> matchResponseDTOList = new ArrayList<MatchResponseDTO>();
+        for(Match match : userMatches){
+            // pula matches nao arquivados por esse usuario
+            if(!match.isArquivadoPorUsuario(userd)){
+                continue;
+            }
+            Item itemAchado = match.getItemAchado();
+            Item itemPerdido = match.getItemPerdido();
+
+            boolean isUsersItemAchado = itemAchado.getUsuario().getId().equals(userd);
+
+            Item itemUsuario = isUsersItemAchado ? itemAchado : itemPerdido;
+            Item itemOposto = isUsersItemAchado ? itemPerdido : itemAchado;
+
+            MatchResponseDTO dto = new MatchResponseDTO();
+            dto.setId(match.getId());
+            dto.setItemUsuario(itemMapper.convertToItemMeusMatchesDTO(itemUsuario));
+            dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(itemOposto));
+            dto.setConfirmacaoItemAchado(match.isConfirmacaoAchado());
+            dto.setConfirmacaoItemPerdido(match.isConfirmacaoPerdido());
+            dto.setArquivadoPorItemAchado(match.isArquivadoPorItemAchado());
+            dto.setArquivadoPorItemPerdido(match.isArquivadoPorItemPerdido());
+            matchResponseDTOList.add(dto);
+        }
+        return matchResponseDTOList;
     }
 
     /**
@@ -209,9 +290,6 @@ public class MatchService {
         }).then(); // Converte para Mono<Void> e sinaliza conclusão
     }
 
-
-
-
     public MatchAPIItemDTO convertToMatchItem(Item item){
             List<String> categorias = item.getCategorias().stream().map(Categoria::getNome).toList();
 
@@ -225,4 +303,6 @@ public class MatchService {
 
             return dto;
     }
+
+
 }

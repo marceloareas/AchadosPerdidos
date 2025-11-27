@@ -1,7 +1,7 @@
 @use '../../styles/variables.scss' as *;
 
 .body_footer {
-    display: flex;
+    display: none;
     position: fixed;
     z-index: 100;
     bottom: 0;
@@ -47,6 +47,7 @@
 
 @media(max-width:600px) {
     .body_footer {
+        display: flex;
         opacity: 1;
     }
 

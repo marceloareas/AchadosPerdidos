@@ -48,7 +48,7 @@ const Login = () => {
           email: "",
           senha: "",
         });
-        showNotification("Login realizado com sucesso!", "success");
+        showNotification(response, "success");
         setTimeout(() => {
           setIsLoading(false);
           onNavigate("/");

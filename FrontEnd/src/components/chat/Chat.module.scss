@@ -1,0 +1,242 @@
+@use '../../styles/variables.scss' as *;
+
+
+// Layout wrapper para o chat
+.chatLayout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+  position: relative;
+}
+
+
+//HEADER
+.headerChat {
+  display: flex;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  justify-content: flex-start;
+  gap: 5%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  padding: 10px 0px;
+  align-items: center;
+  background: white;
+  z-index: 12;
+
+  .info {
+    display: flex;
+    width: fit-content;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 2%;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: flex-start;
+
+    h6 {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .iconBackListChats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .back_chats {
+      position: relative;
+      left: 10%;
+      color: $primary-color;
+      cursor: pointer;
+    }
+  }
+
+
+  .MuiButtonBase-root {
+    position: relative;
+    margin-left: auto;
+    margin-right: 40px;
+
+    @media(max-width:900px) {
+      font-size: 0.625rem !important;
+      margin-right: 20px;
+    }
+
+    @media(max-width:700px) {
+      font-size: 0.575rem !important;
+      margin-right: 10px;
+    }
+  }
+
+}
+
+
+
+//CONTENT
+.contentChat {
+  margin-top: 0;
+  /* sem gap entre header e mensagens */
+  flex: 1 1 auto;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: $primary-color #e7e7e700;
+  padding: 8px 0;
+  /* apenas espaçamento interno leve */
+}
+
+.contentChat::-webkit-scrollbar {
+  width: 10px;
+}
+
+.contentChat::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+.contentChat::-webkit-scrollbar-thumb {
+  background: $primary-color;
+  border-radius: 10px;
+}
+
+
+//INPUT (fixo inferior)
+.wrapInputChat {
+  display: flex;
+  // margin: 0 12px 15px 12px;
+  margin: 5px 12px 25px 12px;
+  align-items: flex-end;
+  gap: 15px;
+  // background-color: white;
+  border-radius: 40px;
+  background: $primary-color-transparent;
+  // padding: 12px 16px;
+  padding: 7px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+
+  .inputMessage {
+    flex: 1;
+    display: block;
+    width: 100%;
+    min-height: 20px;
+    max-height: 96px;
+    font-size: 18px;
+    line-height: 1.1;
+    resize: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    white-space: pre-wrap;
+    word-break: break-word;
+
+    outline: none;
+    scrollbar-width: none;
+    border: none;
+    // border-radius: 40px;
+    // padding: 10px 14px;
+    // background-color: #A8E2F2;
+    // padding: 5px 10px;
+    padding: 0px 15px 10px 15px;
+    background-color: transparent;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+  }
+
+  .inputMessage:focus {
+    outline: none;
+  }
+
+  .iconSendMessage {
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    padding: 10px;
+    font-size: 20px;
+    border: none;
+    border-radius: 50%;
+    background-color: #5C8DF6;
+  }
+
+  .iconSendMessage:hover {
+    cursor: pointer;
+  }
+}
+
+
+//CONTENT MESSAGE
+.balao {
+  margin: 0 1% 0 2%;
+  max-width: 95%;
+  position: relative;
+  display: block;
+
+  p {
+    display: flex;
+    margin: 0 0 2px;
+    padding: 0.5em 1em 0.65em;
+    border-radius: 4px;
+    background: #e5e5ea;
+    max-width: max-content;
+    clear: both;
+    position: relative;
+  }
+
+  .them p {
+    border-top-right-radius: 1em;
+    border-bottom-right-radius: 1em;
+  }
+
+  .them p:last-child::after {
+    content: "";
+    position: absolute;
+    left: -0.5em;
+    bottom: 0;
+    width: 0.5em;
+    height: 1em;
+    border-right: 0.5em solid #e5e5ea;
+    border-bottom-right-radius: 1em 0.5em;
+  }
+
+  .userMe p {
+    float: right;
+    background-color: #1289fe;
+    color: white;
+    border-top-left-radius: 1em;
+    border-bottom-left-radius: 1em;
+  }
+
+  .userMe p:last-child::after {
+    content: "";
+    position: absolute;
+    right: -0.5em;
+    bottom: 0;
+    width: 0.5em;
+    height: 1em;
+    border-left: 0.5em solid #1289fe;
+    border-bottom-left-radius: 1em 0.5em;
+  }
+
+  p:first-child {
+    border-top-right-radius: 1em;
+    border-top-left-radius: 1em;
+  }
+
+  p:last-child {
+    border-bottom-left-radius: 1em;
+    margin-bottom: 8px;
+  }
+
+  .userMe p:last-child {
+    border-bottom-left-radius: 1em;
+    border-bottom-right-radius: 1em;
+    margin-bottom: 8px;
+  }
+}

@@ -7,7 +7,16 @@
 .header {
   margin-bottom: 24px;
   text-align: center;
+  position: relative;
+
+  .archiveIcon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+  }
 }
+
 
 .typography {
   margin: 0 10% !important;

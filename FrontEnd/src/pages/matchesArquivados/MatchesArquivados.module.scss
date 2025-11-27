@@ -1,0 +1,26 @@
+.matchesPage {
+  min-height: 100vh;
+  padding: 24px;
+  background-color: #f5f5f5;
+}
+
+.header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.typography {
+  margin: 0 10% !important;
+}
+
+.matchList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px 0;
+  color: #666;
+}

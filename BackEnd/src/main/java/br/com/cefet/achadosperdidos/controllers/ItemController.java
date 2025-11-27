@@ -6,12 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
 
 import br.com.cefet.achadosperdidos.dto.item.ItemRequestDTO;
 import br.com.cefet.achadosperdidos.dto.item.ItemResponseDTO;
 import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.dto.item.ItemRecentementeRetornadoResponseDTO;
 import br.com.cefet.achadosperdidos.services.ItemService;
+import br.com.cefet.achadosperdidos.dto.res.ApiResponse;
 
 @RestController
 @RequestMapping(value = "/item")
@@ -47,19 +49,32 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemResponseDTO> createItem(@RequestBody ItemRequestDTO itemRequestDTO){
+    // public ResponseEntity<ItemResponseDTO> createItem(@RequestBody ItemRequestDTO itemRequestDTO){
+    public ResponseEntity<ApiResponse<ItemResponseDTO>> createItem(@RequestBody ItemRequestDTO itemRequestDTO){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario user = (Usuario)auth.getPrincipal();
         ItemResponseDTO item = itemService.createItem(itemRequestDTO, user);
-        return ResponseEntity.ok(item);
+        
+        ApiResponse<ItemResponseDTO> response = new ApiResponse(
+            "Item cadastrado com sucesso!",
+            "item",
+            item
+            );
+            
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    //     return ResponseEntity.ok(item);
     }
 
     @PatchMapping("/{itemId}")
-    public ResponseEntity<ItemResponseDTO> patchItem(@PathVariable Long itemId, @RequestBody ItemRequestDTO itemRequestDTO){
+    // public ResponseEntity<ItemResponseDTO> patchItem(@PathVariable Long itemId, @RequestBody ItemRequestDTO itemRequestDTO){
+    public ResponseEntity<ApiResponse<ItemResponseDTO>> patchItem(@PathVariable Long itemId, @RequestBody ItemRequestDTO itemRequestDTO){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario)auth.getPrincipal();
         ItemResponseDTO itemAtualizado = itemService.patchItem(itemId, itemRequestDTO, usuario);
-        return ResponseEntity.ok(itemAtualizado);
+
+        ApiResponse<ItemResponseDTO> response = new ApiResponse<>("Item Atualizado com sucesso!","item", itemAtualizado);
+        // return ResponseEntity.ok(itemAtualizado);
+        return ResponseEntity.ok(response);    
     }
 
     @DeleteMapping("/{itemId}")
