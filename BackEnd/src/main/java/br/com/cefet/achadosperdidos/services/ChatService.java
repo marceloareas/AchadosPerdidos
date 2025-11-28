@@ -8,6 +8,7 @@ import java.util.Set;
 import br.com.cefet.achadosperdidos.domain.model.BaseMensagem;
 import br.com.cefet.achadosperdidos.dto.chat.ChatComMensagensDTO;
 import br.com.cefet.achadosperdidos.dto.chat.MeusChatsResponseDTO;
+import br.com.cefet.achadosperdidos.dto.chat.ChatVitrineResponseDTO;
 import br.com.cefet.achadosperdidos.repositories.MensagemRepository;
 import br.com.cefet.achadosperdidos.services.factories.MensagemFactory;
 import org.springframework.beans.factory.annotation.Autowired;

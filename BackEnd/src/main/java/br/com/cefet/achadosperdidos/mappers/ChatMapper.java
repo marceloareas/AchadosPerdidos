@@ -64,9 +64,9 @@ public class ChatMapper {
         chatVitrineResponseDTO.setId(chat.getId());
         chatVitrineResponseDTO.setMatch_id(matchCorrespondente.getId());
 
-        Set<suarioResponseDTO> usuarioSet = new HashSet<>();
-        usuarioSet.add(matchCorrespondente.getItemPerdido().getUsuario());
-        usuarioSet.add(matchCorrespondente.getItemAchado().getUsuario());
+        Set<UsuarioResponseDTO> usuarioSet = new HashSet<>();
+        usuarioSet.add(usuarioMapper.convertToResponseDTO(matchCorrespondente.getItemPerdido().getUsuario()));
+        usuarioSet.add(usuarioMapper.convertToResponseDTO(matchCorrespondente.getItemAchado().getUsuario()));
         chatVitrineResponseDTO.setUsuarios(usuarioSet);
 
         chatVitrineResponseDTO.setNomeItemPerdido(matchCorrespondente.getItemPerdido().getNome());
