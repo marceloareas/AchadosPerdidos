@@ -4,7 +4,7 @@ import { IoReturnUpBackOutline } from "react-icons/io5";
 import { Typography, Box } from "@mui/material";
 import CustomButton from "../ui/button/CustomButton.jsx";
 
-const HeaderChat = ({ item, usuario, onBack }) => {
+const HeaderChat = ({ item, usuario, onBack, openModal }) => {
   // Responsividade
   const [windowWidth, setWidth] = useState(window.innerWidth);
   const sizePage = windowWidth > 600 ? false : true;
@@ -49,6 +49,7 @@ const HeaderChat = ({ item, usuario, onBack }) => {
         className={`${style["MuiButtonBase-root"]}`}
         variant={"outline"}
         size={"sm"}
+        onClick={openModal}
       >
         Confirmar Devolução
       </CustomButton>

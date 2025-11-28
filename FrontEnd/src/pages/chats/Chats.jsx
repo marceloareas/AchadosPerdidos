@@ -44,7 +44,7 @@ const Chats = () => {
           nome: "Maria",
         },
       ],
-      match_id: "match_1",
+      match_id: 2,
     },
     {
       id: 2,
@@ -213,6 +213,7 @@ const Chats = () => {
           <section className={style.unitChat}>
             {chatSelect ? (
               <Chat
+                match={chatSelect.match_id}
                 item={chatSelect.item}
                 person={chatSelect.usuarios_chat[1]}
                 mensagens={chatSelect.mensagem_texto}
