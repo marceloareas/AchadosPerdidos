@@ -15,7 +15,7 @@ const MatchCard = ({ match }) => {
   const itemOposto = match.itemOposto;
 
   const [openModal, setOpenModal] = useState(false);
-  const [modalType, setModalType] = useState(null); 
+  const [modalType, setModalType] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleModalOpen = (type) => {
@@ -33,40 +33,57 @@ const MatchCard = ({ match }) => {
     ? match.arquivadoPorItemAchado
     : match.arquivadoPorItemPerdido;
 
-  const handleDelete = async () => {
+  const handleDelete = async (idMatch) => {
     setIsLoading(true);
     try {
-      await deleteMatch(match.id);
-      showNotification("Match deletado!", "success");
-      await get().getMatchesAtivos();
-      await get().getMatchesArquivados();
+      await deleteMatch(idMatch);
+      const { error, response } = useMatchStore.getState();
       handleModalClose();
-    } catch (err) {
-      showNotification("Erro ao deletar.", "error");
+      if (!error) {
+        showNotification(response, "success");
+        await get().getMatchesAtivos();
+        await get().getMatchesArquivados();
+      } else {
+        showNotification(response, "error");
+        setTimeout(() => setIsLoading(false), 1000);
+      }
+    } catch {
+      showNotification("Erro ao deletar!", "error");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleArchive = async () => {
+  const handleArchive = async (idMatch) => {
     setIsLoading(true);
     try {
-      await matchArchive(match.id);
-      showNotification("Match arquivado!", "success");
+      await matchArchive(idMatch);
+      const { error, response } = useMatchStore.getState();
+      if (!error) {
+        showNotification(response, "success");
+      } else {
+        showNotification("Erro ao arquivar.", "error");
+      }
       handleModalClose();
-    } catch (err) {
+    } catch {
       showNotification("Erro ao arquivar.", "error");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleRestore = async () => {
+  const handleRestore = async (idMatch) => {
     setIsLoading(true);
+
     try {
-      await matchActivate(match.id);
-      showNotification("Match restaurado!", "success");
-    } catch (err) {
+      await matchActivate(idMatch);
+      const { error, response } = useMatchStore.getState();
+      if (!error) {
+        showNotification(response, "success");
+      } else {
+        showNotification("Erro ao restaurar.", "error");
+      }
+    } catch {
       showNotification("Erro ao restaurar.", "error");
     } finally {
       setIsLoading(false);
@@ -130,7 +147,7 @@ const MatchCard = ({ match }) => {
               variant={"default"}
               className={style.matchChatButton}
               fullWidth
-              onClick={handleRestore}
+              onClick={() => handleRestore(match.id)}
             >
               <ArchiveRestore className={style.icon} />
               Restaurar Match
@@ -167,7 +184,11 @@ const MatchCard = ({ match }) => {
           type="button"
           variant={modalType === "delete" ? "destructive" : "default"}
           size="lg"
-          onClick={modalType === "delete" ? handleDelete : handleArchive}
+          onClick={
+            modalType === "delete"
+              ? () => handleDelete(match.id)
+              : () => handleArchive(match.id)
+          }
           disabled={isLoading}
         >
           {isLoading

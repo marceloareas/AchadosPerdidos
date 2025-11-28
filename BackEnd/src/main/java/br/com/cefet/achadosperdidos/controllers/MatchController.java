@@ -79,7 +79,7 @@ public class MatchController {
         Long userId = ((Usuario)auth.getPrincipal()).getId();
 
         matchService.activateMatch(matchId, userId);
-        return ResponseEntity.ok(new ApiResponse<>("Match ativado!", null, null));
+        return ResponseEntity.ok(new ApiResponse<>("Match Restaurado!", null, null));
 
     }
 
