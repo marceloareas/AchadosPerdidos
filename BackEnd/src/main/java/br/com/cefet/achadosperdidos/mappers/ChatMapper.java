@@ -26,7 +26,6 @@ public class ChatMapper {
 
     @Autowired
     private UsuarioMapper usuarioMapper;
-    
 
     public BaseChatResponseDTO convertToBaseChatResponseDTO(Chat chat) {
         BaseChatResponseDTO dto = new BaseChatResponseDTO();
@@ -38,7 +37,7 @@ public class ChatMapper {
         return dto;
     }
 
-    public ChatComMensagensDTO convertToChatComMensagensDTO(Chat chat, List<BaseMensagem> mensagens){
+    public ChatComMensagensDTO convertToChatComMensagensDTO(Chat chat, List<BaseMensagem> mensagens) {
 
         Match matchCorrespondente = chat.getMatch();
         ChatComMensagensDTO chatComMensagensDTO = new ChatComMensagensDTO();
@@ -56,7 +55,7 @@ public class ChatMapper {
 
     }
 
-   public ChatVitrineResponseDTO convertToChatVitrineResponseDTO(Chat chat, List<BaseMensagem> mensagens){
+    public ChatVitrineResponseDTO convertToChatVitrineResponseDTO(Chat chat, List<BaseMensagem> mensagens) {
 
         Match matchCorrespondente = chat.getMatch();
 
@@ -71,10 +70,17 @@ public class ChatMapper {
 
         chatVitrineResponseDTO.setNomeItemPerdido(matchCorrespondente.getItemPerdido().getNome());
         chatVitrineResponseDTO.setNomeItemAchado(matchCorrespondente.getItemAchado().getNome());
-        chatVitrineResponseDTO.setUltimaMensagem(mensagemMapper.mapMensagemParaDTO(mensagens.get(mensagens.size() - 1)));
+        BaseMensagem ultima
+                = (mensagens != null && !mensagens.isEmpty())
+                ? mensagens.get(mensagens.size() - 1)
+                : null;
+
+        chatVitrineResponseDTO.setUltimaMensagem(
+                ultima != null ? mensagemMapper.mapMensagemParaDTO(ultima) : null
+        );
 
         return chatVitrineResponseDTO;
-   }
+    }
 
 //    public CreateChatResponseDTO convertToCreateChatResponseDTO(Chat chat, Boolean jaExiste) {
 //        CreateChatResponseDTO dto = new CreateChatResponseDTO();

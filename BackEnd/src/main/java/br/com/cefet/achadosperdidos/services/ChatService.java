@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Collections;
 
 import br.com.cefet.achadosperdidos.domain.model.BaseMensagem;
 import br.com.cefet.achadosperdidos.dto.chat.ChatComMensagensDTO;
@@ -41,38 +42,43 @@ public class ChatService {
     @Autowired
     private ChatMapper chatMapper;
 
-   @Transactional
-   public ApiResponse<MeusChatsResponseDTO> getChats(Long userId){
-    List<Chat> chatList = this.chatRepository.findByUsuarioId(userId);
-    List<ChatVitrineResponseDTO> chatVitrine = chatList.stream()
-        .map(chat -> {
-            List<BaseMensagem> mensagens =
-                mensagemRepository.findByChatIdOrderByDataEnvioAsc(chat.getId());
+    @Transactional
+    public ApiResponse<MeusChatsResponseDTO> getChats(Long userId) {
+        List<Chat> chatList = this.chatRepository.findByUsuarioId(userId);
+        List<ChatVitrineResponseDTO> chatVitrine = chatList.stream()
+                .map(chat -> {
+                    List<BaseMensagem> mensagens
+                            = mensagemRepository.findByChatIdOrderByDataEnvioAsc(chat.getId());
 
-            return chatMapper.convertToChatVitrineResponseDTO(chat, mensagens);
-        }).toList();
+                    if (mensagens == null) {
+                        mensagens = Collections.emptyList();
+                    }
 
-    MeusChatsResponseDTO meusChats = new MeusChatsResponseDTO();
-    meusChats.setChats(chatVitrine);
+                    return chatMapper.convertToChatVitrineResponseDTO(chat, mensagens);
+                }).toList();
+
+        MeusChatsResponseDTO meusChats = new MeusChatsResponseDTO();
+        meusChats.setChats(chatVitrine);
         return new ApiResponse<MeusChatsResponseDTO>("Chats encontrados.", meusChats);
     }
 
-
     @Transactional
-    public ApiResponse<ChatComMensagensDTO> getChat(Long match_id, Usuario usuario){
+    public ApiResponse<ChatComMensagensDTO> getChat(Long match_id, Usuario usuario) {
         Match match = matchRepository.findById(match_id).orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
-
 
         boolean isUsuarioItemAchado = usuario.getId().equals(match.getItemAchado().getUsuario().getId());
         boolean isUsuarioItemPerdido = usuario.getId().equals(match.getItemPerdido().getUsuario().getId());
-        if(!isUsuarioItemAchado && !isUsuarioItemPerdido) throw new NotAuthorized("Chat não pertence ao usuario.");
-        
+        if (!isUsuarioItemAchado && !isUsuarioItemPerdido) {
+            throw new NotAuthorized("Chat não pertence ao usuario.");
+        }
 
         Optional<Chat> alreadyExistingChat = chatRepository.findByMatchId(match_id);
 
-        if(alreadyExistingChat.isPresent()) {
+        if (alreadyExistingChat.isPresent()) {
             Chat chat = alreadyExistingChat.get();
+            System.out.println("chat.getId() = " + chat.getId());
             List<BaseMensagem> mensagens = mensagemRepository.findByChatIdOrderByDataEnvioAsc(chat.getId());
+            System.out.println("mensagens encontradas = " + mensagens.size()); // teste rápido
 
             return new ApiResponse<ChatComMensagensDTO>("Chat encontrado com sucesso.", chatMapper.convertToChatComMensagensDTO(chat, mensagens));
         }
@@ -87,14 +93,13 @@ public class ChatService {
         usuarios.add(match.getItemPerdido().getUsuario());
 
         chat.setUsuarios(usuarios);
-
         chatRepository.save(chat);
 
-        return new ApiResponse<ChatComMensagensDTO>("Chat criado com sucesso.", chatMapper.convertToChatComMensagensDTO(chat, null));
+        return new ApiResponse<ChatComMensagensDTO>("Chat criado com sucesso.", chatMapper.convertToChatComMensagensDTO(chat, Collections.emptyList()));
     }
 
     @Transactional
-    public ApiResponse<String> enviarMensagem(Long chat_id, BaseMensagemDTO mensagemDTO){
+    public ApiResponse<String> enviarMensagem(Long chat_id, BaseMensagemDTO mensagemDTO) {
 
         MensagemFactory mensagemFactory = new MensagemFactory();
         BaseMensagem mensagem = mensagemFactory.criarMensagem(chat_id, mensagemDTO);
@@ -103,11 +108,7 @@ public class ChatService {
         //todo:  instanciar mensagem com factory
 
         //todo:  save na mensagem com ChatRepository
-
         //todo:  Enviar mensagem para 
-        
-
-
         return new ApiResponse<String>("Mensagem enviada com sucesso.", null);
     }
 }
