@@ -78,6 +78,17 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+            <version>3.5.7</version>
+        </dependency>
+
         <!--DATABASE DEPENDENCIES-->
 		<dependency>
 			<groupId>org.postgresql</groupId>

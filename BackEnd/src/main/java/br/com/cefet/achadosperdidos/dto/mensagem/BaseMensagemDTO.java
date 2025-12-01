@@ -12,5 +12,6 @@ public class BaseMensagemDTO {
     private LocalDateTime dataEnvio;
     private TipoMensagemEnum tipo;
     private Long remetenteId;
+    private Long destinatarioId;
     private String conteudo;
 }

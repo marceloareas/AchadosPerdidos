@@ -6,12 +6,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Collections;
 
+import br.com.cefet.achadosperdidos.config.RabbitConfig;
 import br.com.cefet.achadosperdidos.domain.model.BaseMensagem;
 import br.com.cefet.achadosperdidos.dto.chat.ChatComMensagensDTO;
 import br.com.cefet.achadosperdidos.dto.chat.MeusChatsResponseDTO;
 import br.com.cefet.achadosperdidos.dto.chat.ChatVitrineResponseDTO;
 import br.com.cefet.achadosperdidos.repositories.MensagemRepository;
 import br.com.cefet.achadosperdidos.services.factories.MensagemFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,7 @@ import br.com.cefet.achadosperdidos.mappers.ChatMapper;
 import br.com.cefet.achadosperdidos.repositories.ChatRepository;
 import br.com.cefet.achadosperdidos.repositories.MatchRepository;
 import jakarta.transaction.Transactional;
+
 
 @Service
 public class ChatService {
@@ -61,6 +64,20 @@ public class ChatService {
         meusChats.setChats(chatVitrine);
         return new ApiResponse<MeusChatsResponseDTO>("Chats encontrados.", meusChats);
     }
+    @Autowired
+    private MensagemFactory mensagemFactory;
+
+    @Autowired
+    private RabbitConfig rabbitConfig;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+//    @Transactional
+//    public ApiResponse<MeusChatsResponseDTO> getChats(Long userId){
+//        List<Chat> chatList = this.chatRepository.findByUsuarioId(userId);
+////        return chatList.stream().map(ChatMapper::)
+//    }
+
 
     @Transactional
     public ApiResponse<ChatComMensagensDTO> getChat(Long match_id, Usuario usuario) {
@@ -99,14 +116,21 @@ public class ChatService {
     @Transactional
     public ApiResponse<String> enviarMensagem(Long chat_id, BaseMensagemDTO mensagemDTO) {
 
-        MensagemFactory mensagemFactory = new MensagemFactory();
         BaseMensagem mensagem = mensagemFactory.criarMensagem(chat_id, mensagemDTO);
 
-        mensagemRepository.save(mensagem);
-        //todo:  instanciar mensagem com factory
+        BaseMensagem mensagemSalva = mensagemRepository.save(mensagem);
+        //todo: modificar a mensagem para ser enviada de acordo com a instancia (usar factory).
 
         //todo:  save na mensagem com ChatRepository
         //todo:  Enviar mensagem para 
+        String routingKey =  "user." + mensagemDTO.getDestinatarioId();
+        
+        rabbitTemplate.convertAndSend(
+            RabbitConfig.TOPIC_EXCHANGE_NAME,
+            routingKey,
+            mensagemSalva
+        );
+
         return new ApiResponse<String>("Mensagem enviada com sucesso.", null);
     }
 }

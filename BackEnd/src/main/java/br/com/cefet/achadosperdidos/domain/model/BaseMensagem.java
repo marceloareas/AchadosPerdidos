@@ -13,12 +13,13 @@ import lombok.Setter;
 @ToString
 @Document(collection = "mensagens")
 public class BaseMensagem {
-    public BaseMensagem(TipoMensagemEnum tipo, Long chatId, LocalDateTime dataEnvio, Long remetenteId, String conteudo) {
+    public BaseMensagem(TipoMensagemEnum tipo, Long chatId, LocalDateTime dataEnvio, Long remetenteId, Long destinatarioId, String conteudo) {
         this.tipo = tipo;
         this.chatId = chatId;
         this.dataEnvio = dataEnvio;
         this.remetenteId = remetenteId;
         this.conteudo = conteudo;
+        this.destinatarioId = destinatarioId;
     }
 
     @Id
@@ -40,6 +41,10 @@ public class BaseMensagem {
     @Getter
     @Setter
     private Long remetenteId;
+
+    @Getter
+    @Setter
+    private Long destinatarioId;
     
     @Getter
     @Setter

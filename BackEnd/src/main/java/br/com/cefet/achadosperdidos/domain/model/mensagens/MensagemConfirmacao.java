@@ -6,7 +6,7 @@ import br.com.cefet.achadosperdidos.domain.model.BaseMensagem;
 import java.time.LocalDateTime;
 
 public class MensagemConfirmacao extends BaseMensagem {
-    public MensagemConfirmacao(TipoMensagemEnum tipo, Long chatId, LocalDateTime dataEnvio, Long remetenteId, String conteudo) {
-        super(tipo, chatId, dataEnvio, remetenteId, conteudo);
+    public MensagemConfirmacao(TipoMensagemEnum tipo, Long chatId, LocalDateTime dataEnvio, Long remetenteId, Long destinatarioId, String conteudo) {
+        super(tipo, chatId, dataEnvio, remetenteId, destinatarioId, conteudo);
     }
 }

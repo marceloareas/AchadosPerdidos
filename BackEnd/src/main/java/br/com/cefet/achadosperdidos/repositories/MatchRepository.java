@@ -21,5 +21,5 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
     List<Match> findAllActiveByUsuarioId(@Param("userId") Long userId);         
     
     @Query("SELECT m FROM Match m WHERE (m.itemPerdido.usuario.id = :userId AND m.arquivadoPorItemPerdido = true) OR (m.itemAchado.usuario.id = :userId AND m.arquivadoPorItemAchado = true)")
-    List<Match> findAllArchivedByUsuarioId(@Param("userId") Long userId);  
+    List<Match> findAllArchivedByUsuarioId(@Param("userId") Long userId);
 }
