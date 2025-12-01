@@ -76,11 +76,9 @@ public class ChatService {
 
         if (alreadyExistingChat.isPresent()) {
             Chat chat = alreadyExistingChat.get();
-            System.out.println("chat.getId() = " + chat.getId());
             List<BaseMensagem> mensagens = mensagemRepository.findByChatIdOrderByDataEnvioAsc(chat.getId());
-            System.out.println("mensagens encontradas = " + mensagens.size()); // teste rápido
 
-            return new ApiResponse<ChatComMensagensDTO>("Chat encontrado com sucesso.", chatMapper.convertToChatComMensagensDTO(chat, mensagens));
+            return new ApiResponse<ChatComMensagensDTO>("Chat encontrado com sucesso.", "chat", chatMapper.convertToChatComMensagensDTO(chat, mensagens));
         }
 
         Chat chat = new Chat();
@@ -95,7 +93,7 @@ public class ChatService {
         chat.setUsuarios(usuarios);
         chatRepository.save(chat);
 
-        return new ApiResponse<ChatComMensagensDTO>("Chat criado com sucesso.", chatMapper.convertToChatComMensagensDTO(chat, Collections.emptyList()));
+        return new ApiResponse<ChatComMensagensDTO>("Chat criado com sucesso.", "chat", chatMapper.convertToChatComMensagensDTO(chat, Collections.emptyList()));
     }
 
     @Transactional

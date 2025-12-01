@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import style from "./Chat.module.scss";
 
 import ContentChat from "../chat/ContentChat.jsx";
@@ -9,16 +9,25 @@ import useMatchStore from "../../store/match";
 import ModalConfirm from "../ui/dialog/ModalConfirm.jsx";
 import CustomButton from "../ui/button/CustomButton.jsx";
 import { useNotification } from "../../utils/NotificationContext.jsx";
+// import useItemStore from "../../store/item.js";
 
-const Chat = ({ item, person, mensagens, currentUserId, onBack, match }) => {
+const Chat = ({
+  itemsMatches,
+  items,
+  person,
+  mensagens,
+  currentUserId,
+  onBack,
+  matchId,
+}) => {
   const { confirmMatch } = useMatchStore();
   const { showNotification } = useNotification();
+  // const { items } = useItemStore();
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleOpenModal = () => {
-    console.log(match);
     setConfirmModal(true);
   };
 
@@ -26,6 +35,13 @@ const Chat = ({ item, person, mensagens, currentUserId, onBack, match }) => {
     setConfirmModal(false);
   };
 
+  const meuitemNome = useMemo(() => {
+    return items.find(
+      (item) =>
+        item.nome === itemsMatches.nomeItemAchado ||
+        item.nome === itemsMatches.nomeItemPerdido
+    );
+  }, [items]);
   const handleMatchConfirm = async (idMatch) => {
     setIsLoading(true);
     try {
@@ -49,7 +65,11 @@ const Chat = ({ item, person, mensagens, currentUserId, onBack, match }) => {
     <>
       <div className={style.chatLayout}>
         <HeaderChat
-          item={item}
+          item={
+            meuitemNome === itemsMatches.nomeItemPerdido
+              ? itemsMatches.nomeItemAchado
+              : itemsMatches.nomeItemPerdido
+          }
           usuario={person.nome}
           onBack={onBack}
           openModal={handleOpenModal}
@@ -77,7 +97,7 @@ const Chat = ({ item, person, mensagens, currentUserId, onBack, match }) => {
           type="button"
           variant={"default"}
           size="lg"
-          onClick={() => handleMatchConfirm(match)}
+          onClick={() => handleMatchConfirm(matchId)}
           disabled={isLoading}
         >
           {isLoading ? "Confirmando..." : "Confirmar"}

@@ -8,7 +8,7 @@ const ChatCard = ({
   id,
   item,
   idMatch,
-  usuario,
+  usuarios,
   lastMessage,
   handleSelect,
 }) => {
@@ -26,6 +26,10 @@ const ChatCard = ({
     }
     return dateFormated.format("DD/MM/YYYY");
   };
+
+  const remetenteMensagem = usuarios.find(
+    (usr) => usr.id === lastMessage?.remetenteId
+  )?.nome;
   return (
     <>
       <Card className={`${style["MuiPaper-root"]}`} onClick={handleSelect}>
@@ -46,7 +50,7 @@ const ChatCard = ({
                   fontSize: "0.9rem",
                 }}
               >
-                {convertDate(lastMessage.dateSend)}
+                {convertDate(lastMessage?.dateSend)}
               </Typography>
             </Box>
           }
@@ -59,8 +63,8 @@ const ChatCard = ({
             sx={{ mb: 0.5 }}
             noWrap={true}
           >
-            {user.nome == lastMessage.usuario ? "Você" : usuario.nome}:{" "}
-            {lastMessage.conteudo}
+            {remetenteMensagem === user.nome ? "Você" : remetenteMensagem}:{" "}
+            {lastMessage?.conteudo}
           </Typography>
         </CardContent>
       </Card>

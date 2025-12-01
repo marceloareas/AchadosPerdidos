@@ -15,7 +15,6 @@ const useChatStore = create((set, get) => ({
     try {
       const { token } = useAuthStore.getState();
       const response = await Api.get("/chat", API_HEADER(token));
-      console.log(response);
       set({ chats: response.data.chats, response: response.data.message });
     } catch (error) {
       set({ error: error.message });
@@ -27,9 +26,7 @@ const useChatStore = create((set, get) => ({
     set({ loading: true, error: null });
     try {
       const { token } = useAuthStore.getState();
-      console.log(matchId);
       const response = await Api.get(`/chat/${matchId}`, API_HEADER(token));
-      console.log(response);
       set({ chatAtual: response.data.chat, response: response.data.message });
     } catch (error) {
       set({ error: error.message });

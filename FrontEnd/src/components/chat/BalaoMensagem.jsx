@@ -4,7 +4,9 @@ const BalaoMensagem = ({ conteudo, currentUserId }) => {
   return (
     <div className={style.balao}>
       <section
-        className={conteudo.usuario === currentUserId ? style.userMe : style.them}
+        className={
+          conteudo.remetenteId === currentUserId ? style.userMe : style.them
+        }
       >
         <p>{conteudo.conteudo}</p>
       </section>

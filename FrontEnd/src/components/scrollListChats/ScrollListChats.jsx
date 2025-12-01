@@ -1,18 +1,29 @@
 import style from "./ScrollListChats.module.scss";
 import ChatCard from "../ui/chatCard/ChatCard";
 
-const ScrollListChats = ({ chats, selectChat }) => {
+const ScrollListChats = ({ items, chats, selectChat }) => {
+  const getMeuItemNome = (chat) => {
+    return items.find(
+      (item) =>
+        item.nome === chat.nomeItemAchado || item.nome === chat.nomeItemPerdido
+    )?.nome;
+  };
   return (
     <section className={style.listChats}>
       {chats.map((chat) => {
+        const itemNome = getMeuItemNome(chat);
         return (
           <ChatCard
             handleSelect={() => selectChat(chat)}
             key={chat.id}
-            item={chat.item}
+            item={
+              itemNome == chat.nomeItemPerdido
+                ? chat.nomeItemAchado
+                : chat.nomeItemPerdido
+            }
             idMatch={chat.match_id}
-            usuario={chat.usuarios_chat[1]}
-            lastMessage={chat.mensagem_texto.slice(-1)[0]}
+            usuarios={chat.usuarios}
+            lastMessage={chat.ultimaMensagem} //mensagem_texto.slice(-1)[0]}
           />
         );
       })}

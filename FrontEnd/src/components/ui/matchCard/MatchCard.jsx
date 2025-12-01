@@ -38,7 +38,7 @@ const MatchCard = ({ match, hasChat }) => {
     getMatchesArquivados,
   } = useMatchStore();
 
-  const { getChat } = useChatStore();
+  const { getChat, getChats } = useChatStore();
 
   const isUsersItemAchado = itemUsuario.tipo === "ACHADO";
   const isArchived = isUsersItemAchado
@@ -117,7 +117,7 @@ const MatchCard = ({ match, hasChat }) => {
       } else {
         showNotification("Erro ao criar chat", "error");
       }
-      navigate("/chats");
+      navigate(`/chats/?match=${idMatch}`);
     } catch {
       showNotification("Erro ao criar chat", "error");
     } finally {
