@@ -41,17 +41,17 @@ const ItemCard = ({
   const handleMenuClose = () => setAnchorEl(null);
   const { showNotification } = useNotification();
 
-  const [openModalDelete, setOpenDelete] = useState(false);
-  const handleModalOpen = () => setOpenDelete(true);
-  const handleModalClose = () => setOpenDelete(false);
+  const [openModalDelete, setOpenModalDelete] = useState(false);
+  const handleModalOpen = () => setOpenModalDelete(true);
+  const handleModalClose = () => setOpenModalDelete(false);
 
-  const [openModalView, setOpenView] = useState(false);
-  const handleModalViewOpen = () => setOpenView(true);
-  const handleModalViewClose = () => setOpenView(false);
+  const [openModalView, setOpenModalView] = useState(false);
+  const handleModalViewOpen = () => setOpenModalView(true);
+  const handleModalViewClose = () => setOpenModalView(false);
 
-  const [openModalEdit, setOpenEdit] = useState(false);
-  const handleModalEditOpen = () => setOpenEdit(true);
-  const handleModalEditClose = () => setOpenEdit(false);
+  const [openModalEdit, setOpenModalEdit] = useState(false);
+  const handleModalEditOpen = () => setOpenModalEdit(true);
+  const handleModalEditClose = () => setOpenModalEdit(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const { deleteItem } = useItemStore();
@@ -65,12 +65,12 @@ const ItemCard = ({
       await deleteItem(id);
       handleMenuClose();
       const { erro, response } = useItemStore.getState();
-      if (!erro) {
-        showNotification(response, "success");
-        setIsLoading(true);
-      } else {
+      if (erro) {
         showNotification(response, "error");
         setTimeout(() => setIsLoading(false), 1000);
+      } else {
+        showNotification(response, "success");
+        setIsLoading(true);
       }
     } catch (err) {
       showNotification(err, "error");
@@ -120,10 +120,7 @@ const ItemCard = ({
                 />
               </Box>
               <Box>
-                <Badge
-                  badgeType="category"
-                  label={category && category[0].nome}
-                />
+                <Badge badgeType="category" label={category?.[0].nome} />
               </Box>
             </Box>
           }
@@ -220,7 +217,7 @@ const ItemCard = ({
         item={{
           id,
           title,
-          category: category && category[0].nome,
+          category: category?.[0].nome,
           location,
           personName,
           description,
@@ -266,7 +263,7 @@ const ItemCard = ({
           id,
           nome: title,
           descricao: description,
-          categorias: category ? category : [],
+          categorias: category || [],
           localizacao: location,
           dataEvento: date,
           tipo: itemType,

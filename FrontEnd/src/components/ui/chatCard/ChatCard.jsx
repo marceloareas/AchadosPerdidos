@@ -31,44 +31,42 @@ const ChatCard = ({
     (usr) => usr.id === lastMessage?.remetenteId
   )?.nome;
   return (
-    <>
-      <Card className={`${style["MuiPaper-root"]}`} onClick={handleSelect}>
-        <CardHeader
-          title={
-            <Box className={style.headerCard}>
-              <Typography
-                variant="h6"
-                sx={{ fontWeight: "bold", fontSize: "1.2rem" }}
-              >
-                {item}
-              </Typography>
+    <Card className={`${style["MuiPaper-root"]}`} onClick={handleSelect}>
+      <CardHeader
+        title={
+          <Box className={style.headerCard}>
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: "bold", fontSize: "1.2rem" }}
+            >
+              {item}
+            </Typography>
 
-              <Typography
-                className={style.horarioLastMessage}
-                sx={{
-                  color: "#706d6db2",
-                  fontSize: "0.9rem",
-                }}
-              >
-                {convertDate(lastMessage?.dateSend)}
-              </Typography>
-            </Box>
-          }
-        />
-        <CardContent style={{ flexdirection: "row" }}>
-          {/* {personName && ( */}
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ mb: 0.5 }}
-            noWrap={true}
-          >
-            {remetenteMensagem === user.nome ? "Você" : remetenteMensagem}:{" "}
-            {lastMessage?.conteudo}
-          </Typography>
-        </CardContent>
-      </Card>
-    </>
+            <Typography
+              className={style.horarioLastMessage}
+              sx={{
+                color: "#706d6db2",
+                fontSize: "0.9rem",
+              }}
+            >
+              {convertDate(lastMessage?.dateSend)}
+            </Typography>
+          </Box>
+        }
+      />
+      <CardContent style={{ flexdirection: "row" }}>
+        {/* {personName && ( */}
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ mb: 0.5 }}
+          noWrap={true}
+        >
+          {remetenteMensagem === user.nome ? "Você" : remetenteMensagem}:{" "}
+          {lastMessage?.conteudo}
+        </Typography>
+      </CardContent>
+    </Card>
   );
 };
 
