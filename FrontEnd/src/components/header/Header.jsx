@@ -4,7 +4,7 @@ import logo from "../../assets/logoCefet.svg";
 import style from "./Header.module.scss";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { PiSignOutBold } from "react-icons/pi";
-import { IconButton, Menu, MenuItem, Button } from "@mui/material";
+import { IconButton, Menu, MenuItem } from "@mui/material";
 import CustomButton from "../ui/button/CustomButton";
 import useAuthStore from "../../store/auth";
 
@@ -32,13 +32,13 @@ const Header = () => {
   if (!token) {
     return (
       <div className={style.body_header}>
-        <section
+        <button
           className={style.left_section_header}
           onClick={() => onNavigate("/")}
         >
           <img className={style.logo_header} src={logo} alt="" />
           <span className={style.tittle_header}>A&P</span>
-        </section>
+        </button>
         <section className={style.right_section_header}>
           <CustomButton variant="outline" onClick={() => onNavigate("/login")}>
             Entrar
@@ -51,13 +51,13 @@ const Header = () => {
   // Header normal para usuários logados
   return (
     <div className={style.body_header}>
-      <section
+      <button
         className={style.left_section_header}
         onClick={() => onNavigate("/")}
       >
         <img className={style.logo_header} src={logo} alt="" />
         <span className={style.tittle_header}>A&P</span>
-      </section>
+      </button>
       <section className={style.mid_section_header}>
         <div
           className={

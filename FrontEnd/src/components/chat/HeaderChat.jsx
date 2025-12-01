@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import style from "./Chat.module.scss";
 import { IoReturnUpBackOutline } from "react-icons/io5";
-import { Typography, Box } from "@mui/material";
+import { Typography } from "@mui/material";
 import CustomButton from "../ui/button/CustomButton.jsx";
 
 const HeaderChat = ({ item, usuario, onBack, openModal }) => {
   // Responsividade
-  const [windowWidth, setWidth] = useState(window.innerWidth);
-  const sizePage = windowWidth > 600 ? false : true;
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const sizePage = !(windowWidth > 600);
 
   useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
+    const handleResize = () => setWindowWidth(window.innerWidth);
 
     window.addEventListener("resize", handleResize);
 

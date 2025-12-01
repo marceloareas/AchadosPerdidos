@@ -9,7 +9,6 @@ import useMatchStore from "../../store/match";
 import ModalConfirm from "../ui/dialog/ModalConfirm.jsx";
 import CustomButton from "../ui/button/CustomButton.jsx";
 import { useNotification } from "../../utils/NotificationContext.jsx";
-// import useItemStore from "../../store/item.js";
 
 const Chat = ({
   itemsMatches,
@@ -22,7 +21,6 @@ const Chat = ({
 }) => {
   const { confirmMatch } = useMatchStore();
   const { showNotification } = useNotification();
-  // const { items } = useItemStore();
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -48,11 +46,11 @@ const Chat = ({
       await confirmMatch(idMatch);
       const { error, response } = useMatchStore.getState();
       handleCloseModal();
-      if (!error) {
-        showNotification(response, "success");
-      } else {
+      if (error) {
         showNotification(response, "error");
         setTimeout(() => setIsLoading(false), 1000);
+      } else {
+        showNotification(response, "success");
       }
     } catch {
       showNotification("Erro ao confirmar Devolução", "error");

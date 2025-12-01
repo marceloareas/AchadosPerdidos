@@ -25,13 +25,16 @@
     border-radius: 5px;
     gap: 5px;
     color: $primary-color;
+    background-color: transparent;
     cursor: pointer;
     transition: .5s ease-in;
+    border: none;
 }
 
 .box_icons_footer_current {
     background: rgba(10, 73, 126, 0.1);
     transition: .5s ease-in;
+    border: none;
 
 }
 

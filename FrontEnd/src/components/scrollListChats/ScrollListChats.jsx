@@ -23,7 +23,7 @@ const ScrollListChats = ({ items, chats, selectChat }) => {
             }
             idMatch={chat.match_id}
             usuarios={chat.usuarios}
-            lastMessage={chat.ultimaMensagem} //mensagem_texto.slice(-1)[0]}
+            lastMessage={chat.ultimaMensagem}
           />
         );
       })}
