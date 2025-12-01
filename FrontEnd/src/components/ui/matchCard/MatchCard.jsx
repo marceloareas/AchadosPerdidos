@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { Card, CardContent } from "@mui/material";
-import { Trash2, Archive, ArchiveRestore } from "lucide-react";
+import { Trash2, Archive, ArchiveRestore, MessageCircle } from "lucide-react";
 import ItemCard from "../itemCard/ItemCard";
 import CustomButton from "../button/CustomButton";
-import { MessageCircle } from "lucide-react";
-import { Link } from "react-router-dom";
 import style from "./MatchCard.module.scss";
 import { useNotification } from "../../../utils/NotificationContext";
 import ModalDelete from "../dialog/ModalDelete";
@@ -40,10 +38,10 @@ const MatchCard = ({ match, hasChat }) => {
 
   const { getChat, getChats } = useChatStore();
 
-  const isUsersItemAchado = itemUsuario.tipo === "ACHADO";
-  const isArchived = isUsersItemAchado
-    ? match.arquivadoPorItemAchado
-    : match.arquivadoPorItemPerdido;
+  const isArchived =
+    itemUsuario.tipo === "ACHADO" && match.arquivadoPorItemAchado === true
+      ? true
+      : !!(itemUsuario.tipo === "PERDIDO" && match.arquivadoPorItemPerdido);
 
   const handleDelete = async (idMatch) => {
     setIsLoading(true);
@@ -52,13 +50,13 @@ const MatchCard = ({ match, hasChat }) => {
 
       const { error, response } = useMatchStore.getState();
       handleModalClose();
-      if (!error) {
+      if (error) {
+        showNotification(response, "error");
+        setTimeout(() => setIsLoading(false), 1000);
+      } else {
         showNotification(response, "success");
         await getMatchesAtivos();
         await getMatchesArquivados();
-      } else {
-        showNotification(response, "error");
-        setTimeout(() => setIsLoading(false), 1000);
       }
     } catch (err) {
       console.error(err);
@@ -73,10 +71,12 @@ const MatchCard = ({ match, hasChat }) => {
     try {
       await matchArchive(idMatch);
       const { error, response } = useMatchStore.getState();
-      if (!error) {
-        showNotification(response, "success");
-      } else {
+      if (error) {
         showNotification("Erro ao arquivar.", "error");
+      } else {
+        showNotification(response, "success");
+        await getMatchesAtivos();
+        await getMatchesArquivados();
       }
       handleModalClose();
     } catch {
@@ -92,10 +92,12 @@ const MatchCard = ({ match, hasChat }) => {
     try {
       await matchActivate(idMatch);
       const { error, response } = useMatchStore.getState();
-      if (!error) {
-        showNotification(response, "success");
-      } else {
+      if (error) {
         showNotification("Erro ao restaurar.", "error");
+      } else {
+        showNotification(response, "success");
+        await getMatchesAtivos();
+        await getMatchesArquivados();
       }
     } catch {
       showNotification("Erro ao restaurar.", "error");
@@ -111,11 +113,11 @@ const MatchCard = ({ match, hasChat }) => {
       await getChat(idMatch);
       console.log(match);
       const { error, response } = useChatStore.getState();
-      if (!error) {
+      if (error) {
+        showNotification("Erro ao criar chat", "error");
+      } else {
         showNotification(response, "success");
         await getChats();
-      } else {
-        showNotification("Erro ao criar chat", "error");
       }
       navigate(`/chats/?match=${idMatch}`);
     } catch {
@@ -130,15 +132,15 @@ const MatchCard = ({ match, hasChat }) => {
       <Card className={style.matchCard} variant="outlined">
         <CardContent className={style.matchCardContent}>
           {/* --- Ícone de ação --- */}
-          {!isArchived ? (
-            <Archive
-              className={style.option_icon_delete}
-              onClick={() => handleModalOpen("archive")}
-            />
-          ) : (
+          {isArchived ? (
             <Trash2
               className={style.option_icon_delete}
               onClick={() => handleModalOpen("delete")}
+            />
+          ) : (
+            <Archive
+              className={style.option_icon_delete}
+              onClick={() => handleModalOpen("archive")}
             />
           )}
 
@@ -166,19 +168,7 @@ const MatchCard = ({ match, hasChat }) => {
             personName={itemOposto?.personName}
           />
 
-          {!isArchived ? (
-            // <Link to={`/chat/${match.id}`} className={style.matchChatLink}>
-            <CustomButton
-              variant={"default"}
-              className={style.matchChatButton}
-              onClick={() => handleCreateViewChat(match.id)}
-              fullWidth
-            >
-              <MessageCircle className={style.icon} />
-              {hasChat ? "Continuar conversa" : "Iniciar conversa"}
-            </CustomButton>
-          ) : (
-            // </Link>
+          {isArchived ? (
             <CustomButton
               variant={"default"}
               className={style.matchChatButton}
@@ -187,6 +177,16 @@ const MatchCard = ({ match, hasChat }) => {
             >
               <ArchiveRestore className={style.icon} />
               Restaurar Match
+            </CustomButton>
+          ) : (
+            <CustomButton
+              variant={"default"}
+              className={style.matchChatButton}
+              onClick={() => handleCreateViewChat(match.id)}
+              fullWidth
+            >
+              <MessageCircle className={style.icon} />
+              {hasChat ? "Continuar conversa" : "Iniciar conversa"}
             </CustomButton>
           )}
         </CardContent>
