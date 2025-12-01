@@ -1,5 +1,6 @@
 package br.com.cefet.achadosperdidos.services;
 
+import br.com.cefet.achadosperdidos.domain.enums.StatusItemEnum;
 import br.com.cefet.achadosperdidos.domain.enums.TipoItemEnum;
 import br.com.cefet.achadosperdidos.domain.model.Categoria;
 import br.com.cefet.achadosperdidos.domain.model.Item;
@@ -24,6 +25,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.transaction.Transactional;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -124,14 +126,16 @@ public class MatchService {
             TipoItemEnum tipoOposto = itemPivo.getTipo() == TipoItemEnum.PERDIDO ? TipoItemEnum.ACHADO : TipoItemEnum.PERDIDO;
 
             // Itens do tipo oposto para comparacao pela LLM
-            List<Item> itensTarget = itemRepository.findByTipoAndUsuario_IdNot(tipoOposto, item.getUsuario().getId());
+            //List<Item> itensTarget = itemRepository.findByTipoAndUsuario_IdNot(tipoOposto, item.getUsuario().getId());
+
+            List<Item> itensTarget = itemRepository.findDistinctByTipoAndUsuario_IdNotAndCategoriasIn(tipoOposto, item.getUsuario().getId(), item.getCategorias());
 
             // Conversao dos itens do tipo oposto para o formato de requisicao para a API de Match
             List<MatchAPIItemDTO> itensTargetDTO = itensTarget.stream().map(this::convertToMatchItem).toList();
 
             // Criar o DTO para a requisicao.
             MatchAPIRequestDTO requestDTO = new MatchAPIRequestDTO(itemPivo, itensTargetDTO);
-
+            
             System.out.println("api key:" + MATCH_API_KEY);
             //CHAMADA REATIVA
             Mono<String> responseMono = webClient.post()
@@ -186,6 +190,60 @@ public class MatchService {
         matchRepository.save(match);
     }  
     
+    // CONFIRMAÇÃO DE USUÁRIO NO MATCH
+    @Transactional
+    public MatchResponseDTO confirmMatch(Long matchId, Long userId){
+
+        // 1. Busca o match
+        Match match = matchRepository.findById(matchId)
+        .orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
+
+        // 2. Verifica qual usuário fez a requisição
+        boolean isUsuarioItemAchado = match.getItemAchado().getUsuario().getId().equals(userId);
+        boolean isUsuarioItemPerdido = match.getItemPerdido().getUsuario().getId().equals(userId);
+
+        // 3. Erro caso os usuários do match não estejam envolvidos na requisição
+        if(!isUsuarioItemAchado && !isUsuarioItemPerdido){
+            throw new InvalidCredentials("Usuário não pertence a esse match.");
+        }
+
+        // 4. Atualiza a flag de confirmação com base no usuário da requisição
+        if(isUsuarioItemAchado){
+            match.setConfirmacaoAchado(true);
+        }
+        else{
+            match.setConfirmacaoPerdido(true);
+        }
+
+        // 5. Verifica se as flags de confimação dos usuários estão ambas true
+        // Se positivo, vamos mudar o status dos itens e no futuro arquivar o chat
+        if(match.isConfirmacaoAchado() && match.isConfirmacaoPerdido()){
+            Item itemAchado = match.getItemAchado();
+            itemAchado.setStatus(StatusItemEnum.RECUPERADO);
+            itemAchado.setDataDevolucao(java.time.LocalDateTime.now());
+
+            Item itemPerdido = match.getItemPerdido();
+            itemPerdido.setStatus(StatusItemEnum.RECUPERADO);
+            itemPerdido.setDataDevolucao(java.time.LocalDateTime.now());
+
+            itemRepository.save(itemAchado);
+            itemRepository.save(itemPerdido);
+
+            // APLICAR LÓGICA DE ARQUIVAMENTO DO MATCH OU DELEÇÃO
+        }
+
+        Match matchSalvo = matchRepository.save(match);
+
+        MatchResponseDTO dto = new MatchResponseDTO();
+        dto.setId(matchSalvo.getId());
+        dto.setItemUsuario(itemMapper.convertToItemMeusMatchesDTO(isUsuarioItemAchado ? matchSalvo.getItemAchado() : matchSalvo.getItemPerdido()));
+        dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(isUsuarioItemAchado ? matchSalvo.getItemPerdido() : matchSalvo.getItemAchado()));
+        dto.setConfirmacaoItemAchado(matchSalvo.isConfirmacaoAchado());
+        dto.setConfirmacaoItemPerdido(matchSalvo.isConfirmacaoPerdido());
+
+        return dto;
+    }
+
     @Transactional
     public void activateMatch(Long matchId, Long userId) {
         Match match = matchRepository.findById(matchId)

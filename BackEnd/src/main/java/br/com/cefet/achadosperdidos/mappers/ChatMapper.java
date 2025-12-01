@@ -26,7 +26,6 @@ public class ChatMapper {
 
     @Autowired
     private UsuarioMapper usuarioMapper;
-    
 
     public BaseChatResponseDTO convertToBaseChatResponseDTO(Chat chat) {
         BaseChatResponseDTO dto = new BaseChatResponseDTO();
@@ -38,7 +37,7 @@ public class ChatMapper {
         return dto;
     }
 
-    public ChatComMensagensDTO convertToChatComMensagensDTO(Chat chat, List<BaseMensagem> mensagens){
+    public ChatComMensagensDTO convertToChatComMensagensDTO(Chat chat, List<BaseMensagem> mensagens) {
 
         Match matchCorrespondente = chat.getMatch();
         ChatComMensagensDTO chatComMensagensDTO = new ChatComMensagensDTO();
@@ -56,23 +55,32 @@ public class ChatMapper {
 
     }
 
-//    public MeusChatsResponseDTO convertToMeusChatsResponseDTO(Chat chat, List<BaseMensagem> mensagens){
-//
-//        Match matchCorrespondente = chat.getMatch();
-//
-//        ChatVitrineResponseDTO chatVitrineResponseDTO = new ChatVitrineResponseDTO();
-//        chatVitrineResponseDTO.setId(chat.getId());
-//        chatVitrineResponseDTO.setMatch_id(matchCorrespondente.getId());
-//
-//        Set<Usuario> usuarioSet = new HashSet<>();
-//        usuarioSet.add(matchCorrespondente.getItemPerdido().getUsuario());
-//        usuarioSet.add(matchCorrespondente.getItemAchado().getUsuario());
-//        chatVitrineResponseDTO.setUsuarios(usuarioSet);
-//
-//        chatVitrineResponseDTO.setNomeItemPerdido(matchCorrespondente.getItemPerdido().getNome());
-//        chatVitrineResponseDTO.setNomeItemAchado(matchCorrespondente.getItemAchado().getNome());
-//
-//    }
+    public ChatVitrineResponseDTO convertToChatVitrineResponseDTO(Chat chat, List<BaseMensagem> mensagens) {
+
+        Match matchCorrespondente = chat.getMatch();
+
+        ChatVitrineResponseDTO chatVitrineResponseDTO = new ChatVitrineResponseDTO();
+        chatVitrineResponseDTO.setId(chat.getId());
+        chatVitrineResponseDTO.setMatch_id(matchCorrespondente.getId());
+
+        Set<UsuarioResponseDTO> usuarioSet = new HashSet<>();
+        usuarioSet.add(usuarioMapper.convertToResponseDTO(matchCorrespondente.getItemPerdido().getUsuario()));
+        usuarioSet.add(usuarioMapper.convertToResponseDTO(matchCorrespondente.getItemAchado().getUsuario()));
+        chatVitrineResponseDTO.setUsuarios(usuarioSet);
+
+        chatVitrineResponseDTO.setNomeItemPerdido(matchCorrespondente.getItemPerdido().getNome());
+        chatVitrineResponseDTO.setNomeItemAchado(matchCorrespondente.getItemAchado().getNome());
+        BaseMensagem ultima
+                = (mensagens != null && !mensagens.isEmpty())
+                ? mensagens.get(mensagens.size() - 1)
+                : null;
+
+        chatVitrineResponseDTO.setUltimaMensagem(
+                ultima != null ? mensagemMapper.mapMensagemParaDTO(ultima) : null
+        );
+
+        return chatVitrineResponseDTO;
+    }
 
 //    public CreateChatResponseDTO convertToCreateChatResponseDTO(Chat chat, Boolean jaExiste) {
 //        CreateChatResponseDTO dto = new CreateChatResponseDTO();

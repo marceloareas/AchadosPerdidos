@@ -21,7 +21,7 @@ const useMatchStore = create((set, get) => ({
   //     set({ error: error.message, loading: false });
   //   }
   // },
-  
+
   getMatchesAtivos: async () => {
     set({ loading: true, error: null });
     try {
@@ -45,8 +45,12 @@ const useMatchStore = create((set, get) => ({
   matchActivate: async (idMatch) => {
     set({ loading: true, error: null });
     try {
-      const { token } = useAuthStore.getState(); 
-      const response = await Api.post(`/match/${idMatch}/activate`, {}, API_HEADER(token));
+      const { token } = useAuthStore.getState();
+      const response = await Api.post(
+        `/match/${idMatch}/activate`,
+        {},
+        API_HEADER(token)
+      );
       await get().getMatchesAtivos();
       await get().getMatchesArquivados();
       set({ loading: false, error: null, response: response.data.message });
@@ -58,11 +62,31 @@ const useMatchStore = create((set, get) => ({
   matchArchive: async (idMatch) => {
     set({ loading: true, error: null });
     try {
-      const { token } = useAuthStore.getState(); 
-      const response = await Api.post(`/match/${idMatch}/archive`, {}, API_HEADER(token));
+      const { token } = useAuthStore.getState();
+      const response = await Api.post(
+        `/match/${idMatch}/archive`,
+        {},
+        API_HEADER(token)
+      );
       console.log(response);
       await get().getMatchesAtivos();
       await get().getMatchesArquivados();
+      set({ loading: false, error: null, response: response.data.message });
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  confirmMatch: async (idMatch) => {
+    set({ loading: true, error: null });
+    try {
+      const { token } = useAuthStore.getState();
+      const response = await Api.patch(
+        `/match/${idMatch}/confirm`,
+        {},
+        API_HEADER(token)
+      );
+      console.log(response);
       set({ loading: false, error: null, response: response.data.message });
     } catch (error) {
       set({ error: error.message, loading: false });

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Box, Typography, TextField, IconButton } from "@mui/material";
+import { Modal, Box, Typography, IconButton } from "@mui/material";
 import CustomButton from "../../button/CustomButton.jsx";
 import Input from "../../input/Input.jsx";
 import CloseIcon from "@mui/icons-material/Close";
@@ -62,69 +62,64 @@ const EditPasswordModal = ({ open, onClose }) => {
         onClose();
       }
     } catch (err) {
-      console.log();
+      console.error(err);
+      showNotification(err, "error");
     }
   };
   return (
-    <>
-      <Modal open={open} onClose={onClose} fullWidth maxWidth="sm">
-        <Box sx={modalStyle}>
-          {/* Header */}
-          <Box className={style.modalHeader}>
-            <Typography variant="h6" fontWeight="bold">
-              Atualize sua senha
-            </Typography>
-            <IconButton onClick={onClose} size="small">
-              <CloseIcon />
-            </IconButton>
-          </Box>
-
-          {/* Formulário */}
-          <form onSubmit={handleSubmit}>
-            {/* Nome */}
-            <Box className={style.formGroup}>
-              <Input
-                type="password"
-                label="Nova Senha *"
-                placeholder="Coloque sua nova senha"
-                value={formData.senha}
-                onChange={(e) => handleInputChange("senha", e.target.value)}
-                error={errors.senha}
-              />
-            </Box>
-            <Box className={style.formGroup}>
-              <Input
-                type="password"
-                label="Confirme sua nova senha *"
-                placeholder="Confirme sua nova senha"
-                value={formData.confirmacaoSenha}
-                onChange={(e) =>
-                  handleInputChange("confirmacaoSenha", e.target.value)
-                }
-                error={errors.confirmacaoSenha}
-              />
-            </Box>
-            <Box display="flex" justifyContent="center" gap={1} mt={2}>
-              <CustomButton
-                type="button"
-                variant="outline"
-                onClick={onClose}
-                disabled={isLoading}
-              >
-                Cancelar
-              </CustomButton>
-              <CustomButton
-                type="submit"
-                variant="default"
-                disabled={isLoading}
-              >
-                {isLoading ? "Salvando..." : "Salvar"}
-              </CustomButton>
-            </Box>
-          </form>
+    <Modal open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <Box sx={modalStyle}>
+        {/* Header */}
+        <Box className={style.modalHeader}>
+          <Typography variant="h6" fontWeight="bold">
+            Atualize sua senha
+          </Typography>
+          <IconButton onClick={onClose} size="small">
+            <CloseIcon />
+          </IconButton>
         </Box>
-      </Modal>
-    </>
+
+        {/* Formulário */}
+        <form onSubmit={handleSubmit}>
+          {/* Nome */}
+          <Box className={style.formGroup}>
+            <Input
+              type="password"
+              label="Nova Senha *"
+              placeholder="Coloque sua nova senha"
+              value={formData.senha}
+              onChange={(e) => handleInputChange("senha", e.target.value)}
+              error={errors.senha}
+            />
+          </Box>
+          <Box className={style.formGroup}>
+            <Input
+              type="password"
+              label="Confirme sua nova senha *"
+              placeholder="Confirme sua nova senha"
+              value={formData.confirmacaoSenha}
+              onChange={(e) =>
+                handleInputChange("confirmacaoSenha", e.target.value)
+              }
+              error={errors.confirmacaoSenha}
+            />
+          </Box>
+          <Box display="flex" justifyContent="center" gap={1} mt={2}>
+            <CustomButton
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={isLoading}
+            >
+              Cancelar
+            </CustomButton>
+            <CustomButton type="submit" variant="default" disabled={isLoading}>
+              {isLoading ? "Salvando..." : "Salvar"}
+            </CustomButton>
+          </Box>
+        </form>
+      </Box>
+    </Modal>
   );
 };
 

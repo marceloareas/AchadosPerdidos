@@ -1,19 +1,30 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Box, Typography, Tooltip } from "@mui/material";
 import MatchCard from "../../components/ui/matchCard/MatchCard";
 import style from "./Matches.module.scss";
 import Layout from "../../components/layout/Layout";
 import useMatchStore from "../../store/match";
-import { Archive } from "lucide-react";
+import useChatStore from "../../store/chat";
 import { useNavigate } from "react-router-dom";
+import { Archive } from "lucide-react";
 
 const Matches = () => {
   const { matches, getMatchesAtivos } = useMatchStore();
+  const { chats, getChats } = useChatStore();
+
   const navigate = useNavigate();
 
   useEffect(() => {
     getMatchesAtivos();
+    getChats();
   }, []);
+
+  const matchesMemo = useMemo(() => {
+    return matches.map((match) => ({
+      match,
+      hasChat: chats.some((chat) => chat.match_id === match.id),
+    }));
+  }, [matches, chats]);
 
   return (
     <Layout>
@@ -49,9 +60,13 @@ const Matches = () => {
               </Typography>
             </Box>
           ) : (
-            Array.isArray(matches) &&
-            matches.length > 0 &&
-            matches.map((match) => <MatchCard key={1} match={match} />)
+            matchesMemo.map((item) => (
+              <MatchCard
+                key={item.match.id}
+                match={item.match}
+                hasChat={item.hasChat}
+              />
+            ))
           )}
         </Box>
       </Box>

@@ -1,9 +1,9 @@
 -- Inserção de 5 Usuários
 INSERT INTO usuarios (nome, email, senha) VALUES
-('Ana Carolina Sá', 'carolzinha.da.globo@email.com', '$2a$12$kbCR.zLBVFJjT8BUvrhcgeh./O2Pi5e4m1s6kYUjnXh8RjsD4LtHy'),
+('Ana Carolina Sá', 'carolzinha.da.globo@email.com', '$2a$10$TxZ2K88qxzE0PB7reNa3lupaoD/dm2DMe4LbrnXcqdqgq2La8c1MO'),
 ('Caio Santos', 'caiosantos.dev@email.com', '$2a$12$rL0U5r8J/.95BrJHPE4vx.7P4gm6XUyB7/O7/WOSIlS0Fxxukt8VS'),
 ('Flavio Alecio', 'flavio.cybersec.audit@email.com', '$2a$12$./2c5nxuaKDeXRh1WQp1I.2YijbK9hH3JplQdIGyv09bdPxyRvQcy'),
-('Vinicius Saidy', 'vs.amo.glorioso@email.com', '$2a$12$.94OyxYG.iCqUnGyc0aQBOyci/EeQiypw2iBNh5t25RiqgMNyni7G'),
+('Vinicius Saidy', 'vs@vs.com', '$2a$10$L386aaKctCnsgxFPzLe1NO9Wj7rc4u23osi6DHtWY0Q2LLEOPzTd.'),
 ('Marcelo Areas', 'professor.dos.joguinhos@email.com', '$2a$12$cxym59E/AssE6wZZQ52vN.TZHH/pDslR2y/BooKTN.2yLNEpeUdAG');
 
 -- Inserção das Categorias Padrão (sem alterações)
@@ -32,7 +32,7 @@ INSERT INTO itens (usuario_id, nome, data_criacao, data_evento, data_devolucao, 
 
 -- Item 3: Perdido pelo Usuário 3 (Flavio Alecio)
 INSERT INTO itens (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
-(3, 'Fones de Ouvido Sony WH-1000XM4', '2025-09-28 18:00:00', '2025-09-28 18:00:00', NULL, 'Headphone preto, estava dentro de sua case preta.', 'PERDIDO', 'MATCHING', 'Biblioteca, mesa próxima à janela');
+(4, 'iPhone 13', '2025-10-03 12:00:00', '2025-10-01 12:00:00', null, 'iPhone 13 azul, com capa preta', 'ACHADO', 'MATCHING', 'Ginasio');
 
 -- Item 4: Perdido pelo Usuário 1 (Ana Carolina Sá)
 INSERT INTO itens (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
@@ -48,7 +48,7 @@ INSERT INTO itens (usuario_id, nome, data_criacao, data_evento, data_devolucao, 
 
 -- Item 7: Perdido pelo Usuário 2 (Caio Santos)
 INSERT INTO itens (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
-(2, 'Casaco de Moletom Cinza', '2025-09-30 22:00:00', '2025-09-30 22:00:00', NULL, 'Moletom com capuz, tamanho M, da marca Adidas.', 'PERDIDO', 'MATCHING', 'Auditório principal, cadeira H12');
+(4, 'Carteira Marrom', '2025-09-30 22:00:00', '2025-10-02 22:00:00', NULL, 'Carteira encontrada em cima da mesa.', 'PERDIDO', 'MATCHING', 'No Pavilhão E');
 
 -- Item 8: Perdido pelo Usuário 4 (Vinicius Saidy)
 INSERT INTO itens (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
@@ -76,3 +76,18 @@ INSERT INTO item_categoria (item_id, categoria_id) VALUES
 (8, 5), -- Item 8 (RG) -> Documentos
 (9, 1), -- Item 9 (Kindle) -> Eletrônicos
 (10, 2); -- Item 10 (Óculos de Grau) -> Acessórios
+
+INSERT INTO matchs (confirmacao_perdido, confirmacao_achado, item_perdido_id, item_achado_id, arquivado_por_item_perdido, arquivado_por_item_achado) VALUES 
+(false,false,1,3,false,false),
+(false,false,2,7,false,false);
+
+-- Criar o chat vinculado ao primeiro match
+INSERT INTO chats (match_id)
+VALUES (1);
+
+-- Relacionar os usuários 1 (Ana Carolina) e 4 (Vinicius Saidy) ao chat
+INSERT INTO usuario_chat (chat_id, usuario_id)
+VALUES
+(1, 1),
+(1, 4);
+

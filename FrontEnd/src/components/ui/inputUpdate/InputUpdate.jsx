@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Input from "../input/Input.jsx";
 import { FaRegEdit } from "react-icons/fa";
 import TextField from "@mui/material/TextField";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -64,28 +63,5 @@ const InputUpdate = React.forwardRef(
     );
   }
 );
-//   { label, className = "", multiline = false, rows = 4, ...props },
-//   ref
-// ) => {
-//   const [readOnly, setReadOnly] = useState(true);
-//   return (
-//     <div style={{ display: "flex", gap: "0.5rem", width: "100%" }}>
-//       <Input
-//         {...props}
-//         slotProps={{
-//           input: {
-//             readOnly: readOnly,
-//           },
-//         }}
-//         type={props.type}
-//         required
-//       />
-//       <FaRegEdit
-//         style={{ cursor: "pointer" }}
-//         size={35}
-//         onClick={() => setReadOnly(!readOnly)}
-//       />
-//     </div>
-//   );
 InputUpdate.displayName = "InputUpdate";
 export default InputUpdate;

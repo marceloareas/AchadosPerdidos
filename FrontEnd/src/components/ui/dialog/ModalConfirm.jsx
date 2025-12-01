@@ -5,7 +5,7 @@ import {
   DialogActions,
 } from "@mui/material";
 
-const ModalDelete = ({ children, ...props }) => {
+const ModalConfirm = ({ children, ...props }) => {
   return (
     <Dialog open={props.open} onClose={props.onClose}>
       <DialogTitle>{props.title}</DialogTitle>
@@ -23,4 +23,4 @@ const ModalDelete = ({ children, ...props }) => {
   );
 };
 
-export default ModalDelete;
+export default ModalConfirm;

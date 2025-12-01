@@ -104,56 +104,57 @@
 
 
 //INPUT (fixo inferior)
-.wrapInputChat {
+.contentInput {
   display: flex;
-  // margin: 0 12px 15px 12px;
-  margin: 5px 12px 25px 12px;
-  align-items: flex-end;
-  gap: 15px;
-  // background-color: white;
-  border-radius: 40px;
-  background: $primary-color-transparent;
-  // padding: 12px 16px;
-  padding: 7px;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+  align-items: baseline;
+  padding: 0px 1.5%;
 
-  .inputMessage {
-    flex: 1;
-    display: block;
+
+  .wrapInputChat {
+    display: flex;
+    margin: 5px 5px 20px 0px;
+    align-items: flex-end;
+    border-radius: 40px;
+    background: $primary-color-transparent;
+    padding: 5px;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
     width: 100%;
-    min-height: 20px;
-    max-height: 96px;
-    font-size: 18px;
-    line-height: 1.1;
-    resize: none;
-    overflow-y: auto;
-    overflow-x: hidden;
 
-    white-space: pre-wrap;
-    word-break: break-word;
+    .inputMessage {
+      flex: 1;
+      display: block;
+      width: 100%;
+      min-height: 20px;
+      max-height: 96px;
+      font-size: 18px;
+      line-height: 1.1;
+      resize: none;
+      overflow-y: auto;
+      overflow-x: hidden;
 
-    outline: none;
-    scrollbar-width: none;
-    border: none;
-    // border-radius: 40px;
-    // padding: 10px 14px;
-    // background-color: #A8E2F2;
-    // padding: 5px 10px;
-    padding: 0px 15px 10px 15px;
-    background-color: transparent;
+      white-space: pre-wrap;
+      word-break: break-word;
 
-    &::-webkit-scrollbar {
-      display: none;
+      outline: none;
+      scrollbar-width: none;
+      border: none;
+      padding: 0px 15px 10px 0px;
+      background-color: transparent;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+    }
+
+    .inputMessage:focus {
+      outline: none;
     }
 
   }
 
-  .inputMessage:focus {
-    outline: none;
-  }
-
-  .iconSendMessage {
-    color: white;
+  .iconSendMessage,
+  .iconImage {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -162,14 +163,23 @@
     font-size: 20px;
     border: none;
     border-radius: 50%;
-    background-color: #5C8DF6;
   }
 
-  .iconSendMessage:hover {
+  .iconSendMessage {
+    color: white;
+    background-color: rgb(30, 69, 107);
+  }
+
+  .iconImage {
+    color: rgb(46, 71, 99);
+    background-color: transparent;
+  }
+
+  .iconSendMessage:hover,
+  .iconImage:hover {
     cursor: pointer;
   }
 }
-
 
 //CONTENT MESSAGE
 .balao {
@@ -207,7 +217,7 @@
 
   .userMe p {
     float: right;
-    background-color: #1289fe;
+    background-color: rgb(30, 69, 107);
     color: white;
     border-top-left-radius: 1em;
     border-bottom-left-radius: 1em;
@@ -220,7 +230,7 @@
     bottom: 0;
     width: 0.5em;
     height: 1em;
-    border-left: 0.5em solid #1289fe;
+    border-left: 0.5em solid rgb(30, 69, 107);
     border-bottom-left-radius: 1em 0.5em;
   }
 
