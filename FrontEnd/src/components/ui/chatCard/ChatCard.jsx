@@ -49,7 +49,7 @@ const ChatCard = ({
                 fontSize: "0.9rem",
               }}
             >
-              {convertDate(lastMessage?.dateSend)}
+              {convertDate(lastMessage?.dataEnvio)}
             </Typography>
           </Box>
         }
