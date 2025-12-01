@@ -1,6 +1,6 @@
 -- Inserção de 5 Usuários
 INSERT INTO usuarios (nome, email, senha) VALUES
-('Ana Carolina Sá', 'carolzinha.da.globo@email.com', '$2a$12$kbCR.zLBVFJjT8BUvrhcgeh./O2Pi5e4m1s6kYUjnXh8RjsD4LtHy'),
+('Ana Carolina Sá', 'carolzinha.da.globo@email.com', '$2a$10$TxZ2K88qxzE0PB7reNa3lupaoD/dm2DMe4LbrnXcqdqgq2La8c1MO'),
 ('Caio Santos', 'caiosantos.dev@email.com', '$2a$12$rL0U5r8J/.95BrJHPE4vx.7P4gm6XUyB7/O7/WOSIlS0Fxxukt8VS'),
 ('Flavio Alecio', 'flavio.cybersec.audit@email.com', '$2a$12$./2c5nxuaKDeXRh1WQp1I.2YijbK9hH3JplQdIGyv09bdPxyRvQcy'),
 ('Vinicius Saidy', 'vs@vs.com', '$2a$10$L386aaKctCnsgxFPzLe1NO9Wj7rc4u23osi6DHtWY0Q2LLEOPzTd.'),

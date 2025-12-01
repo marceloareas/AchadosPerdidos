@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   frontend-achados:
@@ -28,7 +28,7 @@ services:
       - .env
     volumes:
       - ./BackEnd:/workspace
-      - ~/.m2:/root/.m2   # cache das dependências do Maven
+      - ~/.m2:/root/.m2 # cache das dependências do Maven
     depends_on:
       postgresql_db:
         condition: service_healthy
@@ -61,9 +61,10 @@ services:
       - "27017:27017"
     volumes:
       - datalake_mongo:/data/db
+      - ./BackEnd/src/main/resources/mongo/seed:/docker-entrypoint-initdb.d
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}    
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     networks:
       - bridge_achados
   match-api:
@@ -109,9 +110,6 @@ services:
       retries: 5
     networks:
       - bridge_achados
-      
-    
-
 
 volumes:
   datalake_postgres:
@@ -126,5 +124,3 @@ volumes:
 networks:
   bridge_achados:
     driver: bridge
-
-    
