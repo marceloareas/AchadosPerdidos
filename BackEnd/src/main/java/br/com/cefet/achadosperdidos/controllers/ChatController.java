@@ -30,14 +30,12 @@ public class ChatController {
 
     @GetMapping("/{match_id}")
     public ResponseEntity<ApiResponse<ChatComMensagensDTO>> getChat(@PathVariable("match_id") Long match_id){
-        //todo: retornar uma lista de mensagens junto do chat.
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario)auth.getPrincipal();
         ApiResponse<ChatComMensagensDTO> response = chatService.getChat(match_id, usuario);
         return ResponseEntity.ok(response);
     }
 
-    //todo: pegar todos os chats ( com a ultima mensagem enviada ).
    @GetMapping
    public ResponseEntity<ApiResponse<MeusChatsResponseDTO>> getChats(){
        Authentication auth = SecurityContextHolder.getContext().getAuthentication();

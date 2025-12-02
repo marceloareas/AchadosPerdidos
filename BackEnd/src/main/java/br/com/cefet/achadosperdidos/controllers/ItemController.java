@@ -55,14 +55,13 @@ public class ItemController {
         Usuario user = (Usuario)auth.getPrincipal();
         ItemResponseDTO item = itemService.createItem(itemRequestDTO, user);
         
-        ApiResponse<ItemResponseDTO> response = new ApiResponse(
+        ApiResponse<ItemResponseDTO> response = new ApiResponse<ItemResponseDTO>(
             "Item cadastrado com sucesso!",
             "item",
             item
-            );
+        );
             
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    //     return ResponseEntity.ok(item);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PatchMapping("/{itemId}")

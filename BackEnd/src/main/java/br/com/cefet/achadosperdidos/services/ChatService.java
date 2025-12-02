@@ -45,6 +45,15 @@ public class ChatService {
     @Autowired
     private ChatMapper chatMapper;
 
+    @Autowired
+    private MensagemFactory mensagemFactory;
+
+    @Autowired
+    private RabbitConfig rabbitConfig;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
     @Transactional
     public ApiResponse<MeusChatsResponseDTO> getChats(Long userId) {
         List<Chat> chatList = this.chatRepository.findByUsuarioId(userId);
@@ -64,20 +73,6 @@ public class ChatService {
         meusChats.setChats(chatVitrine);
         return new ApiResponse<MeusChatsResponseDTO>("Chats encontrados.", meusChats);
     }
-    @Autowired
-    private MensagemFactory mensagemFactory;
-
-    @Autowired
-    private RabbitConfig rabbitConfig;
-
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-//    @Transactional
-//    public ApiResponse<MeusChatsResponseDTO> getChats(Long userId){
-//        List<Chat> chatList = this.chatRepository.findByUsuarioId(userId);
-////        return chatList.stream().map(ChatMapper::)
-//    }
-
 
     @Transactional
     public ApiResponse<ChatComMensagensDTO> getChat(Long match_id, Usuario usuario) {
@@ -121,8 +116,6 @@ public class ChatService {
         BaseMensagem mensagemSalva = mensagemRepository.save(mensagem);
         //todo: modificar a mensagem para ser enviada de acordo com a instancia (usar factory).
 
-        //todo:  save na mensagem com ChatRepository
-        //todo:  Enviar mensagem para 
         String routingKey =  "user." + mensagemDTO.getDestinatarioId();
         
         rabbitTemplate.convertAndSend(
