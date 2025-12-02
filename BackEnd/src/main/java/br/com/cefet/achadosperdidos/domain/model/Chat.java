@@ -21,7 +21,7 @@ import lombok.Setter;
 
 
 @Entity
-@Table(name = "chats")
+@Table(name = "chat")
 @NoArgsConstructor
 public class Chat {
 

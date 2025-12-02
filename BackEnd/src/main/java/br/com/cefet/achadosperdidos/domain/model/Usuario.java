@@ -20,7 +20,7 @@ import lombok.Setter;
 
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "usuario")
 @NoArgsConstructor
 public class Usuario {
 
