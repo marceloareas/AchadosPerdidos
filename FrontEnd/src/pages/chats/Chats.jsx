@@ -5,20 +5,16 @@ import style from "./Chats.module.scss";
 import { useSearchParams } from "react-router-dom";
 import ChatCard from "../../components/ui/chatCard/ChatCard";
 import ScrollListChats from "../../components/scrollListChats/ScrollListChats";
-import Chat from "../../components/Chat/chat";
+import Chat from "../../components/chat/Chat";
 import useChatStore from "../../store/chat";
 import useAuthStore from "../../store/auth";
 import useItemStore from "../../store/item";
+import { connectWebSocket } from "../../utils/config/WebSocket_config";
 
 const Chats = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const isMobile = windowWidth <= 600;
 
-  React.useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
   const [searchParams] = useSearchParams();
   const { getChat, getChats, chats, chatAtual } = useChatStore();
   const { user } = useAuthStore();
@@ -26,8 +22,17 @@ const Chats = () => {
 
   const match = searchParams.get("match");
   const [chatSelect, setChat] = useState(undefined);
-
   const [showList, setShowList] = useState(true);
+
+  useEffect(() => {
+    connectWebSocket();
+  });
+
+  React.useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const selectChat = async (chat) => {
     setChat(chat);
@@ -81,6 +86,7 @@ const Chats = () => {
                   chatAtual.usuarios.find((usr) => usr.nome !== user.nome)?.id
                 }
                 onBack={isMobile ? handleBackToList : null}
+                chat={chatAtual}
               />
             ) : (
               !isMobile && (

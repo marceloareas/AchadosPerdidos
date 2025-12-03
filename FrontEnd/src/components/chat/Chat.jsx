@@ -18,6 +18,7 @@ const Chat = ({
   currentUserId,
   onBack,
   matchId,
+  chat,
 }) => {
   const { confirmMatch } = useMatchStore();
   const { showNotification } = useNotification();
@@ -68,7 +69,7 @@ const Chat = ({
           openModal={handleOpenModal}
         />
         <ContentChat listMessage={mensagens} currentUserId={currentUserId} />
-        <Input />
+        <Input chat={chat} currentUserId={currentUserId} />
       </div>
       <ModalConfirm
         open={confirmModal}

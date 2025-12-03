@@ -34,6 +34,31 @@ const useChatStore = create((set, get) => ({
       set({ loading: false });
     }
   },
+  // --- ADICIONAR MENSAGEM AO CHAT ATUAL (WebSocket) ---
+  addMensagem: async (novaMsg, chatId) => {
+    const { chatAtual } = get();
+    const { token } = useAuthStore.getState();
+    try {
+      const response = await Api.post(
+        `/chat/mensagem/${chatId}`,
+        novaMsg, // BaseMensagemDTO
+        API_HEADER(token)
+      );
+    } catch (err) {
+      console.error(
+        "Erro ao enviar mensagem:",
+        err.response?.data || err.message
+      );
+    }
+    if (!chatAtual || novaMsg.matchId !== chatAtual.match_id) return;
+
+    set({
+      chatAtual: {
+        ...chatAtual,
+        mensagens: [...(chatAtual.mensagens || []), novaMsg],
+      },
+    });
+  },
 }));
 
 export default useChatStore;

@@ -1,9 +1,29 @@
 import { useEffect, useRef } from "react";
 import style from "./Chat.module.scss";
 import { FaPaperPlane, FaFileImage } from "react-icons/fa";
+import useChatStore from "../../store/chat";
 
-const Input = () => {
+const Input = ({ chat, currentUserId }) => {
   const textRef = useRef(null);
+  const [mensagem, setMensagem] = useState("");
+  const { sendMessage } = useChatStore();
+
+  const remetenteId = currentUserId;
+  const destinatarioId = chat?.usuarios?.find(
+    (u) => u.id !== currentUserId
+  )?.id;
+
+  const handleSendMessage = async () => {
+    const formMessage = {
+      remetenteId,
+      destinatarioId,
+      conteudo: mensagem,
+      tipo: "TEXTO",
+    };
+    if (!mensagem.trim) return;
+    await sendMessage(formMessage, chat.id);
+    setMensagem("");
+  };
 
   useEffect(() => {
     const el = textRef.current;
@@ -29,9 +49,14 @@ const Input = () => {
           rows={1}
           placeholder="Mensagem..."
           className={style.inputMessage}
+          onChange={(e) => e.target.value}
+          value={mensagem}
         />
       </div>
-      <button className={style.iconSendMessage}>
+      <button
+        onClick={() => handleSendMessage()}
+        className={style.iconSendMessage}
+      >
         <FaPaperPlane />
       </button>
     </div>
