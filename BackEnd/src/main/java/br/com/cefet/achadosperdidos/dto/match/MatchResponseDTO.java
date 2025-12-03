@@ -15,9 +15,6 @@ public class MatchResponseDTO {
     private ItemMeusMatchesResponseDTO itemUsuario;
     private ItemMeusMatchesResponseDTO itemOposto;
 
-    private Boolean confirmacaoItemPerdido;
-    private Boolean confirmacaoItemAchado;
-
     private Boolean arquivadoPorItemPerdido;
     private Boolean arquivadoPorItemAchado;
 }

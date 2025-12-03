@@ -55,22 +55,15 @@ public class MatchController {
 
     }
 
-    // CONFIRMAÇÃO DE USUÁRIO
-    @PatchMapping("/{matchId}/confirm")
-    public ResponseEntity<ApiResponse<MatchResponseDTO>> confirmMatch(@PathVariable Long matchId){
+    @GetMapping("/{matchId}/getConfirmationName")
+    public ResponseEntity<ApiResponse<String>> getMatchConfirmationActionName(@PathVariable Long matchId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuario = (Usuario) auth.getPrincipal();
+        Long userId = ((Usuario)auth.getPrincipal()).getId();
 
-        MatchResponseDTO matchAtualizado = matchService.confirmMatch(matchId, usuario.getId());
 
-        ApiResponse<MatchResponseDTO> response = new ApiResponse<>(
-            "Confirmação realizada com sucesso.",
-            matchAtualizado
-        );
-
-        return ResponseEntity.ok(response);
-
+        return ResponseEntity.ok(new ApiResponse<>("", null, null));
     }
+
 
     // ATIVAR MATCH (DESARQUIVAR)
     @PostMapping("/{matchId}/activate")

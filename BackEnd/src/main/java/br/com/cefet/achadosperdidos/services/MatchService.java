@@ -1,11 +1,9 @@
 package br.com.cefet.achadosperdidos.services;
 
 import br.com.cefet.achadosperdidos.domain.enums.StatusItemEnum;
+import br.com.cefet.achadosperdidos.domain.enums.TipoEventoMudancaStatus;
 import br.com.cefet.achadosperdidos.domain.enums.TipoItemEnum;
-import br.com.cefet.achadosperdidos.domain.model.Categoria;
-import br.com.cefet.achadosperdidos.domain.model.Item;
-import br.com.cefet.achadosperdidos.domain.model.Match;
-import br.com.cefet.achadosperdidos.domain.model.Usuario;
+import br.com.cefet.achadosperdidos.domain.model.*;
 import br.com.cefet.achadosperdidos.dto.match.MatchResponseDTO;
 import br.com.cefet.achadosperdidos.dto.match_api_integration.ItemCreatedEvent;
 import br.com.cefet.achadosperdidos.dto.match_api_integration.MatchAPIItemDTO;
@@ -39,10 +37,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -93,8 +88,6 @@ public class MatchService {
             dto.setId(match.getId());
             dto.setItemUsuario(itemMapper.convertToItemMeusMatchesDTO(itemUsuario));
             dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(itemOposto));
-            dto.setConfirmacaoItemAchado(match.isConfirmacaoAchado());
-            dto.setConfirmacaoItemPerdido(match.isConfirmacaoPerdido());
             dto.setArquivadoPorItemAchado(match.isArquivadoPorItemAchado());
             dto.setArquivadoPorItemPerdido(match.isArquivadoPorItemPerdido());
             matchResponseDTOList.add(dto);
@@ -191,58 +184,6 @@ public class MatchService {
     }  
     
     // CONFIRMAÇÃO DE USUÁRIO NO MATCH
-    @Transactional
-    public MatchResponseDTO confirmMatch(Long matchId, Long userId){
-
-        // 1. Busca o match
-        Match match = matchRepository.findById(matchId)
-        .orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
-
-        // 2. Verifica qual usuário fez a requisição
-        boolean isUsuarioItemAchado = match.getItemAchado().getUsuario().getId().equals(userId);
-        boolean isUsuarioItemPerdido = match.getItemPerdido().getUsuario().getId().equals(userId);
-
-        // 3. Erro caso os usuários do match não estejam envolvidos na requisição
-        if(!isUsuarioItemAchado && !isUsuarioItemPerdido){
-            throw new InvalidCredentials("Usuário não pertence a esse match.");
-        }
-
-        // 4. Atualiza a flag de confirmação com base no usuário da requisição
-        if(isUsuarioItemAchado){
-            match.setConfirmacaoAchado(true);
-        }
-        else{
-            match.setConfirmacaoPerdido(true);
-        }
-
-        // 5. Verifica se as flags de confimação dos usuários estão ambas true
-        // Se positivo, vamos mudar o status dos itens e no futuro arquivar o chat
-        if(match.isConfirmacaoAchado() && match.isConfirmacaoPerdido()){
-            Item itemAchado = match.getItemAchado();
-            itemAchado.setStatus(StatusItemEnum.RECUPERADO);
-            itemAchado.setDataDevolucao(java.time.LocalDateTime.now());
-
-            Item itemPerdido = match.getItemPerdido();
-            itemPerdido.setStatus(StatusItemEnum.RECUPERADO);
-            itemPerdido.setDataDevolucao(java.time.LocalDateTime.now());
-
-            itemRepository.save(itemAchado);
-            itemRepository.save(itemPerdido);
-
-            // APLICAR LÓGICA DE ARQUIVAMENTO DO MATCH OU DELEÇÃO
-        }
-
-        Match matchSalvo = matchRepository.save(match);
-
-        MatchResponseDTO dto = new MatchResponseDTO();
-        dto.setId(matchSalvo.getId());
-        dto.setItemUsuario(itemMapper.convertToItemMeusMatchesDTO(isUsuarioItemAchado ? matchSalvo.getItemAchado() : matchSalvo.getItemPerdido()));
-        dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(isUsuarioItemAchado ? matchSalvo.getItemPerdido() : matchSalvo.getItemAchado()));
-        dto.setConfirmacaoItemAchado(matchSalvo.isConfirmacaoAchado());
-        dto.setConfirmacaoItemPerdido(matchSalvo.isConfirmacaoPerdido());
-
-        return dto;
-    }
 
     @Transactional
     public void activateMatch(Long matchId, Long userId) {
@@ -274,8 +215,6 @@ public class MatchService {
             dto.setId(match.getId());
             dto.setItemUsuario(itemMapper.convertToItemMeusMatchesDTO(itemUsuario));
             dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(itemOposto));
-            dto.setConfirmacaoItemAchado(match.isConfirmacaoAchado());
-            dto.setConfirmacaoItemPerdido(match.isConfirmacaoPerdido());
             dto.setArquivadoPorItemAchado(match.isArquivadoPorItemAchado());
             dto.setArquivadoPorItemPerdido(match.isArquivadoPorItemPerdido());
             matchResponseDTOList.add(dto);
@@ -304,13 +243,73 @@ public class MatchService {
             dto.setId(match.getId());
             dto.setItemUsuario(itemMapper.convertToItemMeusMatchesDTO(itemUsuario));
             dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(itemOposto));
-            dto.setConfirmacaoItemAchado(match.isConfirmacaoAchado());
-            dto.setConfirmacaoItemPerdido(match.isConfirmacaoPerdido());
             dto.setArquivadoPorItemAchado(match.isArquivadoPorItemAchado());
             dto.setArquivadoPorItemPerdido(match.isArquivadoPorItemPerdido());
             matchResponseDTOList.add(dto);
         }
         return matchResponseDTOList;
+    }
+
+    public String getMatchConfirmationActionName(Usuario usuario, Long matchId){
+
+        Match match = matchRepository.findById(matchId).orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
+
+        Long userId = usuario.getId();
+
+        Usuario itemAchadoUsuario = match.getItemAchado().getUsuario();
+        Usuario itemPerdidoUsuario = match.getItemPerdido().getUsuario();
+
+        Long itemAchadoUsuarioId = itemAchadoUsuario.getId();
+        Long itemPerdidoUsuarioId = itemPerdidoUsuario.getId();
+
+        if(!Objects.equals(itemAchadoUsuarioId, userId) && !Objects.equals(itemPerdidoUsuarioId, userId)){
+            throw new InvalidCredentials("Match não pertence ao usuário");
+        }
+
+        // verificar de que tipo de item o usuario eh dono.
+        boolean isUsuarioDonoItemPerdido = itemPerdidoUsuarioId.equals(usuario.getId());
+        boolean isUsuarioDonoItemAchado = itemAchadoUsuarioId.equals(usuario.getId());
+
+        Set<EventoMudancaStatus> eventoMudancaStatusSet = match.getEventosMudancaStatus();
+
+        //se o size for 0, retornar: "Solicitar início de processo de devolução"
+        if(eventoMudancaStatusSet.isEmpty()){
+            return "Solicitar início de processo de devolução";
+        }
+
+        //se o size == 1, avaliar o eventoMudancaStatus (que vai ser de em devolução)
+        if(eventoMudancaStatusSet.size() == 1){
+            List<EventoMudancaStatus> list = eventoMudancaStatusSet.stream().toList();
+            EventoMudancaStatus evento = list.getFirst();
+
+            //todo: tratar casos de:
+            // evento criado, mas usuario atual nao confirmou ainda, sendo ele dono do achado ou perdido.
+
+            //se tiver confirmacao de achado e de perdido, retornar "Confirmar de Devolução"
+            if(evento.isAchadoConfirmado() && evento.isPerdidoConfirmado()) {
+                return "Confirmar Devolução";
+            }
+
+            if(evento.isPerdidoConfirmado() && isUsuarioDonoItemPerdido && !evento.isAchadoConfirmado()){
+                return "Esperando confirmação de " + itemAchadoUsuario.getNome().split(" ")[0];
+            }
+
+            if(evento.isAchadoConfirmado() && isUsuarioDonoItemAchado && !evento.isPerdidoConfirmado()){
+                return "Esperando confirmação de " + itemPerdidoUsuario.getNome().split(" ")[0];
+            }
+        }
+
+        //se o size == 2, iterar para encontrar o Devolucao
+
+        //se iterar, quer dizer que ele encontrou eventos e preciso olhar para dentro deles para saber o que fazer
+        for(EventoMudancaStatus evento : eventoMudancaStatusSet){
+            if(evento.getTipoEventoMudancaStatus() == TipoEventoMudancaStatus.DEVOLVIDO){ // evento de devolucao
+                //todo: tratar casos de devolucao para:
+                // usuario atual nao confirmou mas o outro sim.
+                // usuario atual confirmou e o outro nao.
+            }
+        }
+        return "";
     }
 
     /**

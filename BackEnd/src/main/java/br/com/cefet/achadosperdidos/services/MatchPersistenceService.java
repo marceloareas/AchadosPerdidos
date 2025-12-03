@@ -46,8 +46,6 @@ public class MatchPersistenceService {
             Match match = new Match();
             match.setItemAchado(itemRepository.findById(itemAchadoId).orElse(null));
             match.setItemPerdido(itemRepository.findById(itemPerdidoId).orElse(null));
-            match.setConfirmacaoAchado(false);
-            match.setConfirmacaoPerdido(false);
             match.setArquivadoPorItemPerdido(false);
             match.setArquivadoPorItemAchado(false);
 
