@@ -16,11 +16,7 @@ const ScrollListChats = ({ items, chats, selectChat }) => {
           <ChatCard
             handleSelect={() => selectChat(chat)}
             key={chat.id}
-            item={
-              itemNome == chat.nomeItemPerdido
-                ? chat.nomeItemAchado
-                : chat.nomeItemPerdido
-            }
+            item={itemNome}
             idMatch={chat.match_id}
             usuarios={chat.usuarios}
             lastMessage={chat.ultimaMensagem}

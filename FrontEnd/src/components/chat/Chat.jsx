@@ -58,16 +58,11 @@ const Chat = ({
       setIsLoading(false);
     }
   };
-
   return (
     <>
       <div className={style.chatLayout}>
         <HeaderChat
-          item={
-            meuitemNome === itemsMatches.nomeItemPerdido
-              ? itemsMatches.nomeItemAchado
-              : itemsMatches.nomeItemPerdido
-          }
+          item={meuitemNome.nome}
           usuario={person.nome}
           onBack={onBack}
           openModal={handleOpenModal}
