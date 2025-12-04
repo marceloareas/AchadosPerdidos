@@ -395,6 +395,7 @@ public class MatchService {
         if (evento.isAchadoConfirmado() && evento.isPerdidoConfirmado()) {
             // Essa função é responsável por alterar o status dos itens e aplicar regras de negócio quanto a matchs e chats
             aplicarMudancaDeEstado(match, tipoEvento);
+            encerrarMatchesConcorrentes(match);
         }
 
         return new MatchResponseDTO();
@@ -437,6 +438,34 @@ public class MatchService {
         itemRepository.save(perdido);
     }
 
+
+    private void encerrarMatchesConcorrentes(Match matchPrincipal){
+        Long itemAchadoId = matchPrincipal.getItemAchado().getId();
+        Long itemPerdidoId = matchPrincipal.getItemPerdido().getId();
+
+        // Busca matches onde o item achado está envolvido
+        List<Match> matchesComItemAchado = matchRepository.findByItemAchado_Id(itemAchadoId);
+        // Busca matches onde o item perdido está envolvido
+        List<Match> matchesComItemPerdido = matchRepository.findByItemPerdido_Id(itemPerdidoId);
+
+        // Usa um Set para evitar duplicatas caso haja intersecção
+        Set<Match> matchesParaEncerrar = new HashSet<>(matchesComItemAchado);
+        matchesParaEncerrar.addAll(matchesComItemPerdido);
+
+        for (Match m : matchesParaEncerrar) {
+            // Pula o match que acabou de ser concluído com sucesso
+            if (m.getId().equals(matchPrincipal.getId())) {
+                continue;
+            }
+
+            // Se o match ainda estiver aberto, encerra
+            if (!m.isFinalizado()) {
+                m.setFinalizado(true);
+                m.setTipoFinalizacaoMatch(TipoFinalizacaoMatch.CONCLUSAO_OUTRO_MATCH);
+                matchRepository.save(m);
+            }
+        }
+    }
     /**
      * Helper reativo para desserializar a resposta.
      * Falhar aqui irá parar o fluxo.
