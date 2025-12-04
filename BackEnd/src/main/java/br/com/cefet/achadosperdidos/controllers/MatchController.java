@@ -59,10 +59,11 @@ public class MatchController {
     @GetMapping("/{matchId}/getConfirmationName")
     public ResponseEntity<ApiResponse<String>> getMatchConfirmationActionName(@PathVariable Long matchId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = ((Usuario)auth.getPrincipal()).getId();
+        Usuario usuario  = (Usuario) auth.getPrincipal();
 
+        String actionName = matchService.getMatchConfirmationActionName(usuario, matchId);
 
-        return ResponseEntity.ok(new ApiResponse<>("", null, null));
+        return ResponseEntity.ok(new ApiResponse<>("Status recuperado.", "action", actionName));
     }
 
     @PatchMapping("/{matchId}/confirm")

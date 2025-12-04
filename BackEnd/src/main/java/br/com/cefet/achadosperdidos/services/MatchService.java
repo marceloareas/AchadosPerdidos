@@ -261,9 +261,12 @@ public class MatchService {
         Match match = matchRepository.findById(matchId).orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
 
         Long userId = usuario.getId();
-
+        System.out.println(userId);
         Usuario itemAchadoUsuario = match.getItemAchado().getUsuario();
         Usuario itemPerdidoUsuario = match.getItemPerdido().getUsuario();
+        System.out.println(itemAchadoUsuario.getNome());
+        System.out.println(itemPerdidoUsuario.getNome());
+
 
         Long itemAchadoUsuarioId = itemAchadoUsuario.getId();
         Long itemPerdidoUsuarioId = itemPerdidoUsuario.getId();
@@ -297,11 +300,16 @@ public class MatchService {
             }
 
             if(evento.isPerdidoConfirmado() && isUsuarioDonoItemPerdido && !evento.isAchadoConfirmado()){
-                return "Esperando confirmação de " + itemAchadoUsuario.getNome().split(" ")[0];
+                return "Esperando confirmação de acordo de" + itemAchadoUsuario.getNome().split(" ")[0];
             }
 
             if(evento.isAchadoConfirmado() && isUsuarioDonoItemAchado && !evento.isPerdidoConfirmado()){
-                return "Esperando confirmação de " + itemPerdidoUsuario.getNome().split(" ")[0];
+                return "Esperando confirmação de acordo de" + itemPerdidoUsuario.getNome().split(" ")[0];
+            }
+
+            if((evento.isPerdidoConfirmado() && !evento.isAchadoConfirmado() && isUsuarioDonoItemAchado) || 
+            evento.isAchadoConfirmado() && !evento.isPerdidoConfirmado() && isUsuarioDonoItemPerdido){
+                return "Aguardando sua confirmação!";
             }
         }
 
@@ -313,6 +321,24 @@ public class MatchService {
                 //todo: tratar casos de devolucao para:
                 // usuario atual nao confirmou mas o outro sim.
                 // usuario atual confirmou e o outro nao.
+
+                if(evento.isAchadoConfirmado() && evento.isPerdidoConfirmado()) {
+                    return "Devolução confirmada!";
+                }
+
+                if(evento.isPerdidoConfirmado() && isUsuarioDonoItemPerdido && !evento.isAchadoConfirmado()){
+                    return "Esperando confirmação de devolução de " + itemAchadoUsuario.getNome().split(" ")[0];
+                }
+
+                if(evento.isAchadoConfirmado() && isUsuarioDonoItemAchado && !evento.isPerdidoConfirmado()){
+                    return "Esperando confirmação de devolução de " + itemPerdidoUsuario.getNome().split(" ")[0];
+                }
+
+                if((evento.isPerdidoConfirmado() && !evento.isAchadoConfirmado() && isUsuarioDonoItemAchado) || 
+                evento.isAchadoConfirmado() && !evento.isPerdidoConfirmado() && isUsuarioDonoItemPerdido){
+                    return "Aguardando sua confirmação!";
+                }
+
             }
         }
         return "";
