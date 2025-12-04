@@ -2,6 +2,7 @@ package br.com.cefet.achadosperdidos.services;
 
 import br.com.cefet.achadosperdidos.domain.enums.StatusItemEnum;
 import br.com.cefet.achadosperdidos.domain.enums.TipoEventoMudancaStatus;
+import br.com.cefet.achadosperdidos.domain.enums.TipoFinalizacaoMatch;
 import br.com.cefet.achadosperdidos.domain.enums.TipoItemEnum;
 import br.com.cefet.achadosperdidos.domain.model.*;
 import br.com.cefet.achadosperdidos.dto.match.MatchResponseDTO;
@@ -15,6 +16,7 @@ import br.com.cefet.achadosperdidos.exception.match.MatchGenericException;
 import br.com.cefet.achadosperdidos.exception.match.MatchNotFoundException;
 import br.com.cefet.achadosperdidos.exception.usuario.UserNotFoundException;
 import br.com.cefet.achadosperdidos.mappers.ItemMapper;
+import br.com.cefet.achadosperdidos.repositories.EventoMudancaStatusRepository;
 import br.com.cefet.achadosperdidos.repositories.ItemRepository;
 import br.com.cefet.achadosperdidos.repositories.MatchRepository;
 
@@ -37,6 +39,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -66,6 +69,9 @@ public class MatchService {
 
     @Autowired
     private ItemMapper itemMapper;
+
+    @Autowired
+    private EventoMudancaStatusRepository eventoMudancaStatusRepository;
 
     public List<MatchResponseDTO> getAllUserMatches(Long userId){
         List<Match> userMatches = matchRepository.findAllByUsuarioId(userId);
@@ -310,6 +316,99 @@ public class MatchService {
             }
         }
         return "";
+    }
+
+    @Transactional
+    public MatchResponseDTO confirmMatch(Long matchId, Long userId, TipoEventoMudancaStatus tipoEvento){
+        
+        Match match = matchRepository.findById(matchId)
+        .orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
+        
+        if (match.isFinalizado()) {
+            throw new MatchGenericException("Este match já foi encerrado.");
+        }
+
+        boolean isUsuarioAchado = match.getItemAchado().getUsuario().getId().equals(userId);
+        boolean isUsuarioPerdido = match.getItemPerdido().getUsuario().getId().equals(userId);
+
+        if (!isUsuarioAchado && !isUsuarioPerdido) {
+            throw new InvalidCredentials("Usuário não pertence a este match.");
+        }        
+
+        // Controle de status: Só pode criar o evento DEVOLVIDO se os itens já estiverem EM_DEVOLUCAO
+        if (tipoEvento == TipoEventoMudancaStatus.DEVOLVIDO) {
+            if (match.getItemAchado().getStatus() != StatusItemEnum.EM_DEVOLUCAO) {
+                 throw new MatchGenericException("Não é possível finalizar. Os itens ainda não estão em processo de devolução.");
+            }
+        }
+
+        // Busca o registro (tupla) do tipo de evento para esse match, ou cria um novo
+        EventoMudancaStatus evento = eventoMudancaStatusRepository
+                .findByMatchIdAndTipoEventoMudancaStatus(matchId, tipoEvento)
+                .orElse(new EventoMudancaStatus());
+        
+        // Se for um novo registro (tupla) na tabela EventoMudancaStatus, uma configuração base é realizada
+        if (evento.getId() == null) {
+            evento.setMatch(match);
+            evento.setTipoEventoMudancaStatus(tipoEvento);
+            // Talvez criar algum campo para armazenar datas nos registros
+            // AchadoConfirmado e PerdidoConfirmado são false por padrão
+        }
+
+        // Confirmação do usuário atual
+        if (isUsuarioAchado) {
+            evento.setAchadoConfirmado(true);
+        } else {
+            evento.setPerdidoConfirmado(true);
+        }
+
+        // Salvando em BD
+        eventoMudancaStatusRepository.save(evento);
+
+        // Se ambos os usuários confirmaram este evento, mudamos o estado real dos itens
+        if (evento.isAchadoConfirmado() && evento.isPerdidoConfirmado()) {
+            // Essa função é responsável por alterar o status dos itens e aplicar regras de negócio quanto a matchs e chats
+            aplicarMudancaDeEstado(match, tipoEvento);
+        }
+
+        return new MatchResponseDTO();
+    }
+
+    private void aplicarMudancaDeEstado(Match match, TipoEventoMudancaStatus tipoEvento) {
+        if (tipoEvento == TipoEventoMudancaStatus.EM_DEVOLUCAO) {
+            // Ambos aceitaram iniciar a devolução, mudamos os status dos itens para EM_DEVOLUCAO
+            atualizarItens(match, StatusItemEnum.EM_DEVOLUCAO);
+            
+            // ARQUIVAR OUTROS MATCHS CONCORRENTES AQUI
+            // arquivarConcorrentes(match)
+            
+        } else if (tipoEvento == TipoEventoMudancaStatus.DEVOLVIDO) {
+            // Ambos confirmaram que receberam/entregaram, mudamos status para RECUPERADO
+            atualizarItens(match, StatusItemEnum.RECUPERADO);
+            
+            // Encerra o Match atual
+            match.setFinalizado(true);
+            match.setTipoFinalizacaoMatch(TipoFinalizacaoMatch.CONCLUSAO_MATCH);
+            matchRepository.save(match);
+
+            // ENCERRAR OUTROS MATCHS CONCORRENTES ARQUI
+        }
+    }
+
+    private void atualizarItens(Match match, StatusItemEnum novoStatus) {
+        Item achado = match.getItemAchado();
+        Item perdido = match.getItemPerdido();
+        achado.setStatus(novoStatus);
+        perdido.setStatus(novoStatus);
+        
+        if(novoStatus == StatusItemEnum.RECUPERADO) {
+            LocalDateTime agora = LocalDateTime.now();
+            achado.setDataDevolucao(agora);
+            perdido.setDataDevolucao(agora);
+        }
+        
+        itemRepository.save(achado);
+        itemRepository.save(perdido);
     }
 
     /**

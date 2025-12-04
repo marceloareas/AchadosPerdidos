@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import br.com.cefet.achadosperdidos.domain.enums.TipoEventoMudancaStatus;
 import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.dto.match.MatchResponseDTO;
 import br.com.cefet.achadosperdidos.services.MatchService;
@@ -64,6 +65,19 @@ public class MatchController {
         return ResponseEntity.ok(new ApiResponse<>("", null, null));
     }
 
+    @PatchMapping("/{matchId}/confirm")
+    public ResponseEntity<ApiResponse<MatchResponseDTO>> confirmMatch(
+            @PathVariable Long matchId,
+            @RequestParam TipoEventoMudancaStatus tipoEvento) { // Recebe o tipo via Query Param
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario) auth.getPrincipal();
+
+        // Passa o tipo para o service
+        MatchResponseDTO dto = matchService.confirmMatch(matchId, usuario.getId(), tipoEvento);
+
+        return ResponseEntity.ok(new ApiResponse<>("Confirmação registrada.", dto));
+    }
 
     // ATIVAR MATCH (DESARQUIVAR)
     @PostMapping("/{matchId}/activate")
