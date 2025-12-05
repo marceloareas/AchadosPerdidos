@@ -1,5 +1,5 @@
 -- Inserção de 5 Usuários
-INSERT INTO usuario (nome, email, senha) VALUES
+INSERT INTO usuario (nome, email, senha)  VALUES
 ('Ana Carolina Sá', 'carolzinha.da.globo@email.com', '$2a$10$TxZ2K88qxzE0PB7reNa3lupaoD/dm2DMe4LbrnXcqdqgq2La8c1MO'),
 ('Caio Santos', 'caiosantos.dev@email.com', '$2a$12$rL0U5r8J/.95BrJHPE4vx.7P4gm6XUyB7/O7/WOSIlS0Fxxukt8VS'),
 ('Flavio Alecio', 'flavio.cybersec.audit@email.com', '$2a$12$./2c5nxuaKDeXRh1WQp1I.2YijbK9hH3JplQdIGyv09bdPxyRvQcy'),
@@ -30,12 +30,9 @@ INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, d
 INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
 (2, 'Carteira de Couro Marrom', '2025-10-02 09:00:00', '2025-10-02 09:00:00', '2025-10-04 10:00:00', 'Encontrada em uma das mesas. Contém CNH em nome de "José Pereira".', 'ACHADO', 'RECUPERADO', 'Dentro do pavilhão E, primeiro andar');
 
-
+-- Item 3: Perdido pelo Usuário 3 (Flavio Alecio)
 INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
 (4, 'iPhone 13', '2025-10-03 12:00:00', '2025-10-01 12:00:00', null, 'iPhone 13 azul, com capa preta', 'ACHADO', 'MATCHING', 'Ginasio');
-
-INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
-(3, 'Fones de Ouvido Sony WH-1000XM4', '2025-09-28 18:00:00', '2025-09-28 18:00:00', NULL, 'Headphone preto, estava dentro de sua case preta.', 'PERDIDO', 'MATCHING', 'Biblioteca, mesa próxima à janela');
 
 -- Item 4: Perdido pelo Usuário 1 (Ana Carolina Sá)
 INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
@@ -49,11 +46,9 @@ INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, d
 INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
 (5, 'Guarda-chuva preto', '2025-10-05 08:20:00', '2025-10-05 08:20:00', '2025-10-06 08:00:00', 'Guarda-chuva grande, deixado ao lado do bebedouro.', 'ACHADO', 'RECUPERADO', 'Pátio da cantina principal');
 
+-- Item 7: Perdido pelo Usuário 2 (Caio Santos)
 INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
 (4, 'Carteira Marrom', '2025-09-30 22:00:00', '2025-10-02 22:00:00', NULL, 'Carteira encontrada em cima da mesa.', 'PERDIDO', 'MATCHING', 'No Pavilhão E');
-
-INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
-(2, 'Casaco de Moletom Cinza', '2025-09-30 22:00:00', '2025-09-30 22:00:00', NULL, 'Moletom com capuz, tamanho M, da marca Adidas.', 'PERDIDO', 'MATCHING', 'Auditório principal, cadeira H12');
 
 -- Item 8: Perdido pelo Usuário 4 (Vinicius Saidy)
 INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
