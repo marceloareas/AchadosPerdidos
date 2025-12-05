@@ -23,6 +23,7 @@ public class MensagemMapper {
         dto.setConteudo(baseMensagem.getConteudo());
         dto.setDataEnvio(baseMensagem.getDataEnvio());
         dto.setRemetenteId(baseMensagem.getRemetenteId());
+        dto.setDestinatario(baseMensagem.getDestinatarioId());
         dto.setTipo(baseMensagem.getTipo());
         return dto;
     }
@@ -33,6 +34,7 @@ public class MensagemMapper {
         dto.setConteudo(mensagemTexto.getConteudo());
         dto.setDataEnvio(mensagemTexto.getDataEnvio());
         dto.setRemetenteId(mensagemTexto.getRemetenteId());
+        dto.setDestinatario(mensagemTexto.getDestinatarioId());
 
         return dto;
     }
@@ -43,6 +45,7 @@ public class MensagemMapper {
         dto.setConteudo(mensagemConfirmacao.getConteudo());
         dto.setDataEnvio(mensagemConfirmacao.getDataEnvio());
         dto.setRemetenteId(mensagemConfirmacao.getRemetenteId());
+        dto.setDestinatario(mensagemTexto.getDestinatarioId());
 
         //todo: adicionar os especificos de Mensagem Confirmacao
         return dto;
