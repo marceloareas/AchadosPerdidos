@@ -36,10 +36,9 @@ const useChatStore = create((set, get) => ({
   },
   // --- ADICIONAR MENSAGEM AO CHAT ATUAL (WebSocket) ---
   addMensagem: async (novaMsg, chatId) => {
-    const { chatAtual } = get();
     const { token } = useAuthStore.getState();
     try {
-      const response = await Api.post(
+      await Api.post(
         `/chat/mensagem/${chatId}`,
         novaMsg, // BaseMensagemDTO
         API_HEADER(token)
@@ -50,13 +49,17 @@ const useChatStore = create((set, get) => ({
         err.response?.data || err.message
       );
     }
-    if (!chatAtual || novaMsg.matchId !== chatAtual.match_id) return;
+    set((state) => {
+      if (!state.chatAtual || chatId !== state.chatAtual.id) {
+        return {};
+      }
 
-    set({
-      chatAtual: {
-        ...chatAtual,
-        mensagens: [...(chatAtual.mensagens || []), novaMsg],
-      },
+      return {
+        chatAtual: {
+          ...state.chatAtual,
+          mensagens: [...state.chatAtual.mensagens, novaMsg],
+        },
+      };
     });
   },
 }));

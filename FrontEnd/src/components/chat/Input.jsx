@@ -1,17 +1,20 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import style from "./Chat.module.scss";
+import dayjs from "dayjs";
 import { FaPaperPlane, FaFileImage } from "react-icons/fa";
 import useChatStore from "../../store/chat";
 
-const Input = ({ chat, currentUserId }) => {
+const Input = ({ chat, currentUserId, otherUserId }) => {
   const textRef = useRef(null);
   const [mensagem, setMensagem] = useState("");
-  const { sendMessage } = useChatStore();
+  const { addMensagem } = useChatStore();
 
   const remetenteId = currentUserId;
-  const destinatarioId = chat?.usuarios?.find(
-    (u) => u.id !== currentUserId
-  )?.id;
+  const destinatarioId = otherUserId;
+
+  const convertDate = (date) => {
+    return dayjs(date).format("YYYY-MM-DDTHH:mm:ss");
+  };
 
   const handleSendMessage = async () => {
     const formMessage = {
@@ -19,10 +22,10 @@ const Input = ({ chat, currentUserId }) => {
       destinatarioId,
       conteudo: mensagem,
       tipo: "TEXTO",
+      dataEnvio: convertDate(new Date()),
     };
-    if (!mensagem.trim) return;
-    await sendMessage(formMessage, chat.id);
-    setMensagem("");
+    await addMensagem(formMessage, chat.id);
+    setMensagem("".trim());
   };
 
   useEffect(() => {
@@ -49,7 +52,7 @@ const Input = ({ chat, currentUserId }) => {
           rows={1}
           placeholder="Mensagem..."
           className={style.inputMessage}
-          onChange={(e) => e.target.value}
+          onChange={(e) => setMensagem(e.target.value)}
           value={mensagem}
         />
       </div>

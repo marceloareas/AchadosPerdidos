@@ -16,7 +16,9 @@ const Chats = () => {
   const isMobile = windowWidth <= 600;
 
   const [searchParams] = useSearchParams();
-  const { getChat, getChats, chats, chatAtual } = useChatStore();
+  const { getChat, getChats, chats } = useChatStore();
+  const chatAtual = useChatStore((state) => state.chatAtual);
+
   const { user } = useAuthStore();
   const { itemsUser, getUserItens } = useItemStore();
 
@@ -55,6 +57,9 @@ const Chats = () => {
         if (chat.match_id == match) selectChat(chat);
       });
   }, []);
+  useEffect(() => {
+    getChats();
+  }, [chatAtual.mensagens?.length]);
   return (
     <Layout>
       <div className={style.chats}>
@@ -82,8 +87,11 @@ const Chats = () => {
                   (usr) => usr.nome !== user.nome
                 )}
                 mensagens={chatAtual.mensagens}
-                currentUserId={
+                otherUserId={
                   chatAtual.usuarios.find((usr) => usr.nome !== user.nome)?.id
+                }
+                currentUserId={
+                  chatAtual.usuarios.find((usr) => usr.nome === user.nome)?.id
                 }
                 onBack={isMobile ? handleBackToList : null}
                 chat={chatAtual}

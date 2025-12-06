@@ -1,11 +1,11 @@
 import style from "./Chat.module.scss";
 
-const BalaoMensagem = ({ conteudo, currentUserId }) => {
+const BalaoMensagem = ({ conteudo, otherUserId }) => {
   return (
     <div className={style.balao}>
       <section
         className={
-          conteudo.remetenteId === currentUserId ? style.userMe : style.them
+          conteudo.remetenteId === otherUserId ? style.them : style.userMe
         }
       >
         <p>{conteudo.conteudo}</p>
