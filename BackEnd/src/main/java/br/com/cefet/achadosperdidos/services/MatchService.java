@@ -345,7 +345,7 @@ public class MatchService {
     }
 
     @Transactional
-    public MatchResponseDTO confirmMatch(Long matchId, Long userId, TipoEventoMudancaStatus tipoEvento){
+    public MatchResponseDTO confirmMatch(Long matchId, Long userId){
         
         Match match = matchRepository.findById(matchId)
         .orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
@@ -361,18 +361,22 @@ public class MatchService {
             throw new InvalidCredentials("Usuário não pertence a este match.");
         }        
 
-        // Controle de status: Só pode criar o evento DEVOLVIDO se os itens já estiverem EM_DEVOLUCAO
-        if (tipoEvento == TipoEventoMudancaStatus.DEVOLVIDO) {
-            if (match.getItemAchado().getStatus() != StatusItemEnum.EM_DEVOLUCAO) {
-                 throw new MatchGenericException("Não é possível finalizar. Os itens ainda não estão em processo de devolução.");
+        Set<EventoMudancaStatus> eventos = match.getEventosMudancaStatus();
+
+        TipoEventoMudancaStatus tipoEvento = descobrirTipoEvento(eventos);        
+
+        // Controle de status do itens. Só pode criar o evento devolvido se os itens estiverem EM_DEVOLUCAO
+        if(tipoEvento == TipoEventoMudancaStatus.DEVOLVIDO){
+            if(match.getItemAchado().getStatus() != StatusItemEnum.EM_DEVOLUCAO){
+                throw new MatchGenericException("Não foi possível finalizar...");
             }
         }
 
-        // Busca o registro (tupla) do tipo de evento para esse match, ou cria um novo
+        // Após determinado o tipoEvento a ser tratado, busca-se o registro ou cria-se um novo
         EventoMudancaStatus evento = eventoMudancaStatusRepository
-                .findByMatchIdAndTipoEventoMudancaStatus(matchId, tipoEvento)
-                .orElse(new EventoMudancaStatus());
-        
+        .findByMatchIdAndTipoEventoMudancaStatus(matchId, tipoEvento)
+        .orElse(new EventoMudancaStatus());
+
         // Se for um novo registro (tupla) na tabela EventoMudancaStatus, uma configuração base é realizada
         if (evento.getId() == null) {
             evento.setMatch(match);
@@ -399,6 +403,34 @@ public class MatchService {
         }
 
         return new MatchResponseDTO();
+    }
+
+    private TipoEventoMudancaStatus descobrirTipoEvento(Set<EventoMudancaStatus> eventos){
+
+        // Ao receber todos os registros (eventos) associados ao match passado, busca-se se já existe um evento de EM_DEVOLUCAO
+        Optional<EventoMudancaStatus> eventoEmDevolucaoOpt = eventos.stream()
+        .filter(e -> e.getTipoEventoMudancaStatus() == TipoEventoMudancaStatus.EM_DEVOLUCAO)
+        .findFirst();
+
+        // Verifica se foi encontrado algum evento do tipo EM_DEVOLUCAO
+        if(eventoEmDevolucaoOpt.isEmpty()){
+            // Se não existir nenhum registro do tipo EM_DEVOLUCAO, o tipo EM_DEVOLUCAO é retornado
+            // Simboliza que estamos querendo gerar o primeiro registro para aquele match
+            return TipoEventoMudancaStatus.EM_DEVOLUCAO;
+        }
+        else{
+            // Capturando o registro de EM_DEVOLUCAO encontrado
+            EventoMudancaStatus emDevolucao = eventoEmDevolucaoOpt.get();
+            // Se já existe algum registro do tipo EM_DEVOLUCAO, verifica-se se os usuários já confirmaram a devolução
+            if(emDevolucao.isAchadoConfirmado() && emDevolucao.isPerdidoConfirmado()){
+                // Se ambos já confirmaram o processo de EM_DEVOLUCAO, o próximo passo é iniciar a conclusão (DEVOLVIDO)
+                return TipoEventoMudancaStatus.DEVOLVIDO;
+            }
+            else{
+                // Caso ainda falte a aprovação de algum usuário, o status continua o mesmo
+                return TipoEventoMudancaStatus.EM_DEVOLUCAO;
+            }
+        }
     }
 
     private void aplicarMudancaDeEstado(Match match, TipoEventoMudancaStatus tipoEvento) {
