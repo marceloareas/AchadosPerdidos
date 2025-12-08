@@ -1,5 +1,5 @@
 import SockJS from "sockjs-client/dist/sockjs.js";
-import Stomp from "stompjs";
+import { Stomp } from "@stomp/stompjs";
 import useAuthStore from "../../store/auth";
 import useChatStore from "../../store/chat";
 
