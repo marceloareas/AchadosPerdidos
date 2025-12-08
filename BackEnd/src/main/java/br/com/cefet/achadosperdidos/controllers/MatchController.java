@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import br.com.cefet.achadosperdidos.domain.enums.TipoEventoMudancaStatus;
 import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.dto.match.MatchResponseDTO;
 import br.com.cefet.achadosperdidos.services.MatchService;
@@ -55,21 +56,27 @@ public class MatchController {
 
     }
 
-    // CONFIRMAÇÃO DE USUÁRIO
+    @GetMapping("/{matchId}/getConfirmationName")
+    public ResponseEntity<ApiResponse<String>> getMatchConfirmationActionName(@PathVariable Long matchId){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario  = (Usuario) auth.getPrincipal();
+
+        String actionName = matchService.getMatchConfirmationActionName(usuario, matchId);
+
+        return ResponseEntity.ok(new ApiResponse<>("Status recuperado.", "action", actionName));
+    }
+
     @PatchMapping("/{matchId}/confirm")
-    public ResponseEntity<ApiResponse<MatchResponseDTO>> confirmMatch(@PathVariable Long matchId){
+    public ResponseEntity<ApiResponse<MatchResponseDTO>> confirmMatchAction(
+            @PathVariable Long matchId) { // Recebe o tipo via Query Param
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario) auth.getPrincipal();
 
-        MatchResponseDTO matchAtualizado = matchService.confirmMatch(matchId, usuario.getId());
+        // Passa o tipo para o service
+        MatchResponseDTO dto = matchService.confirmMatchAction(matchId, usuario.getId());
 
-        ApiResponse<MatchResponseDTO> response = new ApiResponse<>(
-            "Confirmação realizada com sucesso.",
-            matchAtualizado
-        );
-
-        return ResponseEntity.ok(response);
-
+        return ResponseEntity.ok(new ApiResponse<>("Confirmação registrada.", dto));
     }
 
     // ATIVAR MATCH (DESARQUIVAR)
