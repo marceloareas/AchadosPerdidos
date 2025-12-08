@@ -283,7 +283,7 @@ public class MatchService {
 
         //se o size for 0, retornar: "Solicitar início de processo de devolução"
         if(eventoMudancaStatusSet.isEmpty()){
-            return "Solicitar início de processo de devolução";
+            return "Solicitar início de processo de \"Em devolução\"";
         }
 
         //se o size == 1, avaliar o eventoMudancaStatus (que vai ser de em devolução)
@@ -345,7 +345,7 @@ public class MatchService {
     }
 
     @Transactional
-    public MatchResponseDTO confirmMatch(Long matchId, Long userId){
+    public MatchResponseDTO confirmMatchAction(Long matchId, Long userId){
         
         Match match = matchRepository.findById(matchId)
         .orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
@@ -399,7 +399,6 @@ public class MatchService {
         if (evento.isAchadoConfirmado() && evento.isPerdidoConfirmado()) {
             // Essa função é responsável por alterar o status dos itens e aplicar regras de negócio quanto a matchs e chats
             aplicarMudancaDeEstado(match, tipoEvento);
-            encerrarMatchesConcorrentes(match);
         }
 
         return new MatchResponseDTO();
@@ -437,10 +436,7 @@ public class MatchService {
         if (tipoEvento == TipoEventoMudancaStatus.EM_DEVOLUCAO) {
             // Ambos aceitaram iniciar a devolução, mudamos os status dos itens para EM_DEVOLUCAO
             atualizarItens(match, StatusItemEnum.EM_DEVOLUCAO);
-            
-            // ARQUIVAR OUTROS MATCHS CONCORRENTES AQUI
-            // arquivarConcorrentes(match)
-            
+
         } else if (tipoEvento == TipoEventoMudancaStatus.DEVOLVIDO) {
             // Ambos confirmaram que receberam/entregaram, mudamos status para RECUPERADO
             atualizarItens(match, StatusItemEnum.RECUPERADO);
@@ -450,7 +446,8 @@ public class MatchService {
             match.setTipoFinalizacaoMatch(TipoFinalizacaoMatch.CONCLUSAO_MATCH);
             matchRepository.save(match);
 
-            // ENCERRAR OUTROS MATCHS CONCORRENTES ARQUI
+            // para o caso de conclusão de match, encerrar todos os concorrentes.
+            encerrarMatchesConcorrentes(match);
         }
     }
 

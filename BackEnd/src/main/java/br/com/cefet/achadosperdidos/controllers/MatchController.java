@@ -67,14 +67,14 @@ public class MatchController {
     }
 
     @PatchMapping("/{matchId}/confirm")
-    public ResponseEntity<ApiResponse<MatchResponseDTO>> confirmMatch(
+    public ResponseEntity<ApiResponse<MatchResponseDTO>> confirmMatchAction(
             @PathVariable Long matchId) { // Recebe o tipo via Query Param
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario) auth.getPrincipal();
 
         // Passa o tipo para o service
-        MatchResponseDTO dto = matchService.confirmMatch(matchId, usuario.getId());
+        MatchResponseDTO dto = matchService.confirmMatchAction(matchId, usuario.getId());
 
         return ResponseEntity.ok(new ApiResponse<>("Confirmação registrada.", dto));
     }
