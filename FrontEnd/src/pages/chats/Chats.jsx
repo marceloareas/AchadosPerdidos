@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../components/layout/Layout";
-import { Box, Typography } from "@mui/material";
 import style from "./Chats.module.scss";
 import { useSearchParams } from "react-router-dom";
-import ChatCard from "../../components/ui/chatCard/ChatCard";
 import ScrollListChats from "../../components/scrollListChats/ScrollListChats";
 import Chat from "../../components/chat/Chat";
 import useChatStore from "../../store/chat";
@@ -23,12 +21,12 @@ const Chats = () => {
   const { itemsUser, getUserItens } = useItemStore();
 
   const match = searchParams.get("match");
-  const [chatSelect, setChat] = useState(undefined);
+  const [chatSelect, setChatSelect] = useState(undefined);
   const [showList, setShowList] = useState(true);
 
   useEffect(() => {
     connectWebSocket();
-  });
+  }, []);
 
   React.useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -37,7 +35,7 @@ const Chats = () => {
   }, []);
 
   const selectChat = async (chat) => {
-    setChat(chat);
+    setChatSelect(chat);
     await getChat(chat.match_id);
     if (isMobile) {
       setShowList(false);
@@ -46,7 +44,7 @@ const Chats = () => {
 
   const handleBackToList = () => {
     setShowList(true);
-    setChat(undefined);
+    setChatSelect(undefined);
   };
 
   useEffect(() => {
@@ -59,7 +57,7 @@ const Chats = () => {
   }, []);
   useEffect(() => {
     getChats();
-  }, [chatAtual.mensagens?.length]);
+  }, []);
   return (
     <Layout>
       <div className={style.chats}>

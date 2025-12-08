@@ -2,7 +2,6 @@ import SockJS from "sockjs-client/dist/sockjs.js";
 import Stomp from "stompjs";
 import useAuthStore from "../../store/auth";
 import useChatStore from "../../store/chat";
-import { API_HEADER } from "./API_HEADER";
 
 let stompClient = null;
 let isConnecting = false;
@@ -27,7 +26,9 @@ export const connectWebSocket = () => {
 
   // Conecta usando o cabeçalho com token
   stompClient.connect(
-    API_HEADER(token),
+    {
+      Authorization: token,
+    },
     (frame) => {
       console.log("✅ Conectado ao WebSocket:", frame);
       isConnecting = false;
@@ -35,9 +36,10 @@ export const connectWebSocket = () => {
       // Se inscreve no tópico privado do usuário
       stompClient.subscribe("/user/queue/messages", (msg) => {
         const data = JSON.parse(msg.body);
-
+        console.log("📩 Mensagem recebida:", msg.body);
+        const { id, chatId, ...mensagemSemId } = data;
         // Adiciona mensagem no store
-        useChatStore.getState().addMensagem(data);
+        useChatStore.getState().showMessage(mensagemSemId, data.chatId);
       });
     },
     (error) => {
@@ -53,11 +55,12 @@ export const connectWebSocket = () => {
   );
 };
 
+connectWebSocket();
 // ---------------------------------------------------
 // FUNÇÃO PARA ENVIAR MENSAGEM
 // ---------------------------------------------------
 export const sendMessage = (matchId, remetenteId, conteudo) => {
-  if (!stompClient || !stompClient.connected) {
+  if (!stompClient || !stompClient?.connected) {
     console.error("WebSocket não conectado!");
     return;
   }
