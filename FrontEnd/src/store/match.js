@@ -5,28 +5,103 @@ import { API_HEADER } from "../utils/config/API_HEADER";
 
 const useMatchStore = create((set, get) => ({
   matches: [],
+  matchesArquivados: [],
   loading: false,
   error: null,
+  response: null,
 
-  getMatches: async () => {
+  // getMatches: async () => {
+  //   set({ loading: true, error: null });
+  //   try {
+  //     const { token } = useAuthStore.getState();
+  //     const response = await Api.get("/match", API_HEADER(token));
+  //     // console.log(response.data);
+  //     set({ matches: response.data, loading: false });
+  //   } catch (error) {
+  //     set({ error: error.message, loading: false });
+  //   }
+  // },
+
+  getMatchesAtivos: async () => {
     set({ loading: true, error: null });
     try {
       const { token } = useAuthStore.getState();
-      const response = await Api.get("/match", API_HEADER(token));
-      console.log(response.data);
+      const response = await Api.get("/match/active", API_HEADER(token));
       set({ matches: response.data, loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });
     }
   },
+  getMatchesArquivados: async () => {
+    set({ loading: true, error: null });
+    try {
+      const { token } = useAuthStore.getState();
+      const response = await Api.get("/match/archived", API_HEADER(token));
+      set({ matchesArquivados: response.data, loading: false });
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+  matchActivate: async (idMatch) => {
+    set({ loading: true, error: null });
+    try {
+      const { token } = useAuthStore.getState();
+      const response = await Api.post(
+        `/match/${idMatch}/activate`,
+        {},
+        API_HEADER(token)
+      );
+      await get().getMatchesAtivos();
+      await get().getMatchesArquivados();
+      set({ loading: false, error: null, response: response.data.message });
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  matchArchive: async (idMatch) => {
+    set({ loading: true, error: null });
+    try {
+      const { token } = useAuthStore.getState();
+      const response = await Api.post(
+        `/match/${idMatch}/archive`,
+        {},
+        API_HEADER(token)
+      );
+      console.log(response);
+      await get().getMatchesAtivos();
+      await get().getMatchesArquivados();
+      set({ loading: false, error: null, response: response.data.message });
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  confirmMatch: async (idMatch) => {
+    set({ loading: true, error: null });
+    try {
+      const { token } = useAuthStore.getState();
+      const response = await Api.patch(
+        `/match/${idMatch}/confirm`,
+        {},
+        API_HEADER(token)
+      );
+      console.log(response);
+      set({ loading: false, error: null, response: response.data.message });
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
   deleteMatch: async (idMatch) => {
     set({ loading: true, error: null });
     try {
       const { token } = useAuthStore.getState();
       const response = await Api.delete(`/match/${idMatch}`, API_HEADER(token));
       console.log(response);
-      await get().getMatches();
-      set({ loading: false, erro: null, response: response.data });
+      await get().getMatchesAtivos();
+      await get().getMatchesArquivados();
+      set({ loading: false, error: null, response: response.data.message });
     } catch (error) {
       set({ error: error.message, loading: false });
     }

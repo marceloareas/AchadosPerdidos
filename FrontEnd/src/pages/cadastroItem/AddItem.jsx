@@ -273,8 +273,9 @@ const AddItem = () => {
                   placeholder="Descreva o item em detalhes: cor, marca, modelo..."
                   value={formData.descricao}
                   onChange={(e) =>
-                    handleInputChange("descricao", e.target.value)
+                    setFormData((p) => ({ ...p, descricao: e.target.value }))
                   }
+                  onBlur={(e) => handleInputChange("descricao", e.target.value)}
                   rows={6}
                   required
                 />

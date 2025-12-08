@@ -101,15 +101,6 @@ const ModalView = ({
             </Box>
           )}
 
-          {/* {item.personName && (
-            <Box className={style.section}>
-              <Typography variant="subtitle2" color="textSecondary">
-                Responsável
-              </Typography>
-              <Typography>{item.personName}</Typography>
-            </Box>
-          )} */}
-
           {item.description && (
             <Box className={style.section}>
               <Typography variant="subtitle2" color="textSecondary">

@@ -16,7 +16,7 @@ import br.com.cefet.achadosperdidos.domain.enums.StatusItemEnum;
 
 
 @Entity
-@Table(name = "itens")
+@Table(name = "item")
 @NoArgsConstructor
 public class Item {
     @Id

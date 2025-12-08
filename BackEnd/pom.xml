@@ -78,6 +78,17 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+            <version>3.5.7</version>
+        </dependency>
+
         <!--DATABASE DEPENDENCIES-->
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -94,6 +105,11 @@
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+
         <!--CODE DEPENDENCIES-->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -109,6 +125,8 @@
 			<artifactId>jakarta.validation-api</artifactId>
 			<version>3.1.1</version>
 		</dependency>
+
+
 	</dependencies>
 
 	<build>

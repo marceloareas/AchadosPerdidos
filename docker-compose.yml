@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   frontend-achados:
@@ -28,14 +28,14 @@ services:
       - .env
     volumes:
       - ./BackEnd:/workspace
-      - ~/.m2:/root/.m2   # cache das dependências do Maven
+      - ~/.m2:/root/.m2 # cache das dependências do Maven
     depends_on:
       postgresql_db:
         condition: service_healthy
     networks:
       - bridge_achados
   postgresql_db:
-    container_name: achados-postgresql
+    container_name: achados_postgresql
     image: postgres:14
     ports:
       - "${DB_PORT}:5432"
@@ -56,14 +56,15 @@ services:
       - bridge_achados
   mongo_db:
     image: mongo:7
-    container_name: achados-mongo
+    container_name: achados_mongo
     ports:
       - "27017:27017"
     volumes:
       - datalake_mongo:/data/db
+      - ./BackEnd/src/main/resources/mongo/seed:/docker-entrypoint-initdb.d
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}    
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     networks:
       - bridge_achados
   match-api:
@@ -91,7 +92,24 @@ services:
       - ollama_data:/root/.ollama
     networks:
       - bridge_achados
-
+  rabbitmq:
+    container_name: achados_rabbitmq
+    image: rabbitmq:3.12-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-guest}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD:-guest}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bridge_achados
 
 volumes:
   datalake_postgres:
@@ -100,9 +118,9 @@ volumes:
     driver: local
   ollama_data:
     driver: local
+  rabbitmq_data:
+    driver: local
 
 networks:
   bridge_achados:
     driver: bridge
-
-    

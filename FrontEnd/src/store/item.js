@@ -11,6 +11,7 @@ const useItemStore = create((set, get) => ({
   item: null,
   loading: false,
   erro: null,
+  response: null,
 
   getItemsRecentlyReturned: async () => {
     set({ loading: true, erro: null });
@@ -46,7 +47,8 @@ const useItemStore = create((set, get) => ({
       const { token } = useAuthStore.getState();
       const response = await Api.post("/item", formData, API_HEADER(token));
       set({
-        items: [...get().items, response.data],
+        items: [...get().items, response.data.item],
+        response: response.data.message,
         loading: false,
         erro: null,
       });
@@ -59,23 +61,31 @@ const useItemStore = create((set, get) => ({
     set({ loading: true, erro: null });
     try {
       const { token } = useAuthStore.getState();
-      const response = await Api.patch(`/item/${id}`, formData, API_HEADER(token));
+      const response = await Api.patch(
+        `/item/${id}`,
+        formData,
+        API_HEADER(token)
+      );
 
       const updatedItemsUser = get().itemsUser.map((item) =>
-        item.id === id ? response.data : item
+        item.id === id ? response.data.item : item
       );
       console.log("Payload enviado:", formData);
       console.log("Item atualizado com sucesso:", response.data);
       set({
         itemsUser: updatedItemsUser,
+        response: response.data.message,
         loading: false,
         erro: null,
-        item: response.data,
+        item: response.data.item,
       });
       get().getUserItens();
     } catch (err) {
       console.error(err);
-      set({ loading: false, erro: err.response?.data || "Erro ao atualizar item" });
+      set({
+        loading: false,
+        erro: err.response?.data || "Erro ao atualizar item",
+      });
     }
   },
 

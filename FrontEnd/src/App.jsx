@@ -14,6 +14,7 @@ import Profile from "./pages/profile/Profile";
 import ProtectedRoute from "./utils/protectedRoute/protectedRoute";
 import Landing from "./pages/landing/LandingPage";
 import HomeOrLanding from "./utils/HomeOrLanding";
+import MatchesArquivados from "./pages/matchesArquivados/MatchesArquivados";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
 
         <Route path="/" element={<HomeOrLanding />} />
         <Route path="/matches" element={<ProtectedRoute><Matches /></ProtectedRoute>} />
+        <Route path="/matches-arquivados" element={<ProtectedRoute><MatchesArquivados /></ProtectedRoute>} />
         <Route path="/itens" element={<ProtectedRoute><MeusItens /></ProtectedRoute>} />
         <Route path="/chats" element={<ProtectedRoute><Chats /></ProtectedRoute>} />
         <Route path="/add-item" element={<ProtectedRoute><AddItem /></ProtectedRoute>} />

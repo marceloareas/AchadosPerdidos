@@ -1,7 +1,7 @@
 @use '../../styles/variables.scss' as *;
 
 .body_footer {
-    display: flex;
+    display: none;
     position: fixed;
     z-index: 100;
     bottom: 0;
@@ -25,13 +25,16 @@
     border-radius: 5px;
     gap: 5px;
     color: $primary-color;
+    background-color: transparent;
     cursor: pointer;
     transition: .5s ease-in;
+    border: none;
 }
 
 .box_icons_footer_current {
     background: rgba(10, 73, 126, 0.1);
     transition: .5s ease-in;
+    border: none;
 
 }
 
@@ -47,6 +50,7 @@
 
 @media(max-width:600px) {
     .body_footer {
+        display: flex;
         opacity: 1;
     }
 

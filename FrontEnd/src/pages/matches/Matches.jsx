@@ -1,72 +1,30 @@
-import React, { useEffect } from "react";
-import { Box, Typography } from "@mui/material";
+import React, { useEffect, useMemo } from "react";
+import { Box, Typography, Tooltip } from "@mui/material";
 import MatchCard from "../../components/ui/matchCard/MatchCard";
 import style from "./Matches.module.scss";
 import Layout from "../../components/layout/Layout";
 import useMatchStore from "../../store/match";
-
-// Mock data para matches
-const matchesMock = [
-  {
-    id: 1,
-    chat: null, // chat não iniciado
-    itens: new Set([
-      {
-        id: 1,
-        type: "PERDIDO",
-        category: "Eletrônicos",
-        date: "2024-06-10",
-        title: "iPhone 13 Pro Azul",
-        description: "iPhone 13 Pro azul, com capinha transparente",
-        location: "Biblioteca Central",
-        personName: "Ana", // dar um jeito de pegar o nome do usuario no card de match
-      },
-      {
-        id: 2,
-        type: "ACHADO",
-        date: "2024-06-10",
-        category: "Eletrônicos",
-        title: "Celular iPhone Encontrado",
-        description: "Encontrei um iPhone azul com capinha",
-        location: "Próximo à Biblioteca",
-        personName: "Maria",
-      },
-    ]),
-  },
-  {
-    id: 2,
-    chat: { id: 5 }, // chat iniciado
-    itens: new Set([
-      {
-        id: 3,
-        type: "PERDIDO",
-        date: "2024-06-08",
-        category: "Acessórios",
-        title: "Mochila Preta Jansport",
-        description: "Mochila preta com patches de bandas de rock",
-        location: "Lab. de Informática",
-        personName: "João",
-      },
-      {
-        id: 4,
-        type: "ACHADO",
-        date: "2024-06-09",
-        category: "Acessórios",
-        title: "Mochila Encontrada",
-        description: "Mochila preta com adesivos encontrada no corredor",
-        location: "Corredor do 3º andar",
-        personName: "Ana",
-      },
-    ]),
-  },
-];
+import useChatStore from "../../store/chat";
+import { useNavigate } from "react-router-dom";
+import { Archive } from "lucide-react";
 
 const Matches = () => {
-  const { matches, getMatches } = useMatchStore();
+  const { matches, getMatchesAtivos } = useMatchStore();
+  const { chats, getChats } = useChatStore();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getMatches();
+    getMatchesAtivos();
+    getChats();
   }, []);
+
+  const matchesMemo = useMemo(() => {
+    return matches.map((match) => ({
+      match,
+      hasChat: chats.some((chat) => chat.match_id === match.id),
+    }));
+  }, [matches, chats]);
 
   return (
     <Layout>
@@ -82,6 +40,15 @@ const Matches = () => {
           >
             Encontramos {matches.length} correspondências para seus itens
           </Typography>
+
+          <Tooltip title="Ver matches arquivados" arrow>
+            <Archive
+              className={style.archiveIcon}
+              color="#0A497E"
+              size={"30px"}
+              onClick={() => navigate("/matches-arquivados")}
+            />
+          </Tooltip>
         </Box>
 
         <Box className={style.matchList}>
@@ -93,9 +60,13 @@ const Matches = () => {
               </Typography>
             </Box>
           ) : (
-            Array.isArray(matches) &&
-            matches.length > 0 &&
-            matches.map((match) => <MatchCard key={1} match={match} />)
+            matchesMemo.map((item) => (
+              <MatchCard
+                key={item.match.id}
+                match={item.match}
+                hasChat={item.hasChat}
+              />
+            ))
           )}
         </Box>
       </Box>

@@ -94,7 +94,7 @@ public class UsuarioService {
 
         usuarioRepository.save(usuario);
 
-        return "Senha atualizada com sucesso";
+        return "Senha atualizada com sucesso!";
     }
 
     @Transactional

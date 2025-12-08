@@ -7,12 +7,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 import br.com.cefet.achadosperdidos.dto.usuario.UsuarioRequestDTO;
 import br.com.cefet.achadosperdidos.dto.usuario.UsuarioUpdateRequestDTO;
 import br.com.cefet.achadosperdidos.dto.usuario.UsuarioResponseDTO;
 import br.com.cefet.achadosperdidos.services.UsuarioService;
-
+import br.com.cefet.achadosperdidos.dto.res.ApiResponse;
 
 @RestController
 @RequestMapping(value="/users")
@@ -42,12 +43,15 @@ public class UsuarioController{
     }
 
     @PatchMapping
-    public ResponseEntity<UsuarioResponseDTO> updateUser(@RequestBody UsuarioUpdateRequestDTO usuarioRequestDTO) {
-        System.out.println(usuarioRequestDTO);
+    // public ResponseEntity<UsuarioResponseDTO> updateUser(@RequestBody UsuarioUpdateRequestDTO usuarioRequestDTO) {
+    public ResponseEntity<ApiResponse<UsuarioResponseDTO>> updateUser(@RequestBody UsuarioUpdateRequestDTO usuarioRequestDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario)auth.getPrincipal();
         UsuarioResponseDTO usuarioAtualizado = usuarioService.update(usuario.getId(), usuarioRequestDTO);
-        return ResponseEntity.ok(usuarioAtualizado);
+
+        ApiResponse<UsuarioResponseDTO> response = new ApiResponse<>("Usuário Atualizado com sucesso!","usuario", usuarioAtualizado);
+        return ResponseEntity.ok(response);
+        // return ResponseEntity.ok(usuarioAtualizado);
     }
 
     @DeleteMapping

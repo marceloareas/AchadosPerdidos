@@ -20,7 +20,7 @@ class MatchService:
 
         return nota
     
-    def find_matches(self, item_pivo, itens_target, limite=8.0):
+    def find_matches(self, item_pivo, itens_target, limite=7.0):
 
         ids_matches = []
         notas_matches = []
@@ -28,6 +28,8 @@ class MatchService:
         for item in itens_target:
             nota = self._calcular_similaridade_para_par(item_pivo, item)
             
+            print(f"[DEBUG MATCH-API] Pivô: {item_pivo['id']} | Alvo: {item['id']} | Nota Calculada: {nota}")
+
             if nota >= limite:
                 ids_matches.append(item['id'])
                 notas_matches.append(round(nota, 2))

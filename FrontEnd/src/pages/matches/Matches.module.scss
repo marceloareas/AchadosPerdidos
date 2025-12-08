@@ -1,5 +1,5 @@
 .matchesPage {
-  min-height: 100vh;
+  min-height: calc(100vh - 125px);
   padding: 24px;
   background-color: #f5f5f5;
 }
@@ -7,7 +7,16 @@
 .header {
   margin-bottom: 24px;
   text-align: center;
+  position: relative;
+
+  .archiveIcon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+  }
 }
+
 
 .typography {
   margin: 0 10% !important;
@@ -16,6 +25,8 @@
 .matchList {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 16px;
 }
 
@@ -23,4 +34,10 @@
   text-align: center;
   padding: 40px 0;
   color: #666;
+}
+
+@media (max-width: 600px) {
+  .matchesPage {
+    min-height: calc(100vh - 205px);
+  }
 }

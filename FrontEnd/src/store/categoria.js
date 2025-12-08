@@ -14,7 +14,6 @@ const useCategoriaStore = create((set, get) => ({
     try {
       const { token } = useAuthStore.getState();
       const response = await Api.get("/category", API_HEADER(token));
-      console.log(response.data);
       set({ categorias: response.data, loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });

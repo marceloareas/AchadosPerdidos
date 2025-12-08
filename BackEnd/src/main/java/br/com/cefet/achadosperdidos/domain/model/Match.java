@@ -14,7 +14,7 @@ import lombok.Setter;
 
 
 @Entity
-@Table(name = "matchs", uniqueConstraints = {
+@Table(name = "match", uniqueConstraints = {
         @UniqueConstraint(name = "UK_match_itens", columnNames = {"item_perdido_id", "item_achado_id"})
 })
 @NoArgsConstructor
@@ -54,11 +54,46 @@ public class Match {
     @Setter
     private Chat chat;
 
-    public Match(Long id, Boolean confirmacaoPerdido, Boolean confirmacaoAchado){
+    @Getter
+    @Setter
+    private boolean arquivadoPorItemPerdido = false;
+    @Getter
+    @Setter
+    private boolean arquivadoPorItemAchado = false;
+
+    public Match(Long id, Boolean confirmacaoPerdido, Boolean confirmacaoAchado, Boolean arquivadoPorItemAchado, Boolean arquivadoPorItemPerdido) {
         this.id = id;
         this.confirmacaoPerdido = confirmacaoPerdido;
         this.confirmacaoAchado = confirmacaoAchado;
+        this.arquivadoPorItemAchado = arquivadoPorItemAchado;
+        this.arquivadoPorItemPerdido = arquivadoPorItemPerdido;
     }
 
+    // ver se o match foi arquivado pelo usuario
+    public boolean isArquivadoPorUsuario(Long usuarioId) {
+        if (itemPerdido.getUsuario().getId().equals(usuarioId)) {
+            return arquivadoPorItemPerdido;
+        } else if (itemAchado.getUsuario().getId().equals(usuarioId)) {
+            return arquivadoPorItemAchado;
+        }
+        return false;
+    }
+
+    // arquivar o match para o usuario
+    public void arquivarPorUsuario(Long usuarioId) {
+        if (itemPerdido.getUsuario().getId().equals(usuarioId)) {
+            this.arquivadoPorItemPerdido = true;
+        } else if (itemAchado.getUsuario().getId().equals(usuarioId)) {
+            this.arquivadoPorItemAchado = true;
+        }
+    }
+    // desarquivar o match para o usuario
+    public void desarquivarPorUsuario(Long usuarioId) {
+        if (itemPerdido.getUsuario().getId().equals(usuarioId)) {
+            this.arquivadoPorItemPerdido = false;
+        } else if (itemAchado.getUsuario().getId().equals(usuarioId)) {
+            this.arquivadoPorItemAchado = false;
+        }
+    }
     
 }
