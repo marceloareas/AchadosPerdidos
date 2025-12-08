@@ -1,10 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import style from "./Chat.module.scss";
 
 import ContentChat from "../chat/ContentChat.jsx";
 import HeaderChat from "./HeaderChat.jsx";
 import Input from "./Input.jsx";
-
+import useChatStore from "../../store/chat";
 import useMatchStore from "../../store/match";
 import ModalConfirm from "../ui/dialog/ModalConfirm.jsx";
 import CustomButton from "../ui/button/CustomButton.jsx";
@@ -14,10 +14,11 @@ const Chat = ({
   itemsMatches,
   items,
   person,
-  mensagens,
+  otherUserId,
   currentUserId,
   onBack,
   matchId,
+  chat,
 }) => {
   const { confirmMatch } = useMatchStore();
   const { showNotification } = useNotification();
@@ -58,22 +59,24 @@ const Chat = ({
       setIsLoading(false);
     }
   };
+  // Opção B — inscrever o Chat direto na store (mais simples e à prova de erros)
+  // const mensagens = useChatStore((s) => s.chatAtual.mensagens);
 
   return (
     <>
       <div className={style.chatLayout}>
         <HeaderChat
-          item={
-            meuitemNome === itemsMatches.nomeItemPerdido
-              ? itemsMatches.nomeItemAchado
-              : itemsMatches.nomeItemPerdido
-          }
+          item={meuitemNome.nome}
           usuario={person.nome}
           onBack={onBack}
           openModal={handleOpenModal}
         />
-        <ContentChat listMessage={mensagens} currentUserId={currentUserId} />
-        <Input />
+        <ContentChat listMessage={chat.mensagens} otherUserId={otherUserId} />
+        <Input
+          chat={chat}
+          currentUserId={currentUserId}
+          otherUserId={otherUserId}
+        />
       </div>
       <ModalConfirm
         open={confirmModal}

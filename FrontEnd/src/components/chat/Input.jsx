@@ -1,9 +1,32 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import style from "./Chat.module.scss";
+import dayjs from "dayjs";
 import { FaPaperPlane, FaFileImage } from "react-icons/fa";
+import useChatStore from "../../store/chat";
 
-const Input = () => {
+const Input = ({ chat, currentUserId, otherUserId }) => {
   const textRef = useRef(null);
+  const [mensagem, setMensagem] = useState("");
+  const { addMensagem } = useChatStore();
+
+  const remetenteId = currentUserId;
+  const destinatarioId = otherUserId;
+
+  const convertDate = (date) => {
+    return dayjs(date).format("YYYY-MM-DDTHH:mm:ss");
+  };
+
+  const handleSendMessage = async () => {
+    const formMessage = {
+      remetenteId,
+      destinatarioId,
+      conteudo: mensagem,
+      tipo: "TEXTO",
+      dataEnvio: convertDate(new Date()),
+    };
+    await addMensagem(formMessage, chat.id);
+    setMensagem("".trim());
+  };
 
   useEffect(() => {
     const el = textRef.current;
@@ -29,9 +52,14 @@ const Input = () => {
           rows={1}
           placeholder="Mensagem..."
           className={style.inputMessage}
+          onChange={(e) => setMensagem(e.target.value)}
+          value={mensagem}
         />
       </div>
-      <button className={style.iconSendMessage}>
+      <button
+        onClick={() => handleSendMessage()}
+        className={style.iconSendMessage}
+      >
         <FaPaperPlane />
       </button>
     </div>
