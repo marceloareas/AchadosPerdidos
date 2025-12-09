@@ -54,6 +54,9 @@ public class ChatService {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    private MatchService matchService;
+
     @Transactional
     public ApiResponse<MeusChatsResponseDTO> getChats(Long userId) {
         List<Chat> chatList = this.chatRepository.findByUsuarioId(userId);
@@ -90,7 +93,12 @@ public class ChatService {
             Chat chat = alreadyExistingChat.get();
             List<BaseMensagem> mensagens = mensagemRepository.findByChatIdOrderByDataEnvioAsc(chat.getId());
 
-            return new ApiResponse<ChatComMensagensDTO>("Chat encontrado com sucesso.", "chat", chatMapper.convertToChatComMensagensDTO(chat, mensagens));
+            ChatComMensagensDTO chatDTO = chatMapper.convertToChatComMensagensDTO(chat, mensagens);
+
+            String statusUsuarioNoMatch = matchService.getMatchConfirmationActionName(usuario, match_id);
+            chatDTO.setStatusDoUsuarioNoMatch(statusUsuarioNoMatch);
+
+            return new ApiResponse<ChatComMensagensDTO>("Chat encontrado com sucesso.", "chat", chatDTO);
         }
 
         Chat chat = new Chat();

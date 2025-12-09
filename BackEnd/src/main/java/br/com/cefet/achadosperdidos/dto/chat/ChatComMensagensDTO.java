@@ -11,4 +11,5 @@ import lombok.Setter;
 @Setter
 public class ChatComMensagensDTO extends BaseChatResponseDTO {
     private List<BaseMensagemDTO> mensagens;
+    private String statusDoUsuarioNoMatch;
 }
