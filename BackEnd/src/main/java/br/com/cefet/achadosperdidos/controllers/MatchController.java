@@ -56,6 +56,11 @@ public class MatchController {
 
     }
 
+    /*
+    Está rota está desativada. Ela servia para extrair informações sobre o status de um match.
+    Com ela era possível consultar o status de cada parte dentro de um Match
+    Atualmente, o service atrelado a essa rota está sendo consumido diretamente na rota getChat
+
     @GetMapping("/{matchId}/getConfirmationName")
     public ResponseEntity<ApiResponse<String>> getMatchConfirmationActionName(@PathVariable Long matchId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -65,6 +70,7 @@ public class MatchController {
 
         return ResponseEntity.ok(new ApiResponse<>("Status recuperado.", "action", actionName));
     }
+    */
 
     @PatchMapping("/{matchId}/confirm")
     public ResponseEntity<ApiResponse<MatchResponseDTO>> confirmMatchAction(

@@ -296,20 +296,20 @@ public class MatchService {
 
             //se tiver confirmacao de achado e de perdido, retornar "Confirmar de Devolução"
             if(evento.isAchadoConfirmado() && evento.isPerdidoConfirmado()) {
-                return "Confirmar Devolução";
+                return "INICIAR DEVOLUÇÃO DO ITEM";
             }
 
             if(evento.isPerdidoConfirmado() && isUsuarioDonoItemPerdido && !evento.isAchadoConfirmado()){
-                return "Esperando confirmação de acordo de" + itemAchadoUsuario.getNome().split(" ")[0];
+                return "[FASE DE ACORDO] Esperando " + itemAchadoUsuario.getNome().split(" ")[0];
             }
 
             if(evento.isAchadoConfirmado() && isUsuarioDonoItemAchado && !evento.isPerdidoConfirmado()){
-                return "Esperando confirmação de acordo de" + itemPerdidoUsuario.getNome().split(" ")[0];
+                return "[FASE DE ACORDO] Esperando " + itemPerdidoUsuario.getNome().split(" ")[0];
             }
 
             if((evento.isPerdidoConfirmado() && !evento.isAchadoConfirmado() && isUsuarioDonoItemAchado) || 
             evento.isAchadoConfirmado() && !evento.isPerdidoConfirmado() && isUsuarioDonoItemPerdido){
-                return "Aguardando sua confirmação!";
+                return "[FASE DE ACORDO] Confirmar...";
             }
         }
 
@@ -323,20 +323,20 @@ public class MatchService {
                 // usuario atual confirmou e o outro nao.
 
                 if(evento.isAchadoConfirmado() && evento.isPerdidoConfirmado()) {
-                    return "Devolução confirmada!";
+                    return "DEVOLUÇÃO DO ITEM CONFIRMADA!";
                 }
 
                 if(evento.isPerdidoConfirmado() && isUsuarioDonoItemPerdido && !evento.isAchadoConfirmado()){
-                    return "Esperando confirmação de devolução de " + itemAchadoUsuario.getNome().split(" ")[0];
+                    return "[FASE DE DEVOLUÇÃO] Esperando " + itemAchadoUsuario.getNome().split(" ")[0];
                 }
 
                 if(evento.isAchadoConfirmado() && isUsuarioDonoItemAchado && !evento.isPerdidoConfirmado()){
-                    return "Esperando confirmação de devolução de " + itemPerdidoUsuario.getNome().split(" ")[0];
+                    return "[FASE DE DEVOLUÇÃO] Esperando " + itemPerdidoUsuario.getNome().split(" ")[0];
                 }
 
                 if((evento.isPerdidoConfirmado() && !evento.isAchadoConfirmado() && isUsuarioDonoItemAchado) || 
                 evento.isAchadoConfirmado() && !evento.isPerdidoConfirmado() && isUsuarioDonoItemPerdido){
-                    return "Aguardando sua confirmação!";
+                    return "[FASE DE DEVOLUÇÃO] Confirmar...";
                 }
 
             }
