@@ -83,37 +83,52 @@ public class ChatService {
 
         boolean isUsuarioItemAchado = usuario.getId().equals(match.getItemAchado().getUsuario().getId());
         boolean isUsuarioItemPerdido = usuario.getId().equals(match.getItemPerdido().getUsuario().getId());
+        
+        // Verifica se o usuário da requisição é parte integrante do Chat
         if (!isUsuarioItemAchado && !isUsuarioItemPerdido) {
             throw new NotAuthorized("Chat não pertence ao usuario.");
         }
 
+        // Verifica se já existe um chat atrelado a esse Match
         Optional<Chat> alreadyExistingChat = chatRepository.findByMatchId(match_id);
+        Chat chat;
+        String messageResponse;
+        List<BaseMensagem> mensagens;
 
+        // Caso já exista um chat
         if (alreadyExistingChat.isPresent()) {
-            Chat chat = alreadyExistingChat.get();
-            List<BaseMensagem> mensagens = mensagemRepository.findByChatIdOrderByDataEnvioAsc(chat.getId());
 
-            ChatComMensagensDTO chatDTO = chatMapper.convertToChatComMensagensDTO(chat, mensagens);
+            // Objeto chat é materializado
+            chat = alreadyExistingChat.get();
+            // As mensagens atreladas ao chat são recuperadas
+            mensagens = mensagemRepository.findByChatIdOrderByDataEnvioAsc(chat.getId());
+            messageResponse = "Chat encontrado com sucesso.";
+        }
+        // Caso não exista um Chat
+        else{
+            // Um novo Chat é criado 
+            chat = new Chat();
+            // Setando relação entre Chat e Match
+            chat.setMatch(match);
 
-            String statusUsuarioNoMatch = matchService.getMatchConfirmationActionName(usuario, match_id);
-            chatDTO.setStatusDoUsuarioNoMatch(statusUsuarioNoMatch);
+            // Setando relação entre os usuários do Match e Chat
+            Set<Usuario> usuarios = new HashSet<>();
+            usuarios.add(match.getItemAchado().getUsuario());
+            usuarios.add(match.getItemPerdido().getUsuario());
 
-            return new ApiResponse<ChatComMensagensDTO>("Chat encontrado com sucesso.", "chat", chatDTO);
+            chat.setUsuarios(usuarios);
+            chatRepository.save(chat);
+
+            mensagens = Collections.emptyList();
+            messageResponse = "Chat criado com sucesso.";
         }
 
-        Chat chat = new Chat();
+        ChatComMensagensDTO chatDTO = chatMapper.convertToChatComMensagensDTO(chat, mensagens);
 
-        chat.setMatch(match);
+        String statusUsuarioNoMatch = matchService.getEstadoMatch(usuario, match_id);
+        chatDTO.setStatusDoUsuarioNoMatch(statusUsuarioNoMatch);
 
-        //todo: refatorar essa logica.
-        Set<Usuario> usuarios = new HashSet<>();
-        usuarios.add(match.getItemAchado().getUsuario());
-        usuarios.add(match.getItemPerdido().getUsuario());
-
-        chat.setUsuarios(usuarios);
-        chatRepository.save(chat);
-
-        return new ApiResponse<ChatComMensagensDTO>("Chat criado com sucesso.", "chat", chatMapper.convertToChatComMensagensDTO(chat, Collections.emptyList()));
+        return new ApiResponse<ChatComMensagensDTO>(messageResponse, "chat", chatDTO);
     }
 
     @Transactional

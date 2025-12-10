@@ -256,7 +256,7 @@ public class MatchService {
         return matchResponseDTOList;
     }
 
-    public String getMatchConfirmationActionName(Usuario usuario, Long matchId){
+    public String getEstadoMatch(Usuario usuario, Long matchId){
 
         Match match = matchRepository.findById(matchId).orElseThrow(() -> new MatchNotFoundException("Match não encontrado."));
 
