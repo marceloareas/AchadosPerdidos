@@ -8,9 +8,11 @@ import java.util.Collections;
 
 import br.com.cefet.achadosperdidos.config.RabbitConfig;
 import br.com.cefet.achadosperdidos.domain.model.BaseMensagem;
+import br.com.cefet.achadosperdidos.dto.chat.BotaoDTO;
 import br.com.cefet.achadosperdidos.dto.chat.ChatComMensagensDTO;
 import br.com.cefet.achadosperdidos.dto.chat.MeusChatsResponseDTO;
 import br.com.cefet.achadosperdidos.dto.chat.ChatVitrineResponseDTO;
+
 import br.com.cefet.achadosperdidos.exception.match.MatchFinalizadoException;
 import br.com.cefet.achadosperdidos.repositories.MensagemRepository;
 import br.com.cefet.achadosperdidos.services.factories.MensagemFactory;
@@ -132,8 +134,8 @@ public class ChatService {
 
         ChatComMensagensDTO chatDTO = chatMapper.convertToChatComMensagensDTO(chat, mensagens, match);
 
-        String statusUsuarioNoMatch = matchService.getEstadoMatch(usuario, match_id);
-        chatDTO.setStatusDoUsuarioNoMatch(statusUsuarioNoMatch);
+        BotaoDTO botao = matchService.getEstadoParaBotaoNoMatch(usuario, match_id);
+        chatDTO.setBotao(botao);
 
         return new ApiResponse<ChatComMensagensDTO>(messageResponse, "chat", chatDTO);
     }
