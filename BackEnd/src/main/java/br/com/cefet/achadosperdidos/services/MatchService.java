@@ -223,6 +223,8 @@ public class MatchService {
             dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(itemOposto));
             dto.setArquivadoPorItemAchado(match.isArquivadoPorItemAchado());
             dto.setArquivadoPorItemPerdido(match.isArquivadoPorItemPerdido());
+            dto.setIsFinalizado(match.isFinalizado());
+            dto.setTipoFinalizacaoMatch(match.getTipoFinalizacaoMatch());
             matchResponseDTOList.add(dto);
         }
         return matchResponseDTOList;
@@ -251,6 +253,8 @@ public class MatchService {
             dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(itemOposto));
             dto.setArquivadoPorItemAchado(match.isArquivadoPorItemAchado());
             dto.setArquivadoPorItemPerdido(match.isArquivadoPorItemPerdido());
+            dto.setIsFinalizado(match.isFinalizado());
+            dto.setTipoFinalizacaoMatch(match.getTipoFinalizacaoMatch());
             matchResponseDTOList.add(dto);
         }
         return matchResponseDTOList;

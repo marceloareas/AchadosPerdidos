@@ -1,5 +1,6 @@
 package br.com.cefet.achadosperdidos.dto.chat;
 
+import br.com.cefet.achadosperdidos.domain.enums.TipoFinalizacaoMatch;
 import br.com.cefet.achadosperdidos.dto.mensagem.BaseMensagemDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,5 +11,6 @@ public class ChatVitrineResponseDTO extends BaseChatResponseDTO {
     private String nomeItemPerdido;
     private String nomeItemAchado;
     private BaseMensagemDTO ultimaMensagem;
-
+    private Boolean isMatchFinalizado;
+    private TipoFinalizacaoMatch tipoFinalizacaoMatch;
 }

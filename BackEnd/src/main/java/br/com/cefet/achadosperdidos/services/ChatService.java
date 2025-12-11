@@ -69,7 +69,9 @@ public class ChatService {
                         mensagens = Collections.emptyList();
                     }
 
-                    return chatMapper.convertToChatVitrineResponseDTO(chat, mensagens);
+                    Match match = chat.getMatch();
+
+                    return chatMapper.convertToChatVitrineResponseDTO(chat, mensagens, match);
                 }).toList();
 
         MeusChatsResponseDTO meusChats = new MeusChatsResponseDTO();
@@ -123,7 +125,7 @@ public class ChatService {
             messageResponse = "Chat criado com sucesso.";
         }
 
-        ChatComMensagensDTO chatDTO = chatMapper.convertToChatComMensagensDTO(chat, mensagens);
+        ChatComMensagensDTO chatDTO = chatMapper.convertToChatComMensagensDTO(chat, mensagens, match);
 
         String statusUsuarioNoMatch = matchService.getEstadoMatch(usuario, match_id);
         chatDTO.setStatusDoUsuarioNoMatch(statusUsuarioNoMatch);
