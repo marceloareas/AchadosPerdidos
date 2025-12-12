@@ -22,6 +22,7 @@ const Chat = ({
 }) => {
   const { confirmMatch } = useMatchStore();
   const { showNotification } = useNotification();
+  const { getChat } = useChatStore();
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -53,6 +54,7 @@ const Chat = ({
       } else {
         showNotification(response, "success");
       }
+      await getChat(idMatch);
     } catch {
       showNotification("Erro ao confirmar Devolução", "error");
     } finally {
@@ -70,6 +72,7 @@ const Chat = ({
           usuario={person.nome}
           onBack={onBack}
           openModal={handleOpenModal}
+          botao={chat.botao}
         />
         <ContentChat listMessage={chat.mensagens} otherUserId={otherUserId} />
         <Input

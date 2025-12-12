@@ -5,6 +5,7 @@ import br.com.cefet.achadosperdidos.domain.enums.TipoEventoMudancaStatus;
 import br.com.cefet.achadosperdidos.domain.enums.TipoFinalizacaoMatch;
 import br.com.cefet.achadosperdidos.domain.enums.TipoItemEnum;
 import br.com.cefet.achadosperdidos.domain.model.*;
+
 import br.com.cefet.achadosperdidos.dto.chat.BotaoDTO;
 import br.com.cefet.achadosperdidos.dto.match.MatchResponseDTO;
 import br.com.cefet.achadosperdidos.dto.match_api_integration.ItemCreatedEvent;
@@ -292,7 +293,7 @@ public class MatchService {
 
         //se o size for 0, retornar: "Solicitar início de processo de devolução"
         if(eventoMudancaStatusSet.isEmpty()){
-             nomeBotao = "Solicitar início de processo de \"Em devolução\"";
+             nomeBotao = "Iniciar [EM DEVOLUÇÃO]";
              isClickable = true;
         }
 
@@ -306,23 +307,23 @@ public class MatchService {
 
             //se tiver confirmacao de achado e de perdido, retornar "Confirmar de Devolução"
             if(evento.isAchadoConfirmado() && evento.isPerdidoConfirmado()) {
-                nomeBotao = "Confirmar devolução";
+                nomeBotao = "CONFIRMAR [DEVOLUCAO]";
                 isClickable = true;
             }
 
             if(evento.isPerdidoConfirmado() && isUsuarioDonoItemPerdido && !evento.isAchadoConfirmado()){
-                nomeBotao =  "[EM DEVOLUÇÃO] Esperando " + itemAchadoUsuario.getNome().split(" ")[0];
+                nomeBotao =  "ESPERANDO " + itemAchadoUsuario.getNome().split(" ")[0];
                 isClickable = false;
             }
 
             if(evento.isAchadoConfirmado() && isUsuarioDonoItemAchado && !evento.isPerdidoConfirmado()){
-                nomeBotao =  "[EM DEVOLUÇÃO] Esperando " + itemPerdidoUsuario.getNome().split(" ")[0];
+                nomeBotao =  "ESPERANDO " + itemPerdidoUsuario.getNome().split(" ")[0];
                 isClickable = false;
             }
 
             if((evento.isPerdidoConfirmado() && !evento.isAchadoConfirmado() && isUsuarioDonoItemAchado) || 
             evento.isAchadoConfirmado() && !evento.isPerdidoConfirmado() && isUsuarioDonoItemPerdido){
-                nomeBotao = "Confirmar início de [EM DEVOLUÇÃO]";
+                nomeBotao = "CONFIRMAR [EM DEVOLUÇÃO]";
                 isClickable = true;
             }
         }
@@ -337,23 +338,23 @@ public class MatchService {
                 // usuario atual confirmou e o outro nao.
 
                 if(evento.isAchadoConfirmado() && evento.isPerdidoConfirmado()) {
-                    nomeBotao = "DEVOLUÇÃO DO ITEM CONFIRMADA!";
+                    nomeBotao = "DEVOLUÇÃO CONFIRMADA";
                     isClickable = false;
                 }
 
                 if(evento.isPerdidoConfirmado() && isUsuarioDonoItemPerdido && !evento.isAchadoConfirmado()){
-                    nomeBotao = "[DEVOLUÇÃO] Esperando " + itemAchadoUsuario.getNome().split(" ")[0];
+                    nomeBotao = "Esperando " + itemAchadoUsuario.getNome().split(" ")[0];
                     isClickable = false;
                 }
 
                 if(evento.isAchadoConfirmado() && isUsuarioDonoItemAchado && !evento.isPerdidoConfirmado()){
-                    nomeBotao =  "[DEVOLUÇÃO] Esperando " + itemPerdidoUsuario.getNome().split(" ")[0];
+                    nomeBotao =  "Esperando " + itemPerdidoUsuario.getNome().split(" ")[0];
                     isClickable = false;
                 }
 
                 if((evento.isPerdidoConfirmado() && !evento.isAchadoConfirmado() && isUsuarioDonoItemAchado) || 
                 evento.isAchadoConfirmado() && !evento.isPerdidoConfirmado() && isUsuarioDonoItemPerdido){
-                    nomeBotao = "Confirmar devolução";
+                    nomeBotao = "CONFIRMAR DEVOLUÇÃO";
                     isClickable = true;
                 }
 
