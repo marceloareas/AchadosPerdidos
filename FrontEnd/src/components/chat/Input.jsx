@@ -70,7 +70,6 @@ const Input = ({ chat, currentUserId, otherUserId }) => {
           className={style.inputMessage}
           onChange={(e) => {
             const value = e.target.value;
-            console.log(value);
             setMensagem(value);
 
             if (value.replaceAll(`\n`, "").trim() === "") {

@@ -1,7 +1,18 @@
+import { useLayoutEffect, useRef } from "react";
 import BalaoMensagem from "./BalaoMensagem";
 import style from "./Chat.module.scss";
 
 const ContentChat = ({ listMessage, otherUserId }) => {
+  const messagesEndRef = useRef();
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useLayoutEffect(() => {
+    scrollToBottom();
+  }, [listMessage.length]);
+
   return (
     <div className={style.contentChat}>
       {listMessage?.map((mensagem, index) => {
@@ -25,6 +36,7 @@ const ContentChat = ({ listMessage, otherUserId }) => {
           />
         );
       })}
+      <div ref={messagesEndRef} />
     </div>
   );
 };
