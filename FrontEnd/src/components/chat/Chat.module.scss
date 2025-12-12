@@ -154,6 +154,7 @@
   }
 
   .iconSendMessage,
+  .iconDesativado,
   .iconImage {
     display: flex;
     align-items: center;
@@ -168,6 +169,12 @@
   .iconSendMessage {
     color: white;
     background-color: rgb(30, 69, 107);
+  }
+
+  .iconDesativado {
+    color: white;
+    background-color: rgb(30, 69, 107);
+    opacity: 0.2;
   }
 
   .iconImage {
@@ -186,13 +193,14 @@
   margin: 0 1% 0 2%;
   max-width: 95%;
   position: relative;
+  white-space: pre-wrap;
   display: block;
 
   p {
     display: flex;
     margin: 0 0 2px;
     padding: 0.5em 1em 0.65em;
-    border-radius: 4px;
+    border-radius: 0.75em;
     background: #e5e5ea;
     max-width: max-content;
     clear: both;
@@ -200,53 +208,67 @@
   }
 
   .them p {
-    border-top-right-radius: 1em;
-    border-bottom-right-radius: 1em;
-  }
-
-  .them p:last-child::after {
-    content: "";
-    position: absolute;
-    left: -0.5em;
-    bottom: 0;
-    width: 0.5em;
-    height: 1em;
-    border-right: 0.5em solid #e5e5ea;
-    border-bottom-right-radius: 1em 0.5em;
+    background: #e5e5ea;
   }
 
   .userMe p {
     float: right;
     background-color: rgb(30, 69, 107);
     color: white;
-    border-top-left-radius: 1em;
-    border-bottom-left-radius: 1em;
   }
 
-  .userMe p:last-child::after {
+  .them.first p {
+    border-bottom-left-radius: 4px;
+
+  }
+
+  .userMe.first p {
+    border-bottom-right-radius: 4px;
+  }
+
+  .them:not(.first):not(.last) p {
+    border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px;
+  }
+
+  .userMe:not(.first):not(.last) p {
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+  }
+
+  .them.last p {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 0.75em !important;
+  }
+
+  .userMe.last p {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 0.75em !important;
+  }
+
+  .them p:last-child,
+  .userMe p:last-child {
+    margin-bottom: 8px;
+  }
+
+  .them.last p::after,
+  .userMe.last p::after {
     content: "";
     position: absolute;
-    right: -0.5em;
     bottom: 0;
     width: 0.5em;
     height: 1em;
-    border-left: 0.5em solid rgb(30, 69, 107);
-    border-bottom-left-radius: 1em 0.5em;
   }
 
-  p:first-child {
-    border-top-right-radius: 1em;
-    border-top-left-radius: 1em;
+  .them.last p::after {
+    left: -0.5em;
+    border-right: 0.5em solid #e5e5ea;
+    border-bottom-right-radius: 1em 0.5em;
   }
 
-  p:last-child {
-    border-bottom-left-radius: 1em;
-    margin-bottom: 8px;
-  }
-
-  .userMe p:last-child {
-    border-bottom-left-radius: 1em;
-    border-bottom-right-radius: 1em;
-    margin-bottom: 8px;
+  .userMe.last p::after {
+    right: -0.5em;
+    border-left: 0.5em solid rgb(30, 69, 107) !important;
+    border-bottom-left-radius: 1em 0.5em !important;
   }
 }
