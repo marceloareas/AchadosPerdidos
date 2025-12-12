@@ -7,8 +7,8 @@ import useChatStore from "../../store/chat";
 const Input = ({ chat, currentUserId, otherUserId }) => {
   const textRef = useRef(null);
   const [mensagem, setMensagem] = useState("");
-  const { addMensagem } = useChatStore();
-
+  const { addMensagem, getChats } = useChatStore();
+  const [btnAtivo, setBtnAtivo] = useState(false);
   const remetenteId = currentUserId;
   const destinatarioId = otherUserId;
 
@@ -17,6 +17,8 @@ const Input = ({ chat, currentUserId, otherUserId }) => {
   };
 
   const handleSendMessage = async () => {
+    if (!btnAtivo) return;
+
     const formMessage = {
       remetenteId,
       destinatarioId,
@@ -25,7 +27,20 @@ const Input = ({ chat, currentUserId, otherUserId }) => {
       dataEnvio: convertDate(new Date()),
     };
     await addMensagem(formMessage, chat.id);
-    setMensagem("".trim());
+    await getChats();
+    setMensagem("");
+    setBtnAtivo(false);
+    const el = textRef.current;
+    if (el) {
+      el.style.height = "auto";
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
   };
 
   useEffect(() => {
@@ -48,17 +63,28 @@ const Input = ({ chat, currentUserId, otherUserId }) => {
           <FaFileImage />
         </button>
         <textarea
+          onKeyDown={handleKeyDown}
           ref={textRef}
           rows={1}
           placeholder="Mensagem..."
           className={style.inputMessage}
-          onChange={(e) => setMensagem(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            console.log(value);
+            setMensagem(value);
+
+            if (value.replaceAll(`\n`, "").trim() === "") {
+              setBtnAtivo(false);
+            } else {
+              setBtnAtivo(true);
+            }
+          }}
           value={mensagem}
         />
       </div>
       <button
         onClick={() => handleSendMessage()}
-        className={style.iconSendMessage}
+        className={btnAtivo ? style.iconSendMessage : style.iconDesativado}
       >
         <FaPaperPlane />
       </button>
