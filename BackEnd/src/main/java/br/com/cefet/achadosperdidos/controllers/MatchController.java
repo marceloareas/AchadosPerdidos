@@ -45,6 +45,14 @@ public class MatchController {
         return ResponseEntity.ok(matches);
     }
 
+    @GetMapping("/finished")
+    public ResponseEntity<List<MatchResponseDTO>> getFinishedMatches(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = ((Usuario)auth.getPrincipal()).getId();
+        List<MatchResponseDTO> matches = matchService.getAllFinishedUserMaches(userId);
+        return ResponseEntity.ok(matches);
+    }
+
     // ARQUIVAR MATCH
     @PostMapping("/{matchId}/archive")
     public ResponseEntity<ApiResponse<String>> archiveMatch(@PathVariable Long matchId){

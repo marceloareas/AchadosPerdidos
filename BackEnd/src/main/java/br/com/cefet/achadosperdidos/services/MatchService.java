@@ -262,6 +262,35 @@ public class MatchService {
         return matchResponseDTOList;
     }
 
+    public List<MatchResponseDTO> getAllFinishedUserMaches(Long userId){
+        List<Match> userMatches = matchRepository.findAllByUsuarioId(userId);
+       List<MatchResponseDTO> matchResponseDTOList = new ArrayList<MatchResponseDTO>();
+        for(Match match : userMatches){
+            // pula matches nao finalizados
+            if(!match.isFinalizado()){
+                continue;
+            }
+            Item itemAchado = match.getItemAchado();
+            Item itemPerdido = match.getItemPerdido();
+
+            boolean isUsersItemAchado = itemAchado.getUsuario().getId().equals(userId);
+
+            Item itemUsuario = isUsersItemAchado ? itemAchado : itemPerdido;
+            Item itemOposto = isUsersItemAchado ? itemPerdido : itemAchado;
+
+            MatchResponseDTO dto = new MatchResponseDTO();
+            dto.setId(match.getId());
+            dto.setItemUsuario(itemMapper.convertToItemMeusMatchesDTO(itemUsuario));
+            dto.setItemOposto(itemMapper.convertToItemMeusMatchesDTO(itemOposto));
+            dto.setArquivadoPorItemAchado(match.isArquivadoPorItemAchado());
+            dto.setArquivadoPorItemPerdido(match.isArquivadoPorItemPerdido());
+            dto.setIsFinalizado(match.isFinalizado());
+            dto.setTipoFinalizacaoMatch(match.getTipoFinalizacaoMatch());
+            matchResponseDTOList.add(dto);
+        }
+        return matchResponseDTOList;
+    }
+
     public BotaoDTO getEstadoParaBotaoNoMatch(Usuario usuario, Long matchId){
 
         BotaoDTO botaoDTO = new BotaoDTO();
