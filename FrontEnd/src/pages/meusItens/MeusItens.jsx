@@ -18,7 +18,7 @@ const MeusItens = () => {
   const [activeTab, setActiveTab] = useState("all");
   const navigate = useNavigate();
   const { itemsUser, getUserItens } = useItemStore();
-  // Mock data for user's items
+
   useEffect(() => {
     getUserItens();
   }, []);
