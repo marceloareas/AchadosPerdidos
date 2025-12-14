@@ -1,43 +1,110 @@
+@use '../../styles/variables.scss' as *;
+
 .matchesPage {
   min-height: calc(100vh - 125px);
   padding: 24px;
-  background-color: #f5f5f5;
+  background-color: #ffffff;
 }
 
-.header {
-  margin-bottom: 24px;
-  text-align: center;
-  position: relative;
 
-  .archiveIcon {
-    position: absolute;
-    top: 0;
-    right: 0;
-    cursor: pointer;
+/* ---------- Tabs ---------- */
+
+.tabs_container {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.tabs_list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: #f5f5f5;
+  padding: 6px;
+  border-radius: 5px;
+  gap: 6px;
+}
+
+.tab_trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 10px 12px;
+  border-radius: 5px;
+
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    color: #6b7280;
+  }
+
+  &[data-state='active'] {
+    background-color: #ffffff;
+    color: #0a497e;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+
+    svg {
+      color: #0a497e;
+    }
   }
 }
 
-
-.typography {
-  margin: 0 10% !important;
+.tabs_content {
+  margin-top: 1.5rem;
 }
+
+/* ---------- Lista ---------- */
 
 .matchList {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 0.75rem;
   align-items: center;
-  gap: 16px;
 }
 
-.emptyState {
+/* ---------- Empty ---------- */
+
+.empty_state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
   text-align: center;
-  padding: 40px 0;
-  color: #666;
 }
+
+.empty_title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.empty_subtitle {
+  color: #6b7280;
+}
+
+/* ---------- Responsivo ---------- */
 
 @media (max-width: 600px) {
   .matchesPage {
     min-height: calc(100vh - 205px);
+    padding: 16px;
+  }
+
+  .tab_trigger {
+    font-size: 13px;
+    padding: 8px 6px;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
   }
 }
