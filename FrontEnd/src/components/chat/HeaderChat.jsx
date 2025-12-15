@@ -4,7 +4,7 @@ import { IoReturnUpBackOutline } from "react-icons/io5";
 import { Typography } from "@mui/material";
 import CustomButton from "../ui/button/CustomButton.jsx";
 
-const HeaderChat = ({ item, usuario, onBack, openModal }) => {
+const HeaderChat = ({ item, usuario, onBack, openModal, botao }) => {
   // Responsividade
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const sizePage = !(windowWidth > 600);
@@ -50,8 +50,9 @@ const HeaderChat = ({ item, usuario, onBack, openModal }) => {
         variant={"outline"}
         size={"sm"}
         onClick={openModal}
+        disabled={!botao.clickable}
       >
-        Confirmar Devolução
+        {botao.nomeBotao}
       </CustomButton>
       {/* </div> */}
     </section>

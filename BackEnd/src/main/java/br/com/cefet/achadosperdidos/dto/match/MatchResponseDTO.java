@@ -1,5 +1,6 @@
 package br.com.cefet.achadosperdidos.dto.match;
 
+import br.com.cefet.achadosperdidos.domain.enums.TipoFinalizacaoMatch;
 import br.com.cefet.achadosperdidos.dto.item.ItemMeusMatchesResponseDTO;
 import br.com.cefet.achadosperdidos.dto.item.ItemResponseDTO;
 import lombok.*;
@@ -15,9 +16,9 @@ public class MatchResponseDTO {
     private ItemMeusMatchesResponseDTO itemUsuario;
     private ItemMeusMatchesResponseDTO itemOposto;
 
-    private Boolean confirmacaoItemPerdido;
-    private Boolean confirmacaoItemAchado;
-
     private Boolean arquivadoPorItemPerdido;
     private Boolean arquivadoPorItemAchado;
+
+    private Boolean isFinalizado;
+    private TipoFinalizacaoMatch tipoFinalizacaoMatch;
 }

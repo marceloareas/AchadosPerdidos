@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, CardContent } from "@mui/material";
+import { Card, CardContent, Tooltip } from "@mui/material";
 import { Trash2, Archive, ArchiveRestore, MessageCircle } from "lucide-react";
 import ItemCard from "../itemCard/ItemCard";
 import CustomButton from "../button/CustomButton";
@@ -138,10 +138,12 @@ const MatchCard = ({ match, hasChat }) => {
               onClick={() => handleModalOpen("delete")}
             />
           ) : (
+            <Tooltip title="Arquivar Match" placement="top">
             <Archive
               className={style.option_icon_delete}
               onClick={() => handleModalOpen("archive")}
             />
+            </Tooltip>
           )}
 
           {/* Item do usuário */}

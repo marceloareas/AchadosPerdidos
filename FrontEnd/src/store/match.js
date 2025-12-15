@@ -4,8 +4,9 @@ import useAuthStore from "./auth";
 import { API_HEADER } from "../utils/config/API_HEADER";
 
 const useMatchStore = create((set, get) => ({
-  matches: [],
+  matchesAtivos: [],
   matchesArquivados: [],
+  matchesFinalizados: [],
   loading: false,
   error: null,
   response: null,
@@ -27,7 +28,7 @@ const useMatchStore = create((set, get) => ({
     try {
       const { token } = useAuthStore.getState();
       const response = await Api.get("/match/active", API_HEADER(token));
-      set({ matches: response.data, loading: false });
+      set({ matchesAtivos: response.data, loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });
     }
@@ -38,6 +39,16 @@ const useMatchStore = create((set, get) => ({
       const { token } = useAuthStore.getState();
       const response = await Api.get("/match/archived", API_HEADER(token));
       set({ matchesArquivados: response.data, loading: false });
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+  getMatchesFinalizados: async () => {
+    set({ loading: true, error: null });
+    try {
+      const { token } = useAuthStore.getState();
+      const response = await Api.get("/match/finished", API_HEADER(token));
+      set({ matchesFinalizados: response.data, loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });
     }

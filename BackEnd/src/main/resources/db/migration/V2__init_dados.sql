@@ -77,9 +77,16 @@ INSERT INTO item_categoria (item_id, categoria_id) VALUES
 (9, 1), -- Item 9 (Kindle) -> Eletrônicos
 (10, 2); -- Item 10 (Óculos de Grau) -> Acessórios
 
-INSERT INTO match (confirmacao_perdido, confirmacao_achado, item_perdido_id, item_achado_id, arquivado_por_item_perdido, arquivado_por_item_achado) VALUES 
-(false,false,1,3,false,false),
-(false,false,2,7,false,false);
+INSERT INTO match (
+    item_perdido_id,
+    item_achado_id,
+    arquivado_por_item_perdido,
+    arquivado_por_item_achado,
+    is_finalizado,
+    tipo_finalizacao_match
+) VALUES
+(1, 3, false, false, false, null),
+(2, 7, false, false, false, null);
 
 -- Criar o chat vinculado ao primeiro match
 INSERT INTO chat (match_id)

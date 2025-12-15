@@ -1,74 +1,115 @@
-import React, { useEffect, useMemo } from "react";
-import { Box, Typography, Tooltip } from "@mui/material";
-import MatchCard from "../../components/ui/matchCard/MatchCard";
-import style from "./Matches.module.scss";
+import React, { useEffect, useMemo, useState } from "react";
+import { Box, Typography } from "@mui/material";
 import Layout from "../../components/layout/Layout";
+import MatchCard from "../../components/ui/matchCard/MatchCard";
 import useMatchStore from "../../store/match";
 import useChatStore from "../../store/chat";
-import { useNavigate } from "react-router-dom";
-import { Archive } from "lucide-react";
+import { Activity, Archive, CheckCircle } from "lucide-react";
+
+
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "../../components/ui/tabs/Tab.jsx";
+
+import style from "./Matches.module.scss";
 
 const Matches = () => {
-  const { matches, getMatchesAtivos } = useMatchStore();
+  const [activeTab, setActiveTab] = useState("ATIVO");
+
+  const {
+    matchesAtivos,
+    matchesArquivados,
+    matchesFinalizados,
+    getMatchesAtivos,
+    getMatchesArquivados,
+    getMatchesFinalizados,
+  } = useMatchStore();
+
   const { chats, getChats } = useChatStore();
 
-  const navigate = useNavigate();
-
   useEffect(() => {
-    getMatchesAtivos();
     getChats();
   }, []);
 
+  useEffect(() => {
+    if (activeTab === "ATIVO") getMatchesAtivos();
+    if (activeTab === "ARQUIVADO") getMatchesArquivados();
+    if (activeTab === "FINALIZADO") getMatchesFinalizados();
+  }, [activeTab]);
+
+  const matchesByTab = {
+    ATIVO: matchesAtivos,
+    ARQUIVADO: matchesArquivados,
+    FINALIZADO: matchesFinalizados,
+  };
+
+  const currentMatches = matchesByTab[activeTab] || [];
+
   const matchesMemo = useMemo(() => {
-    return matches.map((match) => ({
+    return currentMatches.map((match) => ({
       match,
       hasChat: chats.some((chat) => chat.match_id === match.id),
     }));
-  }, [matches, chats]);
+  }, [currentMatches, chats]);
 
   return (
     <Layout>
       <Box className={style.matchesPage}>
         <Box className={style.header}>
-          <Typography variant="h4" component="h1" gutterBottom>
+          <Typography variant="h4" component="h1" gutterBottom align="center">
             Matches
           </Typography>
-          <Typography
-            variant="body1"
-            color="textSecondary"
-            className={style.typography}
-          >
-            Encontramos {matches.length} correspondências para seus itens
+          <Typography variant="body1" color="textSecondary" align="center">
+            {currentMatches.length} matches
           </Typography>
-
-          <Tooltip title="Ver matches arquivados" arrow>
-            <Archive
-              className={style.archiveIcon}
-              color="#0A497E"
-              size={"30px"}
-              onClick={() => navigate("/matches-arquivados")}
-            />
-          </Tooltip>
         </Box>
 
-        <Box className={style.matchList}>
-          {matches.length === 0 ? (
-            <Box className={style.emptyState}>
-              <Typography variant="h6">Nenhum match encontrado</Typography>
-              <Typography variant="body2">
-                Cadastre seus itens para encontrarmos correspondências
-              </Typography>
-            </Box>
-          ) : (
-            matchesMemo.map((item) => (
-              <MatchCard
-                key={item.match.id}
-                match={item.match}
-                hasChat={item.hasChat}
-              />
-            ))
-          )}
-        </Box>
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className={style.tabs_container}
+        >
+          <TabsList className={style.tabs_list}>
+            <TabsTrigger value="ATIVO" className={style.tab_trigger}>
+              <Activity size={16} />
+              Ativos ({matchesAtivos.length})
+            </TabsTrigger>
+
+            <TabsTrigger value="ARQUIVADO" className={style.tab_trigger}>
+              <Archive size={16} />
+              Arquivados ({matchesArquivados.length})
+            </TabsTrigger>
+
+            <TabsTrigger value="FINALIZADO" className={style.tab_trigger}>
+              <CheckCircle size={16} />
+              Finalizados ({matchesFinalizados.length})
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value={activeTab} className={style.tabs_content}>
+            {currentMatches.length === 0 ? (
+              <Box className={style.emptyState}>
+                <Typography variant="h6" align="center">
+                  Nenhum match encontrado
+                </Typography>
+              </Box>
+            ) : (
+              <Box className={style.matchList}>
+                {matchesMemo.map(({ match, hasChat }) => (
+                  <MatchCard
+                    key={match.id}
+                    match={match}
+                    hasChat={hasChat}
+                  />
+                ))}
+              </Box>
+            )}
+          </TabsContent>
+        </Tabs>
+
       </Box>
     </Layout>
   );

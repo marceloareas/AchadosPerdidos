@@ -37,7 +37,7 @@ public class ChatMapper {
         return dto;
     }
 
-    public ChatComMensagensDTO convertToChatComMensagensDTO(Chat chat, List<BaseMensagem> mensagens) {
+    public ChatComMensagensDTO convertToChatComMensagensDTO(Chat chat, List<BaseMensagem> mensagens, Match match) {
 
         Match matchCorrespondente = chat.getMatch();
         ChatComMensagensDTO chatComMensagensDTO = new ChatComMensagensDTO();
@@ -50,12 +50,14 @@ public class ChatMapper {
         chatComMensagensDTO.setUsuarios(usuarioSet);
 
         chatComMensagensDTO.setMensagens(mensagens.stream().map(baseMensagem -> mensagemMapper.mapMensagemParaDTO(baseMensagem)).toList());
+        chatComMensagensDTO.setIsMatchFinalizado(match.isFinalizado());
+        chatComMensagensDTO.setTipoFinalizacaoMatch(match.getTipoFinalizacaoMatch());
 
         return chatComMensagensDTO;
 
     }
 
-    public ChatVitrineResponseDTO convertToChatVitrineResponseDTO(Chat chat, List<BaseMensagem> mensagens) {
+    public ChatVitrineResponseDTO convertToChatVitrineResponseDTO(Chat chat, List<BaseMensagem> mensagens, Match match) {
 
         Match matchCorrespondente = chat.getMatch();
 
@@ -78,6 +80,9 @@ public class ChatMapper {
         chatVitrineResponseDTO.setUltimaMensagem(
                 ultima != null ? mensagemMapper.mapMensagemParaDTO(ultima) : null
         );
+
+        chatVitrineResponseDTO.setIsMatchFinalizado(match.isFinalizado());
+        chatVitrineResponseDTO.setTipoFinalizacaoMatch(match.getTipoFinalizacaoMatch());
 
         return chatVitrineResponseDTO;
     }

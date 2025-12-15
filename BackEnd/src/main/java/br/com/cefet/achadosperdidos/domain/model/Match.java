@@ -1,16 +1,17 @@
 package br.com.cefet.achadosperdidos.domain.model;
 
-import java.util.HashSet;
-import java.util.Set;
 
+import br.com.cefet.achadosperdidos.domain.enums.TipoFinalizacaoMatch;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
-import jakarta.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -24,16 +25,6 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     private Long id;
-
-    @Getter
-    @Setter
-    @Null
-    private boolean confirmacaoPerdido;
-
-    @Getter
-    @Setter
-    @Null
-    private boolean confirmacaoAchado;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
@@ -61,10 +52,21 @@ public class Match {
     @Setter
     private boolean arquivadoPorItemAchado = false;
 
-    public Match(Long id, Boolean confirmacaoPerdido, Boolean confirmacaoAchado, Boolean arquivadoPorItemAchado, Boolean arquivadoPorItemPerdido) {
+    @Getter
+    @Setter
+    @NotNull
+    private boolean isFinalizado = false;
+
+    @Getter
+    @Setter
+    private TipoFinalizacaoMatch tipoFinalizacaoMatch;
+
+    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Getter
+    private final Set<EventoMudancaStatus> eventosMudancaStatus = new HashSet<EventoMudancaStatus>();
+
+    public Match(Long id, Boolean arquivadoPorItemAchado, Boolean arquivadoPorItemPerdido) {
         this.id = id;
-        this.confirmacaoPerdido = confirmacaoPerdido;
-        this.confirmacaoAchado = confirmacaoAchado;
         this.arquivadoPorItemAchado = arquivadoPorItemAchado;
         this.arquivadoPorItemPerdido = arquivadoPorItemPerdido;
     }
@@ -94,6 +96,11 @@ public class Match {
         } else if (itemAchado.getUsuario().getId().equals(usuarioId)) {
             this.arquivadoPorItemAchado = false;
         }
+    }
+
+    public void addEventoMudancaStatus(EventoMudancaStatus eventoMudancaStatus){
+        this.eventosMudancaStatus.add(eventoMudancaStatus);
+        eventoMudancaStatus.setMatch(this);
     }
     
 }
