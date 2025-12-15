@@ -38,208 +38,223 @@ const MatchCard = ({ match, hasChat }) => {
 
   const { getChat, getChats } = useChatStore();
 
+  const isFinished = match.isFinalizado === true;
+
   const isArchived =
-    itemUsuario.tipo === "ACHADO" && match.arquivadoPorItemAchado === true
+    (!isFinished &&
+      itemUsuario.tipo === "ACHADO" && match.arquivadoPorItemAchado === true
       ? true
-      : !!(itemUsuario.tipo === "PERDIDO" && match.arquivadoPorItemPerdido);
+      : !!(itemUsuario.tipo === "PERDIDO" && match.arquivadoPorItemPerdido)
 
-  const handleDelete = async (idMatch) => {
-    setIsLoading(true);
-    try {
-      await deleteMatch(idMatch);
+    );
 
-      const { error, response } = useMatchStore.getState();
-      handleModalClose();
-      if (error) {
-        showNotification(response, "error");
-        setTimeout(() => setIsLoading(false), 1000);
-      } else {
-        showNotification(response, "success");
-        await getMatchesAtivos();
-        await getMatchesArquivados();
-      }
-    } catch (err) {
-      console.error(err);
-      showNotification("Erro ao deletar!", "error");
-    } finally {
-      setIsLoading(false);
+const handleDelete = async (idMatch) => {
+  setIsLoading(true);
+  try {
+    await deleteMatch(idMatch);
+
+    const { error, response } = useMatchStore.getState();
+    handleModalClose();
+    if (error) {
+      showNotification(response, "error");
+      setTimeout(() => setIsLoading(false), 1000);
+    } else {
+      showNotification(response, "success");
+      await getMatchesAtivos();
+      await getMatchesArquivados();
     }
-  };
+  } catch (err) {
+    console.error(err);
+    showNotification("Erro ao deletar!", "error");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-  const handleArchive = async (idMatch) => {
-    setIsLoading(true);
-    try {
-      await matchArchive(idMatch);
-      const { error, response } = useMatchStore.getState();
-      if (error) {
-        showNotification("Erro ao arquivar.", "error");
-      } else {
-        showNotification(response, "success");
-        await getMatchesAtivos();
-        await getMatchesArquivados();
-      }
-      handleModalClose();
-    } catch {
+const handleArchive = async (idMatch) => {
+  setIsLoading(true);
+  try {
+    await matchArchive(idMatch);
+    const { error, response } = useMatchStore.getState();
+    if (error) {
       showNotification("Erro ao arquivar.", "error");
-    } finally {
-      setIsLoading(false);
+    } else {
+      showNotification(response, "success");
+      await getMatchesAtivos();
+      await getMatchesArquivados();
     }
-  };
+    handleModalClose();
+  } catch {
+    showNotification("Erro ao arquivar.", "error");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-  const handleRestore = async (idMatch) => {
-    setIsLoading(true);
+const handleRestore = async (idMatch) => {
+  setIsLoading(true);
 
-    try {
-      await matchActivate(idMatch);
-      const { error, response } = useMatchStore.getState();
-      if (error) {
-        showNotification("Erro ao restaurar.", "error");
-      } else {
-        showNotification(response, "success");
-        await getMatchesAtivos();
-        await getMatchesArquivados();
-      }
-    } catch {
+  try {
+    await matchActivate(idMatch);
+    const { error, response } = useMatchStore.getState();
+    if (error) {
       showNotification("Erro ao restaurar.", "error");
-    } finally {
-      setIsLoading(false);
+    } else {
+      showNotification(response, "success");
+      await getMatchesAtivos();
+      await getMatchesArquivados();
     }
-  };
+  } catch {
+    showNotification("Erro ao restaurar.", "error");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-  const handleCreateViewChat = async (idMatch) => {
-    setIsLoading(true);
+const handleCreateViewChat = async (idMatch) => {
+  setIsLoading(true);
 
-    try {
-      await getChat(idMatch);
-      console.log(match);
-      const { error, response } = useChatStore.getState();
-      if (error) {
-        showNotification("Erro ao criar chat", "error");
-      } else {
-        showNotification(response, "success");
-        await getChats();
-      }
-      navigate(`/chats/?match=${idMatch}`);
-    } catch {
+  try {
+    await getChat(idMatch);
+    console.log(match);
+    const { error, response } = useChatStore.getState();
+    if (error) {
       showNotification("Erro ao criar chat", "error");
-    } finally {
-      setIsLoading(false);
+    } else {
+      showNotification(response, "success");
+      await getChats();
     }
-  };
+    navigate(`/chats/?match=${idMatch}`);
+  } catch {
+    showNotification("Erro ao criar chat", "error");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-  return (
-    <>
-      <Card className={style.matchCard} variant="outlined">
-        <CardContent className={style.matchCardContent}>
-          {/* --- Ícone de ação --- */}
-          {isArchived ? (
-            <Trash2
-              className={style.option_icon_delete}
-              onClick={() => handleModalOpen("delete")}
-            />
-          ) : (
-            <Tooltip title="Arquivar Match" placement="top">
+return (
+  <>
+    <Card className={style.matchCard} variant="outlined">
+      <CardContent className={style.matchCardContent}>
+        {/* --- Ícone de ação --- */}
+        {(isArchived || isFinished) ? (
+          <Trash2
+            className={style.option_icon_delete}
+            onClick={() => handleModalOpen("delete")}
+          />
+        ) : (
+          <Tooltip title="Arquivar Match" placement="top">
             <Archive
               className={style.option_icon_delete}
               onClick={() => handleModalOpen("archive")}
             />
-            </Tooltip>
-          )}
+          </Tooltip>
+        )}
 
-          {/* Item do usuário */}
-          <ItemCard
-            showDescription={false}
-            showOptions={false}
-            itemType={itemUsuario?.tipo}
-            category={itemUsuario?.categorias}
-            title={itemUsuario?.nome}
-            description={itemUsuario?.descricao}
-            location={itemUsuario?.localizacao}
-            personName={itemUsuario?.personName}
-          />
+        {/* Item do usuário */}
+        <ItemCard
+          showDescription={false}
+          showOptions={false}
+          itemType={itemUsuario?.tipo}
+          category={itemUsuario?.categorias}
+          title={itemUsuario?.nome}
+          description={itemUsuario?.descricao}
+          location={itemUsuario?.localizacao}
+          personName={itemUsuario?.personName}
+        />
 
-          {/* Item da outra pessoa */}
-          <ItemCard
-            showDescription={false}
-            showOptions={false}
-            itemType={itemOposto?.tipo}
-            category={itemOposto?.categorias}
-            title={itemOposto?.nome}
-            description={itemOposto?.descricao}
-            location={itemOposto?.localizacao}
-            personName={itemOposto?.personName}
-          />
+        {/* Item da outra pessoa */}
+        <ItemCard
+          showDescription={false}
+          showOptions={false}
+          itemType={itemOposto?.tipo}
+          category={itemOposto?.categorias}
+          title={itemOposto?.nome}
+          description={itemOposto?.descricao}
+          location={itemOposto?.localizacao}
+          personName={itemOposto?.personName}
+        />
 
-          {isArchived ? (
-            <CustomButton
-              variant={"default"}
-              className={style.matchChatButton}
-              fullWidth
-              onClick={() => handleRestore(match.id)}
-            >
-              <ArchiveRestore className={style.icon} />
-              Restaurar Match
-            </CustomButton>
-          ) : (
-            <CustomButton
-              variant={"default"}
-              className={style.matchChatButton}
-              onClick={() => handleCreateViewChat(match.id)}
-              fullWidth
-            >
-              <MessageCircle className={style.icon} />
-              {hasChat ? "Continuar conversa" : "Iniciar conversa"}
-            </CustomButton>
-          )}
-        </CardContent>
-      </Card>
+        {isFinished ? (
+          <CustomButton
+            variant={"default"}
+            className={style.matchChatButton}
+            fullWidth
+            disabled
+          >
+            Match Finalizado
+          </CustomButton>
+        ) :    
+        isArchived ? (
+          <CustomButton
+            variant={"default"}
+            className={style.matchChatButton}
+            fullWidth
+            onClick={() => handleRestore(match.id)}
+          >
+            <ArchiveRestore className={style.icon} />
+            Restaurar Match
+          </CustomButton>
+        ) : (
+          <CustomButton
+            variant={"default"}
+            className={style.matchChatButton}
+            onClick={() => handleCreateViewChat(match.id)}
+            fullWidth
+          >
+            <MessageCircle className={style.icon} />
+            {hasChat ? "Continuar conversa" : "Iniciar conversa"}
+          </CustomButton>
+        )}
+      </CardContent>
+    </Card>
 
-      <ModalDelete
-        open={openModal}
-        onClose={handleModalClose}
-        title={
-          modalType === "delete"
-            ? "Deseja deletar este match?"
-            : "Deseja arquivar este match?"
-        }
-        content={
-          modalType === "delete"
-            ? "Essa operação não poderá ser desfeita."
-            : "Você poderá restaurar o match depois."
-        }
+    <ModalDelete
+      open={openModal}
+      onClose={handleModalClose}
+      title={
+        modalType === "delete"
+          ? "Deseja deletar este match?"
+          : "Deseja arquivar este match?"
+      }
+      content={
+        modalType === "delete"
+          ? "Essa operação não poderá ser desfeita."
+          : "Você poderá restaurar o match depois."
+      }
+    >
+      <CustomButton
+        type="button"
+        variant="default"
+        size="lg"
+        onClick={handleModalClose}
+        disabled={isLoading}
       >
-        <CustomButton
-          type="button"
-          variant="default"
-          size="lg"
-          onClick={handleModalClose}
-          disabled={isLoading}
-        >
-          {isLoading ? "Cancelando..." : "Cancelar"}
-        </CustomButton>
+        {isLoading ? "Cancelando..." : "Cancelar"}
+      </CustomButton>
 
-        <CustomButton
-          type="button"
-          variant={modalType === "delete" ? "destructive" : "default"}
-          size="lg"
-          onClick={
-            modalType === "delete"
-              ? () => handleDelete(match.id)
-              : () => handleArchive(match.id)
-          }
-          disabled={isLoading}
-        >
-          {isLoading
-            ? modalType === "delete"
-              ? "Deletando..."
-              : "Arquivando..."
-            : modalType === "delete"
+      <CustomButton
+        type="button"
+        variant={modalType === "delete" ? "destructive" : "default"}
+        size="lg"
+        onClick={
+          modalType === "delete"
+            ? () => handleDelete(match.id)
+            : () => handleArchive(match.id)
+        }
+        disabled={isLoading}
+      >
+        {isLoading
+          ? modalType === "delete"
+            ? "Deletando..."
+            : "Arquivando..."
+          : modalType === "delete"
             ? "Deletar"
             : "Arquivar"}
-        </CustomButton>
-      </ModalDelete>
-    </>
-  );
+      </CustomButton>
+    </ModalDelete>
+  </>
+);
 };
 
 export default MatchCard;
