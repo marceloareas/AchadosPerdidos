@@ -19,6 +19,7 @@ const Chat = ({
   onBack,
   matchId,
   chat,
+  isMatchFinalizado,
 }) => {
   const { confirmMatch } = useMatchStore();
   const { showNotification } = useNotification();
@@ -72,11 +73,17 @@ const Chat = ({
           openModal={handleOpenModal}
           botao={chat.botao}
         />
+        {isMatchFinalizado && (
+            <div className={style.matchFinalizadoBanner}>
+              🔒 Este match foi finalizado. O chat está somente para visualização.
+            </div>
+          )}
         <ContentChat listMessage={chat.mensagens} otherUserId={otherUserId} />
         <Input
           chat={chat}
           currentUserId={currentUserId}
           otherUserId={otherUserId}
+          isMatchFinalizado={isMatchFinalizado}
         />
       </div>
       <ModalConfirm

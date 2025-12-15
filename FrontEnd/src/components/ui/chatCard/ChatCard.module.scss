@@ -22,6 +22,11 @@
     line-height: 2.1 !important;
 }
 
+.finalizado {
+  opacity: 0.6;
+}
+
+
 @media(max-width:600px) {
     .MuiPaper-root {
         width: 100%;

@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { FaPaperPlane, FaFileImage } from "react-icons/fa";
 import useChatStore from "../../store/chat";
 
-const Input = ({ chat, currentUserId, otherUserId }) => {
+const Input = ({ chat, currentUserId, otherUserId, isMatchFinalizado }) => {
   const textRef = useRef(null);
   const [mensagem, setMensagem] = useState("");
   const { addMensagem, getChats } = useChatStore();
@@ -63,10 +63,11 @@ const Input = ({ chat, currentUserId, otherUserId }) => {
           <FaFileImage />
         </button>
         <textarea
+          disabled={isMatchFinalizado}
           onKeyDown={handleKeyDown}
           ref={textRef}
           rows={1}
-          placeholder="Mensagem..."
+          placeholder={isMatchFinalizado ? "Match finalizado.":"Mensagem..."}
           className={style.inputMessage}
           onChange={(e) => {
             const value = e.target.value;

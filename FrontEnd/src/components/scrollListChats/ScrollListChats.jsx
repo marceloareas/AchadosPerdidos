@@ -20,6 +20,7 @@ const ScrollListChats = ({ items, chats, selectChat }) => {
             idMatch={chat.match_id}
             usuarios={chat.usuarios}
             lastMessage={chat.ultimaMensagem}
+            isMatchFinalizado={chat.isMatchFinalizado}
           />
         );
       })}

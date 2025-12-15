@@ -93,6 +93,7 @@ const Chats = () => {
                 }
                 onBack={isMobile ? handleBackToList : null}
                 chat={chatAtual}
+                isMatchFinalizado ={chatSelect.isMatchFinalizado}
               />
             ) : (
               !isMobile && (
