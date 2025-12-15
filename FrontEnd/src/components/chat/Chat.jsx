@@ -8,6 +8,7 @@ import useMatchStore from "../../store/match";
 import ModalConfirm from "../ui/dialog/ModalConfirm.jsx";
 import CustomButton from "../ui/button/CustomButton.jsx";
 import { useNotification } from "../../utils/NotificationContext.jsx";
+import useChatStore from "../../store/chat.js";
 
 const Chat = ({
   itemsMatches,
