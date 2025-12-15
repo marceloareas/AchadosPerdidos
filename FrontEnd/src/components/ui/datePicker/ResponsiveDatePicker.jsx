@@ -18,7 +18,7 @@ export default function ResponsiveDatePickers({ onChange, value }) {
     >
       <DemoContainer components={["DatePicker"]}>
         <DemoItem label={""}>
-          <DatePicker format="DD/MM/YYYY" onChange={onChange} defaultValue={dayjs(value)} />
+          <DatePicker format="DD/MM/YYYY" onChange={onChange} defaultValue={dayjs(Date.now())}  disableFuture={true}/>
         </DemoItem>
       </DemoContainer>
     </LocalizationProvider>
