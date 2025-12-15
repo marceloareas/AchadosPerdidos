@@ -25,25 +25,21 @@ const Chats = () => {
   const [chatSelect, setChatSelect] = useState(undefined);
   const [showList, setShowList] = useState(true);
 
-  /* -------------------- WEBSOCKET -------------------- */
   useEffect(() => {
     connectWebSocket();
   }, []);
 
-  /* -------------------- RESIZE -------------------- */
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  /* -------------------- FETCH INICIAL -------------------- */
   useEffect(() => {
     getChats();
     getUserItens();
   }, []);
 
-  /* -------------------- ORDENA CHATS POR ÚLTIMA MENSAGEM -------------------- */
   const chatsOrdenados = useMemo(() => {
     if (!chats || chats.length === 0) return [];
 
@@ -60,7 +56,6 @@ const Chats = () => {
     });
   }, [chats]);
 
-  /* -------------------- SELECIONA CHAT -------------------- */
   const selectChat = async (chat) => {
     setChatSelect(chat);
     await getChat(chat.match_id);
@@ -70,13 +65,11 @@ const Chats = () => {
     }
   };
 
-  /* -------------------- VOLTAR LISTA (MOBILE) -------------------- */
   const handleBackToList = () => {
     setShowList(true);
     setChatSelect(undefined);
   };
 
-  /* -------------------- ABRE CHAT VIA QUERY PARAM -------------------- */
   useEffect(() => {
     if (!matchParam || chatsOrdenados.length === 0) return;
 
