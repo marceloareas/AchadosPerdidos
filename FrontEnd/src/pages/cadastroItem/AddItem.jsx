@@ -224,9 +224,6 @@ const AddItem = () => {
                     id="category"
                     options={categorias}
                     getOptionLabel={(option) => option?.nome || ""}
-                    // isOptionEqualToValue={(option, value) =>
-                    //   option.id === value.id
-                    // }
                     value={formData.categorias[0] || null}
                     onChange={(event, newValue) => {
                       handleInputChange(

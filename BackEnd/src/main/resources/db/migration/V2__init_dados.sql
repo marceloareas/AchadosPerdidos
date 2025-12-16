@@ -30,7 +30,7 @@ INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, d
 INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
 (2, 'Carteira de Couro Marrom', '2025-10-02 09:00:00', '2025-10-02 09:00:00', '2025-10-04 10:00:00', 'Encontrada em uma das mesas. Contém CNH em nome de "José Pereira".', 'ACHADO', 'RECUPERADO', 'Dentro do pavilhão E, primeiro andar');
 
--- Item 3: Perdido pelo Usuário 3 (Flavio Alecio)
+-- Item 3: Achado pelo Usuário 4 (Vinicius Saidy)
 INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
 (4, 'iPhone 13', '2025-10-03 12:00:00', '2025-10-01 12:00:00', null, 'iPhone 13 azul, com capa preta', 'ACHADO', 'MATCHING', 'Ginasio');
 
@@ -65,14 +65,12 @@ INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, d
 -- Relacionando Itens com Categorias
 INSERT INTO item_categoria (item_id, categoria_id) VALUES
 (1, 1), -- Item 1 (iPhone 13) -> Eletrônicos
-(2, 4), -- Item 2 (Carteira) -> Carteiras
 (2, 5), -- Item 2 (Carteira) -> Documentos (pois contém CNH)
-(3, 1), -- Item 3 (Fones de Ouvido) -> Eletrônicos
-(3, 2), -- Item 3 (Fones de Ouvido) -> Acessórios
+(3, 1), -- Item 3 (iPhone 13) -> Eletrônicos
 (4, 7), -- Item 4 (Livro) -> Livros
 (5, 3), -- Item 5 (Molho de Chaves) -> Chaves
 (6, 2), -- Item 6 (Guarda-chuva) -> Acessórios
-(7, 6), -- Item 7 (Casaco) -> Roupas
+(7, 5), -- Item 7 (Carteira) -> Documentos
 (8, 5), -- Item 8 (RG) -> Documentos
 (9, 1), -- Item 9 (Kindle) -> Eletrônicos
 (10, 2); -- Item 10 (Óculos de Grau) -> Acessórios

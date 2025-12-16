@@ -47,18 +47,19 @@ const ModalEditItem = ({ open, onClose, item }) => {
 
   useEffect(() => {
     getCategorias();
-  }, [getCategorias]);
+  }, []);
 
   useEffect(() => {
-    if (item) {
+    if (item.categorias) {
       setFormData({
         nome: item.nome || "",
         descricao: item.descricao || "",
-        categorias: Array.isArray(item.categorias) ? item.categorias : [],
+        categorias: item.categorias || [],
         localizacao: item.localizacao || "",
         dataEvento: item.dataEvento ? dayjs(item.dataEvento) : null,
       });
       setErrors({});
+      console.log(item);
     }
   }, [item]);
 
@@ -156,33 +157,49 @@ const ModalEditItem = ({ open, onClose, item }) => {
 
           {/* Categorias */}
           <Box className={style.formGroup}>
-            <Autocomplete
-              multiple={item?.tipo === "PERDIDO"}
-              limitTags={maxCategories}
-              options={categorias}
-              value={formData.categorias}
-              getOptionLabel={(option) => option?.nome || ""}
-              onChange={(event, newValue) => {
-                if (item.tipo === "PERDIDO") {
-                  handleInputChange("categorias", newValue || []);
-                } else {
-                  handleInputChange("categorias", newValue ? [newValue] : []);
-                }
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Categorias *"
-                  placeholder={
-                    item?.tipo === "PERDIDO"
-                      ? "Escolha categorias"
-                      : "Escolha uma categoria"
+            {item?.tipo === "PERDIDO" ? (
+              <Autocomplete
+                multiple
+                limitTags={maxCategories}
+                options={categorias}
+                value={formData.categorias}
+                getOptionLabel={(option) => option?.nome || ""}
+                onChange={(event, newValue) => {
+                  if (item.tipo === "PERDIDO") {
+                    handleInputChange("categorias", newValue || []);
+                  } else {
+                    handleInputChange("categorias", newValue ? [newValue] : []);
                   }
-                  error={!!errors.categorias}
-                  helperText={errors.categorias}
-                />
-              )}
-            />
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Categorias *"
+                    placeholder={
+                      item?.tipo === "PERDIDO" && "Escolha categorias"
+                    }
+                    error={!!errors.categorias}
+                    helperText={errors.categorias}
+                  />
+                )}
+              />
+            ) : (
+              <Autocomplete
+                id="category"
+                options={categorias}
+                getOptionLabel={(option) => option?.nome || ""}
+                value={formData.categorias[0] || null}
+                onChange={(event, newValue) => {
+                  handleInputChange("categorias", newValue ? [newValue] : []);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} placeholder="Categoria *" />
+                )}
+              />
+            )}
+            {errors.categorias && (
+              <div className={style.error}>{errors.categorias}</div>
+            )}
           </Box>
 
           {/* Localização */}

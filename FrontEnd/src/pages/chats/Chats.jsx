@@ -87,14 +87,23 @@ const Chats = () => {
       <div className={style.chats}>
         {(!isMobile || showList) && (
           <>
-            <ScrollListChats
-              items={itemsUser}
-              chats={chatsOrdenados}
-              selectChat={selectChat}
-            />
+            {chatsOrdenados.length > 0 ? (
+              <ScrollListChats
+                items={itemsUser}
+                chats={chatsOrdenados}
+                selectChat={selectChat}
+              />
+            ) : (
+              <div className={style.emptyChats}>
+                <p>Você ainda não possui nenhum chat.</p>
+                <span>Quando houver um match, ele aparecerá aqui.</span>
+              </div>
+            )}
+
             {!isMobile && <span className={style.lineV} />}
           </>
         )}
+
 
         {(!isMobile || !showList) && (
           <section className={style.unitChat}>
