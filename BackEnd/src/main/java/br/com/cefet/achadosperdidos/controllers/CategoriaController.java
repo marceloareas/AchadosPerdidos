@@ -1,0 +1,28 @@
+package br.com.cefet.achadosperdidos.controllers;
+
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.com.cefet.achadosperdidos.dto.categoria.CategoriaDTO;
+import br.com.cefet.achadosperdidos.services.CategoriaService;
+
+@RestController
+@RequestMapping(value = "/category")
+
+public class CategoriaController{
+    private final CategoriaService categoriaService;
+
+    public CategoriaController(CategoriaService categoriaService){
+        this.categoriaService = categoriaService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CategoriaDTO>> getAllCategories(){
+        List<CategoriaDTO> categorias = categoriaService.findAll();
+        return ResponseEntity.ok(categorias);
+    }
+}

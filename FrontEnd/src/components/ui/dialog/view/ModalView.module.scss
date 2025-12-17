@@ -1,0 +1,54 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  font-weight: 600 !important;
+  font-size: 1.25rem !important;
+  color: #1e293b;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.iconButton {
+  color: #64748b !important;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    color: #1976d2 !important;
+    transform: scale(1.1);
+  }
+}
+
+.delete {
+    color: #f44336 !important;
+  &:hover {
+    color: #d32f2f !important;
+  }
+}
+
+.content {
+  padding-top: 16px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

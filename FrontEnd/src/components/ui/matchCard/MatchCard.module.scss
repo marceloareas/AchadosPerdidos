@@ -1,0 +1,53 @@
+.matchCard {
+  max-width: 600px !important;
+  width: 100% !important;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.finalizadoChip {
+  background-color: #e0f7e9 !important;
+  color: #616161 !important;
+
+  font-size: 0.7rem !important;
+  font-weight: 700;
+}
+
+.matchCardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.option_icon_delete {
+  display: flex;
+  position: relative;
+  left: 90%;
+  color: #f44336 !important;
+  margin-right: 0.5rem;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    color: #d32f2f !important;
+
+    transform: scale(1.1);
+  }
+}
+
+.matchChatLink {
+  text-decoration: none;
+  width: 100%;
+}
+
+.matchChatButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .icon {
+    margin-right: 8px;
+  }
+}

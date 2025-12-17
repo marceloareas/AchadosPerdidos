@@ -1,0 +1,109 @@
+@use '../../styles/variables.scss' as *;
+
+// .matchesPage {
+//   min-height: calc(100vh - 125px);
+//   padding: 24px;
+//   background-color: #ffffff;
+// }
+
+.matchesPage,
+.filtro {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 3% 2% 2% 2%;
+}
+
+
+/* ---------- Tabs ---------- */
+
+.tabs_container {
+  margin-bottom: 1.5rem;
+}
+
+.tabs_list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.tab_trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 10px 12px;
+  border-radius: 5px;
+
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    color: #6b7280;
+  }
+
+  &[data-state='active'] {
+    background-color: #ffffff;
+    color: #0a497e;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+
+    svg {
+      color: #0a497e;
+    }
+  }
+}
+
+.tabs_content {
+  margin-top: 1.5rem;
+}
+
+/* ---------- Lista ---------- */
+
+.matchList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* ---------- Empty ---------- */
+
+.empty_state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.empty_title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.empty_subtitle {
+  color: #6b7280;
+}
+
+/* ---------- Responsivo ---------- */
+
+@media (max-width: 600px) {
+
+  .tab_trigger {
+    font-size: 13px;
+    padding: 8px 6px;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+}

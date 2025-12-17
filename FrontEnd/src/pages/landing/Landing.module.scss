@@ -1,0 +1,88 @@
+.landingContainer {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.heroSection {
+  text-align: center;
+  padding: 6rem 1rem 3rem; // top maior para header
+}
+
+.heroTitle {
+  color: #0A497E;
+  font-weight: bold;
+  font-size: 2.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.heroSubtitle {
+  color: #0A497E;
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.ctaButton {
+  background-color: #0A497E;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  margin-bottom: 3rem;
+
+  &:hover {
+    background-color: #083c6b;
+  }
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding: 0 1rem 3rem;
+
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+.featureCard {
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem;
+  border: 1px solid #0A497E;
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f0f4ff;
+  }
+
+  .iconWrapper {
+    width: 48px;
+    height: 48px;
+    background-color: #e6f0ff;
+    border-radius: 0.25rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 1rem;
+    flex-shrink: 0;
+  }
+
+  .cardText {
+    text-align: left;
+
+    .cardTitle {
+      color: #0A497E;
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+      font-size: 1rem;
+    }
+
+    .cardDescription {
+      color: #000000;
+      font-size: 0.875rem;
+    }
+  }
+}

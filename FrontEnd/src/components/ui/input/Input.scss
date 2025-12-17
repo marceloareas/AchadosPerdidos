@@ -1,0 +1,35 @@
+.custom-input {
+  width: 100%;
+
+  .MuiInputBase-root {
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #fff;
+  }
+
+  .MuiOutlinedInput-root {
+    fieldset {
+      border-color: #ccc;
+    }
+    &:hover fieldset {
+      border-color: #0A497E;
+    }
+    &.Mui-focused fieldset {
+      border-color: #0A497E;
+      border-width: 2px;
+    }
+  }
+
+  input,
+  textarea {
+    padding: 0.5rem 0.75rem;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  label {
+    font-size: 0.9rem;
+  }
+}

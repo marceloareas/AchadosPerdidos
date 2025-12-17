@@ -1,0 +1,19 @@
+.pagesLayout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.contentLayout {
+    margin-top: 75px;
+    flex: 1;
+    min-height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+@media(max-width:600px) {
+    .contentLayout {
+        margin-bottom: 80px;
+        min-height: calc(100vh - 160px);
+    }
+}
