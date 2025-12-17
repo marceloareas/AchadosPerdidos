@@ -28,7 +28,7 @@ const MatchCard = ({ match, hasChat }) => {
   const tipoFinalizacaoLabel = {
     CONCLUSAO_MATCH: "Item recuperado",
     CONCLUSAO_OUTRO_MATCH: "Item recuperado em outro match",
-  }
+  };
   const handleModalClose = () => setOpenModal(false);
 
   const { showNotification } = useNotification();
@@ -46,12 +46,11 @@ const MatchCard = ({ match, hasChat }) => {
   const isFinished = match.isFinalizado === true;
 
   const isArchived =
-    (!isFinished &&
-      itemUsuario.tipo === "ACHADO" && match.arquivadoPorItemAchado === true
+    !isFinished &&
+    itemUsuario.tipo === "ACHADO" &&
+    match.arquivadoPorItemAchado === true
       ? true
-      : !!(itemUsuario.tipo === "PERDIDO" && match.arquivadoPorItemPerdido)
-
-    );
+      : !!(itemUsuario.tipo === "PERDIDO" && match.arquivadoPorItemPerdido);
 
   const handleDelete = async (idMatch) => {
     setIsLoading(true);
@@ -152,7 +151,7 @@ const MatchCard = ({ match, hasChat }) => {
               <div />
             )}
 
-            {(isArchived || isFinished) ? (
+            {isArchived || isFinished ? (
               <Trash2
                 className={style.option_icon_delete}
                 onClick={() => handleModalOpen("delete")}
@@ -167,11 +166,11 @@ const MatchCard = ({ match, hasChat }) => {
             )}
           </div>
 
-
           {/* Item do usuário */}
           <ItemCard
             showDescription={false}
             showOptions={false}
+            id={itemUsuario.id}
             itemType={itemUsuario?.tipo}
             category={itemUsuario?.categorias}
             title={itemUsuario?.nome}
@@ -184,6 +183,7 @@ const MatchCard = ({ match, hasChat }) => {
           <ItemCard
             showDescription={false}
             showOptions={false}
+            id={itemOposto.id}
             itemType={itemOposto?.tipo}
             category={itemOposto?.categorias}
             title={itemOposto?.nome}
@@ -201,28 +201,27 @@ const MatchCard = ({ match, hasChat }) => {
             >
               Match Finalizado
             </CustomButton>
-          ) :
-            isArchived ? (
-              <CustomButton
-                variant={"default"}
-                className={style.matchChatButton}
-                fullWidth
-                onClick={() => handleRestore(match.id)}
-              >
-                <ArchiveRestore className={style.icon} />
-                Restaurar Match
-              </CustomButton>
-            ) : (
-              <CustomButton
-                variant={"default"}
-                className={style.matchChatButton}
-                onClick={() => handleCreateViewChat(match.id)}
-                fullWidth
-              >
-                <MessageCircle className={style.icon} />
-                {hasChat ? "Continuar conversa" : "Iniciar conversa"}
-              </CustomButton>
-            )}
+          ) : isArchived ? (
+            <CustomButton
+              variant={"default"}
+              className={style.matchChatButton}
+              fullWidth
+              onClick={() => handleRestore(match.id)}
+            >
+              <ArchiveRestore className={style.icon} />
+              Restaurar Match
+            </CustomButton>
+          ) : (
+            <CustomButton
+              variant={"default"}
+              className={style.matchChatButton}
+              onClick={() => handleCreateViewChat(match.id)}
+              fullWidth
+            >
+              <MessageCircle className={style.icon} />
+              {hasChat ? "Continuar conversa" : "Iniciar conversa"}
+            </CustomButton>
+          )}
         </CardContent>
       </Card>
 
@@ -266,8 +265,8 @@ const MatchCard = ({ match, hasChat }) => {
               ? "Deletando..."
               : "Arquivando..."
             : modalType === "delete"
-              ? "Deletar"
-              : "Arquivar"}
+            ? "Deletar"
+            : "Arquivar"}
         </CustomButton>
       </ModalDelete>
     </>

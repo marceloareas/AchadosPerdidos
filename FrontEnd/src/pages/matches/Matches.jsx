@@ -6,7 +6,6 @@ import useMatchStore from "../../store/match";
 import useChatStore from "../../store/chat";
 import { Activity, Archive, CheckCircle } from "lucide-react";
 
-
 import {
   Tabs,
   TabsList,
@@ -32,6 +31,9 @@ const Matches = () => {
 
   useEffect(() => {
     getChats();
+    getMatchesAtivos();
+    getMatchesArquivados();
+    getMatchesFinalizados();
   }, []);
 
   useEffect(() => {
@@ -57,7 +59,7 @@ const Matches = () => {
 
   return (
     <Layout>
-      <Box className={style.matchesPage}>
+      <section className={style.matchesPage}>
         <Box className={style.header}>
           <Typography variant="h4" component="h1" gutterBottom align="center">
             Matches
@@ -66,7 +68,8 @@ const Matches = () => {
             {currentMatches.length} matches
           </Typography>
         </Box>
-
+      </section>
+      <section className={style.filtro}>
         <Tabs
           value={activeTab}
           onValueChange={setActiveTab}
@@ -99,18 +102,13 @@ const Matches = () => {
             ) : (
               <Box className={style.matchList}>
                 {matchesMemo.map(({ match, hasChat }) => (
-                  <MatchCard
-                    key={match.id}
-                    match={match}
-                    hasChat={hasChat}
-                  />
+                  <MatchCard key={match.id} match={match} hasChat={hasChat} />
                 ))}
               </Box>
             )}
           </TabsContent>
         </Tabs>
-
-      </Box>
+      </section>
     </Layout>
   );
 };

@@ -28,7 +28,7 @@ INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, d
 
 -- Item 2: Achado pelo Usuário 2 (Caio Santos)
 INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
-(2, 'Carteira de Couro Marrom', '2025-10-02 09:00:00', '2025-10-02 09:00:00', '2025-10-04 10:00:00', 'Encontrada em uma das mesas. Contém CNH em nome de "José Pereira".', 'ACHADO', 'RECUPERADO', 'Dentro do pavilhão E, primeiro andar');
+(2, 'Carteira de Couro Marrom', '2025-10-02 09:00:00', '2025-10-02 09:00:00', null, 'Encontrada em uma das mesas. Contém CNH em nome de "José Pereira".', 'ACHADO', 'MATCHING', 'Dentro do pavilhão E, primeiro andar');
 
 -- Item 3: Achado pelo Usuário 4 (Vinicius Saidy)
 INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
@@ -46,7 +46,7 @@ INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, d
 INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
 (5, 'Guarda-chuva preto', '2025-10-05 08:20:00', '2025-10-05 08:20:00', '2025-10-06 08:00:00', 'Guarda-chuva grande, deixado ao lado do bebedouro.', 'ACHADO', 'RECUPERADO', 'Pátio da cantina principal');
 
--- Item 7: Perdido pelo Usuário 2 (Caio Santos)
+-- Item 7: Perdido pelo Usuário 4 (Vinicius Saidy)
 INSERT INTO item (usuario_id, nome, data_criacao, data_evento, data_devolucao, descricao, tipo, status, localizacao) VALUES
 (4, 'Carteira Marrom', '2025-09-30 22:00:00', '2025-10-02 22:00:00', NULL, 'Carteira encontrada em cima da mesa.', 'PERDIDO', 'MATCHING', 'No Pavilhão E');
 

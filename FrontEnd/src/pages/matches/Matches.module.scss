@@ -1,26 +1,29 @@
 @use '../../styles/variables.scss' as *;
 
-.matchesPage {
-  min-height: calc(100vh - 125px);
-  padding: 24px;
-  background-color: #ffffff;
+// .matchesPage {
+//   min-height: calc(100vh - 125px);
+//   padding: 24px;
+//   background-color: #ffffff;
+// }
+
+.matchesPage,
+.filtro {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 3% 2% 2% 2%;
 }
 
 
 /* ---------- Tabs ---------- */
 
 .tabs_container {
-  margin-top: 1rem;
-  width: 100%;
+  margin-bottom: 1.5rem;
 }
 
 .tabs_list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  background: #f5f5f5;
-  padding: 6px;
-  border-radius: 5px;
-  gap: 6px;
 }
 
 .tab_trigger {
@@ -93,10 +96,6 @@
 /* ---------- Responsivo ---------- */
 
 @media (max-width: 600px) {
-  .matchesPage {
-    min-height: calc(100vh - 205px);
-    padding: 16px;
-  }
 
   .tab_trigger {
     font-size: 13px;

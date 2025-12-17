@@ -59,7 +59,6 @@ const ModalEditItem = ({ open, onClose, item }) => {
         dataEvento: item.dataEvento ? dayjs(item.dataEvento) : null,
       });
       setErrors({});
-      console.log(item);
     }
   }, [item]);
 
