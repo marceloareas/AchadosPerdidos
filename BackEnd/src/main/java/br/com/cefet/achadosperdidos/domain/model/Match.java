@@ -27,20 +27,20 @@ public class Match {
     private Long id;
 
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToOne
     @JoinColumn(name = "item_perdido_id", referencedColumnName = "id")
     @Getter
     @Setter
     private Item itemPerdido;
 
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToOne
     @JoinColumn(name = "item_achado_id", referencedColumnName = "id")
     @Getter
     @Setter
     private Item itemAchado;
 
-    @OneToOne(mappedBy = "match", optional = true)
+    @OneToOne(mappedBy = "match", optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
     @Setter
     private Chat chat;
