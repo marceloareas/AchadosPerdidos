@@ -8,6 +8,7 @@ import { useNotification } from "../../utils/NotificationContext.jsx";
 import { loginSchema } from "../../validation/validation";
 import useAuthStore from "../../store/auth.js";
 import { useNavigate } from "react-router-dom";
+import { connectWebSocket } from "../../utils/config/WebSocket_config.js";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -48,6 +49,7 @@ const Login = () => {
           email: "",
           senha: "",
         });
+        connectWebSocket();
         showNotification(response, "success");
         setTimeout(() => {
           setIsLoading(false);

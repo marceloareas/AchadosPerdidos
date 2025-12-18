@@ -7,7 +7,6 @@ import Chat from "../../components/chat/Chat";
 import useChatStore from "../../store/chat";
 import useAuthStore from "../../store/auth";
 import useItemStore from "../../store/item";
-import { connectWebSocket } from "../../utils/config/WebSocket_config";
 
 const Chats = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -25,9 +24,6 @@ const Chats = () => {
   const [chatSelect, setChatSelect] = useState(undefined);
   const [showList, setShowList] = useState(true);
 
-  useEffect(() => {
-    connectWebSocket();
-  }, []);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
