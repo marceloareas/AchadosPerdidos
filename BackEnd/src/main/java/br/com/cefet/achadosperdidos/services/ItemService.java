@@ -52,7 +52,7 @@ public class ItemService {
     private ItemMapper itemMapper;
 
     public List<ItemRecentementeRetornadoResponseDTO> getRecentItensReturned(){
-        List<Item> mostRecentItens = this.itemRepository.findFirst2ByStatusOrderByDataDevolucaoDesc(StatusItemEnum.RECUPERADO);
+        List<Item> mostRecentItens = this.itemRepository.findFirst2ByStatusAndTipoOrderByDataDevolucaoDesc(StatusItemEnum.RECUPERADO, TipoItemEnum.PERDIDO);
 
 
         return mostRecentItens.stream()
