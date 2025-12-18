@@ -1,82 +1,86 @@
 import SockJS from "sockjs-client/dist/sockjs.js";
 import { Stomp } from "@stomp/stompjs";
-import useAuthStore from "../../store/auth";
 import useChatStore from "../../store/chat";
-
-let stompClient = null;
-let isConnecting = false;
+import useAuthStore from "../../store/auth";
 
 const BACKEND_URL = "http://localhost:8080/ws";
 
-// ---------------------------------------------------
-// FUNÇÃO PARA CONECTAR
-// ---------------------------------------------------
-export const connectWebSocket = () => {
-  const token = useAuthStore.getState().token;
-  if (!token) {
-    console.warn("⚠ Nenhum token disponível. Aguardando login...");
-    return;
+class WebSocketService {
+  constructor() {
+    this.stompClient = null;
+    this.subscription = null; // Guarda a referência da inscrição
+    this.isConnected = false;
   }
 
-  if (isConnecting) return;
-  isConnecting = true;
+  connectWebSocket() {
+    console.log("Iniciando conexão WebSocket...");
 
-  const socket = new SockJS(BACKEND_URL);
-  stompClient = Stomp.over(socket);
+    const token = useAuthStore.getState().token;
 
-  // Conecta usando o cabeçalho com token
-  stompClient.connect(
-    {
-      Authorization: token,
-    },
-    (frame) => {
-      console.log("✅ Conectado ao WebSocket:", frame);
-      isConnecting = false;
+    const socket = new SockJS(BACKEND_URL);
+    this.stompClient = Stomp.over(socket);
 
-      // Se inscreve no tópico privado do usuário
-      stompClient.subscribe("/user/queue/messages", (msg) => {
-        const data = JSON.parse(msg.body);
-        console.log("📩 Mensagem recebida:", msg.body);
-        const { id, chatId, ...mensagemSemId } = data;
-        // Adiciona mensagem no store
-        useChatStore.getState().showMessage(mensagemSemId, data.chatId);
-      });
-    },
-    (error) => {
-      console.error("❌ Erro de conexão WebSocket:", error);
-      isConnecting = false;
+    this.stompClient.connect(
+      { Authorization: token },
+      (frame) => {
+        this.isConnected = true;
+        console.log("✅ Conectado ao WebSocket:", frame);
 
-      // Reconexão automática em 5s
-      setTimeout(() => {
-        console.log("Tentando reconectar...");
-        connectWebSocket();
-      }, 5000);
+        // Se já existisse uma inscrição anterior pendente, removemos.
+        if (this.subscription) {
+            console.log("Ja tinha subscription, tirando subscribe.");
+            this.subscription.unsubscribe();
+        }
+
+        this.subscription = this.stompClient.subscribe("/user/queue/messages", (msg) => {
+          console.log("realizando inscricao");
+          this.handleMessage(msg);
+        });
+      },
+      (error) => {
+        console.error("❌ Erro WebSocket:", error);
+        this.isConnected = false;
+        this.cleanup(); // Garante limpeza em caso de erro
+      }
+    );
+  }
+
+  handleMessage(msg) {
+    try {
+      const data = JSON.parse(msg.body);
+      console.log("📩 Mensagem recebida:", data);
+      
+      const { id, chatId, ...mensagemSemId } = data;
+      // Atualiza a store
+      useChatStore.getState().showMessage(mensagemSemId, data.chatId);
+    } catch (e) {
+      console.error("Erro ao processar mensagem", e);
     }
-  );
-};
+  } 
 
-connectWebSocket();
-// ---------------------------------------------------
-// FUNÇÃO PARA ENVIAR MENSAGEM
-// ---------------------------------------------------
-export const sendMessage = (matchId, remetenteId, conteudo) => {
-  if (!stompClient || !stompClient?.connected) {
-    console.error("WebSocket não conectado!");
-    return;
+  disconnect() {
+    if (this.stompClient) {
+      console.log("🔌 Desconectando WebSocket...");
+      
+      // Se houver uma inscrição ativa, cancela
+      if (this.subscription) {
+        this.subscription.unsubscribe();
+        this.subscription = null;
+      }
+
+      this.stompClient.disconnect(() => {
+        console.log("✅ WebSocket desconectado com sucesso.");
+      });
+    }
+    this.cleanup(); //reseta as variáveis
   }
 
-  const message = { matchId, remetenteId, conteudo };
-  stompClient.send("/app/chat.send", {}, JSON.stringify(message));
-};
-
-// ---------------------------------------------------
-// FUNÇÃO PARA DESCONECTAR (ex: logout)
-// ---------------------------------------------------
-export const disconnectWebSocket = () => {
-  if (stompClient && stompClient.connected) {
-    stompClient.disconnect(() => {
-      console.log("🔌 WebSocket desconectado");
-      stompClient = null;
-    });
+  cleanup() {
+    this.stompClient = null;
+    this.subscription = null;
+    this.isConnected = false;
   }
-};
+}
+
+const webSocketService = new WebSocketService(); //instacia uma vez no ciclo de vida de iniciação do react
+export default webSocketService;

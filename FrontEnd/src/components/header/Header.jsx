@@ -7,6 +7,7 @@ import { PiSignOutBold } from "react-icons/pi";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import CustomButton from "../ui/button/CustomButton";
 import useAuthStore from "../../store/auth";
+import webSocketService from "../../utils/config/WebSocket_config";
 
 const Header = () => {
   const route = useLocation();
@@ -26,6 +27,7 @@ const Header = () => {
   const handleLogout = () => {
     logout();
     handleMenuClose();
+    webSocketService.disconnect();
     onNavigate("/login");
   };
 
