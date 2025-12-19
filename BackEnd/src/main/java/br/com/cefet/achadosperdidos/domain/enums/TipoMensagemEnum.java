@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum TipoMensagemEnum {
     TEXTO("texto"),
-    CONFIRMACAO("confirmacao");
+    IMAGEM("imagem");
+
 
     private String tipoMensagemString;
 

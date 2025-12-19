@@ -4,9 +4,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Collections;
 
 import br.com.cefet.achadosperdidos.config.RabbitConfig;
+import br.com.cefet.achadosperdidos.domain.enums.TipoMensagemEnum;
 import br.com.cefet.achadosperdidos.domain.model.BaseMensagem;
 import br.com.cefet.achadosperdidos.dto.chat.BotaoDTO;
 import br.com.cefet.achadosperdidos.dto.chat.ChatComMensagensDTO;
@@ -19,6 +23,7 @@ import br.com.cefet.achadosperdidos.services.factories.MensagemFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.cefet.achadosperdidos.domain.model.Chat;
 import br.com.cefet.achadosperdidos.domain.model.Match;
@@ -162,5 +167,43 @@ public class ChatService {
         );
 
         return new ApiResponse<String>("Mensagem enviada com sucesso.", null);
+    }
+
+    @Transactional
+    public ApiResponse<String> enviarMensagemImagem(Long chatId, MultipartFile file, Long remetenteId, Long destinatarioId) throws IOException {
+        
+        // 1. Validações básicas (Chat existe, Match finalizado, etc)
+        Chat chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new ChatNotFoundException("Chat não encontrado."));
+        if (chat.getMatch().isFinalizado()) {
+            throw new MatchFinalizadoException("Match finalizado.");
+        }
+
+        // 2. Converter Imagem para Base64
+        // Dica: Adicione o prefixo de dados para o HTML conseguir ler depois (ex: data:image/png;base64,...)
+        String base64Content = "data:" + file.getContentType() + ";base64," + 
+                                Base64.getEncoder().encodeToString(file.getBytes());
+
+        // 3. Montar o DTO interno para passar para a Factory
+        BaseMensagemDTO mensagemDTO = new BaseMensagemDTO();
+        mensagemDTO.setTipo(TipoMensagemEnum.IMAGEM);
+        mensagemDTO.setRemetenteId(remetenteId);
+        mensagemDTO.setDestinatarioId(destinatarioId);
+        mensagemDTO.setConteudo(base64Content); // O conteúdo é a imagem gigante em texto
+        mensagemDTO.setDataEnvio(LocalDateTime.now());
+
+        // 4. Factory e Persistência
+        BaseMensagem mensagem = mensagemFactory.criarMensagem(chatId, mensagemDTO);
+        BaseMensagem mensagemSalva = mensagemRepository.save(mensagem);
+
+        // 5. RabbitMQ
+        String routingKey = "user." + destinatarioId;
+        rabbitTemplate.convertAndSend(
+                RabbitConfig.TOPIC_EXCHANGE_NAME,
+                routingKey,
+                mensagemSalva
+        );
+
+        return new ApiResponse<>("Imagem enviada com sucesso.", null);
     }
 }

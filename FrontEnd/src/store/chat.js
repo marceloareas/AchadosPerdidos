@@ -62,6 +62,23 @@ const useChatStore = create((set, get) => ({
       };
     });
   },
+  addMensagemImagem: async (file, chatId, remetenteId, destinatarioId) => {
+    try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("remetenteId", remetenteId);
+        formData.append("destinatarioId", destinatarioId);
+
+        // Importante: Ao enviar FormData, o navegador define o Content-Type automaticamente
+        // Não force 'application/json' aqui.
+        await Api.post(`/chat/mensagem/${chatId}/imagem`, formData); 
+        
+        // Não precisa adicionar manualmente na lista se o WebSocket já estiver ouvindo.
+        // Se quiser otimista, converta para base64 localmente e adicione.
+    } catch (error) {
+        console.error("Erro ao enviar imagem", error);
+    }
+  },
 
   showMessage: async (novaMsg, chatId) => {
     console.log("quantas vezes");

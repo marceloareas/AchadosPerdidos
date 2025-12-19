@@ -1,7 +1,6 @@
 package br.com.cefet.achadosperdidos.mappers;
 
 import br.com.cefet.achadosperdidos.domain.model.BaseMensagem;
-import br.com.cefet.achadosperdidos.domain.model.mensagens.MensagemConfirmacao;
 import br.com.cefet.achadosperdidos.domain.model.mensagens.MensagemTexto;
 import br.com.cefet.achadosperdidos.dto.mensagem.BaseMensagemDTO;
 import br.com.cefet.achadosperdidos.dto.mensagem.MensagemConfirmacaoDTO;
@@ -14,9 +13,10 @@ public class MensagemMapper {
     public BaseMensagemDTO mapMensagemParaDTO(BaseMensagem baseMensagem) {
         if (baseMensagem instanceof MensagemTexto mensagemTexto) {
             return mapMensagemTextoParaDTO(mensagemTexto);
-        } else if (baseMensagem instanceof MensagemConfirmacao mensagemConfirmacao) {
-            return mapMensagemConfirmacaoParaDTO(mensagemConfirmacao);
-        }
+        } 
+        // else if (baseMensagem instanceof MensagemConfirmacao mensagemConfirmacao) {
+        //     return mapMensagemConfirmacaoParaDTO(mensagemConfirmacao);
+        // }
 
         // Mapeamento genérico (resolve seu problema atual)
         BaseMensagemDTO dto = new BaseMensagemDTO();
@@ -36,18 +36,6 @@ public class MensagemMapper {
         dto.setRemetenteId(mensagemTexto.getRemetenteId());
         dto.setDestinatarioId(mensagemTexto.getDestinatarioId());
 
-        return dto;
-    }
-
-    public MensagemConfirmacaoDTO mapMensagemConfirmacaoParaDTO(MensagemConfirmacao mensagemConfirmacao) {
-        MensagemConfirmacaoDTO dto = new MensagemConfirmacaoDTO();
-        dto.setTipo(mensagemConfirmacao.getTipo());
-        dto.setConteudo(mensagemConfirmacao.getConteudo());
-        dto.setDataEnvio(mensagemConfirmacao.getDataEnvio());
-        dto.setRemetenteId(mensagemConfirmacao.getRemetenteId());
-        dto.setDestinatarioId(mensagemConfirmacao.getDestinatarioId());
-
-        //todo: adicionar os especificos de Mensagem Confirmacao
         return dto;
     }
 }

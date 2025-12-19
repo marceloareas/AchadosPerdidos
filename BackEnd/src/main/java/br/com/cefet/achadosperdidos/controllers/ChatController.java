@@ -2,12 +2,18 @@ package br.com.cefet.achadosperdidos.controllers;
 
 import br.com.cefet.achadosperdidos.dto.chat.MeusChatsResponseDTO;
 import br.com.cefet.achadosperdidos.dto.chat.ChatComMensagensDTO;
+
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.dto.mensagem.BaseMensagemDTO;
@@ -52,5 +58,17 @@ public class ChatController {
     }
 
 
+    @PostMapping(value = "/mensagem/{chat_id}/imagem", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<String>> enviarImagem(
+            @PathVariable("chat_id") Long chatId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("remetenteId") Long remetenteId,
+            @RequestParam("destinatarioId") Long destinatarioId
+    ) throws IOException {
+        
+        // Montamos o DTO manualmente ou passamos os parâmetros
+        ApiResponse<String> response = chatService.enviarMensagemImagem(chatId, file, remetenteId, destinatarioId);
+        return ResponseEntity.ok(response);
+    }
     
 }
