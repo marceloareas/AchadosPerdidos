@@ -7,6 +7,7 @@ import Chat from "../../components/chat/Chat";
 import useChatStore from "../../store/chat";
 import useAuthStore from "../../store/auth";
 import useItemStore from "../../store/item";
+import useMatchStore from "../../store/match";
 
 const Chats = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -17,6 +18,7 @@ const Chats = () => {
 
   const { chats, getChats, getChat } = useChatStore();
   const chatAtual = useChatStore((state) => state.chatAtual);
+  const { getMatchesFinalizados } = useMatchStore();
 
   const { user } = useAuthStore();
   const { itemsUser, getUserItens } = useItemStore();
@@ -33,6 +35,7 @@ const Chats = () => {
   useEffect(() => {
     getChats();
     getUserItens();
+    getMatchesFinalizados();
   }, []);
 
   const chatsOrdenados = useMemo(() => {

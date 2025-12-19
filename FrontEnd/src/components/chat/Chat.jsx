@@ -21,7 +21,12 @@ const Chat = ({
   chat,
   isMatchFinalizado,
 }) => {
-  const { confirmMatch } = useMatchStore();
+  const {
+    confirmMatch,
+    getMatchesFinalizados,
+    getMatchesAtivos,
+    getMatchesArquivados,
+  } = useMatchStore();
   const { showNotification } = useNotification();
   const { getChat } = useChatStore();
 
@@ -48,10 +53,13 @@ const Chat = ({
     try {
       await confirmMatch(idMatch);
       const { error, response } = useMatchStore.getState();
-      handleCloseModal();
       if (error) {
         showNotification(response, "error");
         setTimeout(() => setIsLoading(false), 1000);
+        getMatchesFinalizados();
+        getMatchesArquivados();
+        getMatchesAtivos();
+        handleCloseModal();
       } else {
         showNotification(response, "success");
       }
@@ -72,6 +80,7 @@ const Chat = ({
           onBack={onBack}
           openModal={handleOpenModal}
           botao={chat.botao}
+          matchId={matchId}
         />
         <ContentChat listMessage={chat.mensagens} otherUserId={otherUserId} />
         {isMatchFinalizado ? (
