@@ -3,8 +3,9 @@ import style from "./Chat.module.scss";
 import { IoReturnUpBackOutline } from "react-icons/io5";
 import { Typography } from "@mui/material";
 import CustomButton from "../ui/button/CustomButton.jsx";
+import useMatchStore from "../../store/match.js";
 
-const HeaderChat = ({ item, usuario, onBack, openModal, botao }) => {
+const HeaderChat = ({ item, usuario, onBack, openModal, botao, matchId }) => {
   // Responsividade
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const sizePage = !(windowWidth > 600);
@@ -16,6 +17,10 @@ const HeaderChat = ({ item, usuario, onBack, openModal, botao }) => {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const { matchesFinalizados } = useMatchStore();
+
+  const matchFinalizado = matchesFinalizados.filter((m) => m.id === matchId)[0];
   return (
     <section className={style.headerChat}>
       <div className={style.iconBackListChats}>
@@ -50,7 +55,11 @@ const HeaderChat = ({ item, usuario, onBack, openModal, botao }) => {
         variant={"outline"}
         size={"sm"}
         onClick={openModal}
-        disabled={!botao.clickable}
+        disabled={
+          matchFinalizado != undefined
+            ? matchFinalizado.isFinalizado
+            : !botao.clickable
+        }
       >
         {botao.nomeBotao}
       </CustomButton>

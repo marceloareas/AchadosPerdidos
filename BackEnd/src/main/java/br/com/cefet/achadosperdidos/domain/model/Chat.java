@@ -36,7 +36,7 @@ public class Chat {
     @Setter
     private Match match;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
         name = "usuario_chat",
         joinColumns = @JoinColumn(name = "chat_id"),

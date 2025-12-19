@@ -15,6 +15,7 @@ import useItemStore from "../../../../store/item.js";
 import useCategoriaStore from "../../../../store/categoria.js";
 import CloseIcon from "@mui/icons-material/Close";
 import style from "./ModalEditItem.module.scss";
+import { useNotification } from "./../../../../utils/NotificationContext.jsx";
 
 const modalStyle = {
   position: "absolute",
@@ -33,6 +34,7 @@ const modalStyle = {
 const ModalEditItem = ({ open, onClose, item }) => {
   const { updateItem } = useItemStore();
   const { getCategorias, categorias } = useCategoriaStore();
+  const { showNotification } = useNotification();
 
   const [formData, setFormData] = useState({
     nome: "",
@@ -111,6 +113,12 @@ const ModalEditItem = ({ open, onClose, item }) => {
       };
 
       await updateItem(item.id, payload);
+      showNotification(
+          `Item ${
+            item.tipo === "PERDIDO" ? "perdido" : "encontrado"
+          } atuaizado!`,
+          "success"
+        );
       onClose();
     } catch (err) {
       console.error("Erro ao atualizar item:", err);

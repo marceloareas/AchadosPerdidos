@@ -177,7 +177,7 @@ public class MatchService {
             throw new InvalidCredentials("Match não pertence ao usuário");
         }
 
-        matchRepository.delete(match);
+        matchRepository.deleteById(matchId);
         return "Match deletado com sucesso!";
     }
 

@@ -63,7 +63,6 @@ const Profile = () => {
         nome: formData.nome,
         email: formData.email,
       };
-      console.log(formtoSend);
       await updateUser(formtoSend);
       const { erro, response } = useUserStore.getState();
       if (!erro) {
@@ -73,7 +72,7 @@ const Profile = () => {
         }, 1500);
       }
     } catch (err) {
-      console.log();
+      console.error(err);
     }
   };
 
@@ -82,7 +81,7 @@ const Profile = () => {
     try {
       await deleteUser();
     } catch (erro) {
-      console.log();
+      console.error(erro);
     }
   };
 

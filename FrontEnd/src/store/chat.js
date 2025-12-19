@@ -64,7 +64,6 @@ const useChatStore = create((set, get) => ({
   },
 
   showMessage: async (novaMsg, chatId) => {
-    console.log("quantas vezes");
     set((state) => {
       if (!state.chatAtual || chatId !== state.chatAtual.id) {
         return {};

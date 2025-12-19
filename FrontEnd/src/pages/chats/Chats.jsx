@@ -7,7 +7,7 @@ import Chat from "../../components/chat/Chat";
 import useChatStore from "../../store/chat";
 import useAuthStore from "../../store/auth";
 import useItemStore from "../../store/item";
-import { connectWebSocket } from "../../utils/config/WebSocket_config";
+import useMatchStore from "../../store/match";
 
 const Chats = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -18,16 +18,13 @@ const Chats = () => {
 
   const { chats, getChats, getChat } = useChatStore();
   const chatAtual = useChatStore((state) => state.chatAtual);
+  const { getMatchesFinalizados } = useMatchStore();
 
   const { user } = useAuthStore();
   const { itemsUser, getUserItens } = useItemStore();
 
   const [chatSelect, setChatSelect] = useState(undefined);
   const [showList, setShowList] = useState(true);
-
-  useEffect(() => {
-    connectWebSocket();
-  }, []);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -38,6 +35,7 @@ const Chats = () => {
   useEffect(() => {
     getChats();
     getUserItens();
+    getMatchesFinalizados();
   }, []);
 
   const chatsOrdenados = useMemo(() => {
@@ -96,16 +94,17 @@ const Chats = () => {
             ) : (
               <div className={style.emptyChats}>
                 <p>Você ainda não possui nenhum chat.</p>
-                <span>Quando houver um match, ele aparecerá aqui.</span>
+                <span>Quando houver um chat, ele aparecerá aqui.</span>
               </div>
             )}
 
-            {!isMobile && <span className={style.lineV} />}
+            {!isMobile && chatsOrdenados.length > 0 && (
+              <span className={style.lineV} />
+            )}
           </>
         )}
 
-
-        {(!isMobile || !showList) && (
+        {(!isMobile || !showList) && chatsOrdenados.length > 0 && (
           <section className={style.unitChat}>
             {chatAtual && chatSelect && chatAtual.id === chatSelect.id ? (
               <Chat
@@ -129,12 +128,12 @@ const Chats = () => {
                 chat={chatAtual}
                 isMatchFinalizado={chatSelect.isMatchFinalizado}
               />
+            ) : !isMobile && chatsOrdenados.length > 0 ? (
+              <div className={style.notChat}>
+                <span>Selecione um chat para ver.</span>
+              </div>
             ) : (
-              !isMobile && (
-                <div className={style.notChat}>
-                  <span>Selecione um chat para ver.</span>
-                </div>
-              )
+              <></>
             )}
           </section>
         )}

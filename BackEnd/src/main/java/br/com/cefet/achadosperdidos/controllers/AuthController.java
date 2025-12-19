@@ -1,7 +1,11 @@
 package br.com.cefet.achadosperdidos.controllers;
 
+import br.com.cefet.achadosperdidos.config.security.TokenService;
 import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.dto.auth.UpdatePasswordRequestDTO;
+
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,6 +26,8 @@ import br.com.cefet.achadosperdidos.dto.usuario.UsuarioRequestDTO;
 import br.com.cefet.achadosperdidos.dto.usuario.UsuarioResponseDTO;
 import br.com.cefet.achadosperdidos.services.AuthService;
 import br.com.cefet.achadosperdidos.dto.res.ApiResponse;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/auth")
@@ -32,6 +38,9 @@ public class AuthController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private TokenService tokenService;
 
     
     @PostMapping("/login")
@@ -84,4 +93,13 @@ public class AuthController {
         AuthenticatedUserDTO user = authService.getAuthenticatedUser(token);
         return ResponseEntity.ok(user);
     }
+
+    @PostMapping("/validateToken")
+    public ResponseEntity<ApiResponse<Boolean>> validateToken(@RequestBody String token) {
+        System.out.println("token chegando: " + token);
+        boolean isTokenValid = tokenService.verifyToken(token);
+        ApiResponse<Boolean> response = new ApiResponse<Boolean>(null, isTokenValid);
+        return ResponseEntity.ok(response);
+    }
+    
 }

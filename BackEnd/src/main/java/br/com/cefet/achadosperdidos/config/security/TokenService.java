@@ -60,4 +60,27 @@ public class TokenService {
         }
     }
 
+    public Boolean verifyToken(String token) {
+         try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            var verifier = JWT.require(algorithm)
+                    .withIssuer("AchadosPerdidos")
+                    .build();
+            System.out.println("verificando token...");
+            token = token.replace("\"", "");
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+            // System.out.println(token);
+            verifier.verify(token);
+            
+            System.out.println("tokenVerificado");
+            
+            return true; 
+        } catch (JWTVerificationException e) {
+            System.out.println("token invalido (erro): " +  e.getMessage());
+            return false; // Token inválido
+        }
+    }
+
 }
