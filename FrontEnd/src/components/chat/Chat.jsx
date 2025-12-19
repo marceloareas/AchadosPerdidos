@@ -73,23 +73,26 @@ const Chat = ({
           openModal={handleOpenModal}
           botao={chat.botao}
         />
-        {isMatchFinalizado && (
-            <div className={style.matchFinalizadoBanner}>
-              🔒 Este match foi finalizado. O chat está somente para visualização.
-            </div>
-          )}
         <ContentChat listMessage={chat.mensagens} otherUserId={otherUserId} />
-        <Input
-          chat={chat}
-          currentUserId={currentUserId}
-          otherUserId={otherUserId}
-          isMatchFinalizado={isMatchFinalizado}
-        />
+        {isMatchFinalizado ? (
+          <div className={style.matchFinalizadoBanner}>
+            🔒 Este match foi finalizado. O chat está somente para visualização.
+          </div>
+        ) : (
+          <Input
+            chat={chat}
+            currentUserId={currentUserId}
+            otherUserId={otherUserId}
+            isMatchFinalizado={isMatchFinalizado}
+          />
+        )}
       </div>
       <ModalConfirm
         open={confirmModal}
         onClose={handleCloseModal}
-        title={"Deseja confirmar a devolução do item?"}
+        title={`Deseja confirmar a fase de ${chat?.botao?.nomeBotao
+          ?.split("[")?.[1]
+          ?.replace(/]/g, "")} do item?`}
         content={"Essa operação não poderá ser desfeita."}
       >
         <CustomButton

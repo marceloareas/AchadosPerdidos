@@ -24,7 +24,6 @@ const Chats = () => {
   const [chatSelect, setChatSelect] = useState(undefined);
   const [showList, setShowList] = useState(true);
 
-
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -92,16 +91,17 @@ const Chats = () => {
             ) : (
               <div className={style.emptyChats}>
                 <p>Você ainda não possui nenhum chat.</p>
-                <span>Quando houver um match, ele aparecerá aqui.</span>
+                <span>Quando houver um chat, ele aparecerá aqui.</span>
               </div>
             )}
 
-            {!isMobile && <span className={style.lineV} />}
+            {!isMobile && chatsOrdenados.length > 0 && (
+              <span className={style.lineV} />
+            )}
           </>
         )}
 
-
-        {(!isMobile || !showList) && (
+        {(!isMobile || !showList) && chatsOrdenados.length > 0 && (
           <section className={style.unitChat}>
             {chatAtual && chatSelect && chatAtual.id === chatSelect.id ? (
               <Chat
@@ -125,12 +125,12 @@ const Chats = () => {
                 chat={chatAtual}
                 isMatchFinalizado={chatSelect.isMatchFinalizado}
               />
+            ) : !isMobile && chatsOrdenados.length > 0 ? (
+              <div className={style.notChat}>
+                <span>Selecione um chat para ver.</span>
+              </div>
             ) : (
-              !isMobile && (
-                <div className={style.notChat}>
-                  <span>Selecione um chat para ver.</span>
-                </div>
-              )
+              <></>
             )}
           </section>
         )}
