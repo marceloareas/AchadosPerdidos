@@ -120,7 +120,6 @@ const MatchCard = ({ match, hasChat }) => {
 
     try {
       await getChat(idMatch);
-      console.log(match);
       const { error, response } = useChatStore.getState();
       if (error) {
         showNotification("Erro ao criar chat", "error");

@@ -72,7 +72,6 @@ const useUserStore = create((set, get) => ({
 
   updatePassword: async (passData) => {
     set({ loading: true, error: null });
-    console.log(passData);
     try {
       const { token } = useAuthStore.getState();
       const response = await Api.post(
@@ -80,7 +79,6 @@ const useUserStore = create((set, get) => ({
         passData,
         API_HEADER(token)
       );
-      console.log(response);
       set({ response: response.data.message });
     } catch (error) {
       set({

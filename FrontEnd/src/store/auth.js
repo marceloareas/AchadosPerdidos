@@ -32,7 +32,6 @@ const useAuthStore = create((set, get) => ({
     set({ loading: true, erro: null });
     try {
       const response = await Api.post("/auth/login", formData);
-      console.log(response);
 
       const token = response.data.token;
       localStorage.setItem("Bearer-token", token);
@@ -52,9 +51,6 @@ const useAuthStore = create((set, get) => ({
       set({ user: userResponse.data });
     } catch (err) {
       set({ response: err.response?.data, loading: false, erro: true });
-      // console.log(err);
-      // console.log(get().erro);
-      // console.log(get().response);
     }
   },
 

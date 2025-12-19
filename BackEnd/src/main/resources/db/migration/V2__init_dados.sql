@@ -84,7 +84,7 @@ INSERT INTO match (
     tipo_finalizacao_match
 ) VALUES
 (1, 3, false, false, false, null),
-(2, 7, false, false, false, null);
+(7, 2, false, false, false, null);
 
 -- Criar o chat vinculado ao primeiro match
 INSERT INTO chat (match_id)
