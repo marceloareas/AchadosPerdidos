@@ -26,7 +26,7 @@ const AddItem = () => {
     descricao: "",
     categorias: "",
     localizacao: "",
-    dataEvento: dayjs().format('YYYY-MM-DDTHH:mm:ss'),
+    dataEvento: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
   });
   const [searchParams] = useSearchParams();
   const { showNotification } = useNotification();
@@ -52,7 +52,7 @@ const AddItem = () => {
       descricao: "",
       categorias: "",
       localizacao: "",
-      dataEvento: dayjs().format('YYYY-MM-DDTHH:mm:ss'),
+      dataEvento: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
     });
   }, [itemType]);
 
@@ -71,7 +71,6 @@ const AddItem = () => {
     setIsLoading(true);
 
     try {
-      console.log(formData);
       itemSchema.validateSync(formData, { abortEarly: false });
       setErrors({});
       let tipoItem = itemType == "PERDIDO" ? "PERDIDO" : "ACHADO";

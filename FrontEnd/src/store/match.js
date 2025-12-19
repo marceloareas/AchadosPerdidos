@@ -79,7 +79,6 @@ const useMatchStore = create((set, get) => ({
         {},
         API_HEADER(token)
       );
-      console.log(response);
       await get().getMatchesAtivos();
       await get().getMatchesArquivados();
       set({ loading: false, error: null, response: response.data.message });
@@ -97,7 +96,6 @@ const useMatchStore = create((set, get) => ({
         {},
         API_HEADER(token)
       );
-      console.log(response);
       set({ loading: false, error: null, response: response.data.message });
     } catch (error) {
       set({ error: error.message, loading: false });
@@ -109,7 +107,6 @@ const useMatchStore = create((set, get) => ({
     try {
       const { token } = useAuthStore.getState();
       const response = await Api.delete(`/match/${idMatch}`, API_HEADER(token));
-      console.log(response);
       await get().getMatchesAtivos();
       await get().getMatchesArquivados();
       set({ loading: false, error: null, response: response.data.message });

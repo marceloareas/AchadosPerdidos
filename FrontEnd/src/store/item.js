@@ -70,8 +70,6 @@ const useItemStore = create((set, get) => ({
       const updatedItemsUser = get().itemsUser.map((item) =>
         item.id === id ? response.data.item : item
       );
-      console.log("Payload enviado:", formData);
-      console.log("Item atualizado com sucesso:", response.data);
       set({
         itemsUser: updatedItemsUser,
         response: response.data.message,
