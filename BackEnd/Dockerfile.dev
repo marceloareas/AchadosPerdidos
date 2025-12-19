@@ -1,0 +1,11 @@
+FROM maven:3.9.11-amazoncorretto-21
+
+WORKDIR /workspace
+
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+COPY src ./src
+
+# Roda em modo dev (compilando direto sem gerar JAR)
+CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.fork=false"]

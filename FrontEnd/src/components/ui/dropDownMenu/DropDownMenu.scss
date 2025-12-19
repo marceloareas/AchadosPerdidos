@@ -1,0 +1,148 @@
+/* ========= BASE CONTENT ========== */
+.dm-content {
+    z-index: 50;
+    min-width: 8rem;
+    overflow: hidden;
+    border-radius: 0.375rem;
+    border: 1px solid var(--border);
+    background-color: var(--popover);
+    padding: 0.25rem;
+    color: var(--popover-foreground);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    animation: fade-in 0.15s ease;
+}
+
+/* ========= SUB MENU CONTENT ========== */
+.dm-subcontent {
+    z-index: 50;
+    min-width: 8rem;
+    overflow: hidden;
+    border-radius: 0.375rem;
+    border: 1px solid var(--border);
+    background-color: var(--popover);
+    padding: 0.25rem;
+    color: var(--popover-foreground);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    animation: fade-in 0.15s ease;
+}
+
+/* ========= TRIGGERS ========== */
+.dm-subtrigger {
+    display: flex;
+    cursor: default;
+    user-select: none;
+    align-items: center;
+    border-radius: 0.25rem;
+    padding: 0.375rem 0.5rem;
+    font-size: 0.875rem;
+    outline: none;
+    transition: background 0.15s ease;
+}
+
+.dm-subtrigger:hover,
+.dm-subtrigger:focus {
+    background-color: var(--accent);
+}
+
+.dm-subtrigger[data-state="open"] {
+    background-color: var(--accent);
+}
+
+.dm-chevron {
+    margin-left: auto;
+    height: 1rem;
+    width: 1rem;
+}
+
+/* ========= MENU ITEMS ========== */
+.dm-item,
+.dm-checkbox-item,
+.dm-radio-item {
+    position: relative;
+    display: flex;
+    cursor: default;
+    user-select: none;
+    align-items: center;
+    border-radius: 0.25rem;
+    padding: 0.375rem 0.5rem;
+    font-size: 0.875rem;
+    outline: none;
+    transition: background 0.15s ease;
+}
+
+.dm-item:hover,
+.dm-checkbox-item:hover,
+.dm-radio-item:hover,
+.dm-item:focus,
+.dm-checkbox-item:focus,
+.dm-radio-item:focus {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+}
+
+.dm-item[data-disabled],
+.dm-checkbox-item[data-disabled],
+.dm-radio-item[data-disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.dm-inset {
+    padding-left: 2rem;
+}
+
+/* ========= CHECKBOX & RADIO ICONS ========== */
+.dm-check-container {
+    position: absolute;
+    left: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 0.875rem;
+    width: 0.875rem;
+}
+
+.dm-check-icon {
+    height: 1rem;
+    width: 1rem;
+}
+
+.dm-radio-icon {
+    height: 0.5rem;
+    width: 0.5rem;
+    fill: currentColor;
+}
+
+/* ========= LABELS & SEPARATORS ========== */
+.dm-label {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.dm-separator {
+    margin: 0.25rem 0;
+    height: 1px;
+    background-color: var(--muted);
+}
+
+/* ========= SHORTCUT TEXT ========== */
+.dm-shortcut {
+    margin-left: auto;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+}
+
+/* ========= ANIMATIONS ========== */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

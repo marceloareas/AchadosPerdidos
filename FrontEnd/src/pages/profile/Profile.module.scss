@@ -1,0 +1,86 @@
+@use '../../styles/variables.scss' as *;
+
+.pageContainer {
+    @include flex-collumn(flex-start, center);
+    min-height: 100vh;
+    // background-color: rgba(235, 240, 245, 0.4);
+    padding: .5rem 1.5rem;
+}
+
+.pageMain {
+    margin-bottom: 5.5rem;
+    @include flex-collumn(flex-start, center);
+    flex: 1;
+    min-height: calc(100vh - 5.5rem);
+    width: 80vw;
+    // overflow-y: auto;
+}
+
+.top_section {
+    width: 100%;
+    @include flex-collumn(flex-start, flex-start);
+    gap: 1rem;
+}
+
+.back_home {
+    position: relative;
+    left: -10%;
+    color: $primary-color;
+    cursor: pointer;
+}
+
+.mid_section {
+    @include flex-collumn(center, center);
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+    gap: 0.5rem;
+    margin-top: 0.3rem;
+}
+
+.title,
+.subtitle {
+    // color: $primary-color;
+    margin: 0;
+    text-align: center;
+}
+
+.svgProfile {
+    color: $primary-color;
+}
+
+.bottom_section {
+    margin-top: 5%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.form {
+    @include form;
+    gap: 1.5rem !important;
+    min-width: 700px;
+}
+
+.error {
+    @include error;
+}
+
+.link {
+    content: "";
+    display: flex;
+    width: 100%;
+    height: 2px;
+    color: $primary-color;
+    cursor: pointer;
+    bottom: 0.3;
+    left: 0;
+    margin-bottom: 9px;
+    text-decoration: underline 2px;
+}
+
+@media(max-width:700px) {
+    .form {
+        min-width: 80vw;
+    }
+}

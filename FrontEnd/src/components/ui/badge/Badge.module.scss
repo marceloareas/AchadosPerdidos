@@ -1,0 +1,35 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  white-space: nowrap;
+  transition: background-color 0.2s, color 0.2s;
+  max-width: fit-content;
+  width: auto;
+}
+
+.lost {
+  background-color: #d32e2e; 
+  color: #fafafa;
+}
+
+.found {
+  background-color: #c29502; 
+  color: #fafafa;
+}
+
+.returned {
+  background-color: #BCE0A9;
+  color: #2e7d32;
+}
+
+.category {
+  background-color: #A9C0D2;
+  color: #0A497E;
+  font-size: 0.70rem;        
+  padding: 0.15rem 0.5rem; 
+}
