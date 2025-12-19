@@ -1,17 +1,42 @@
-import style from "./Chat.module.scss";
+const BalaoMensagem = ({ conteudo, otherUserId }) => {
+  const isOtherUser = conteudo.remetenteId === otherUserId;
 
-const BalaoMensagem = ({ conteudo, otherUserId, isFirst, isLast }) => {
-  const userClassname =
-    conteudo.remetenteId === otherUserId ? style.them : style.userMe;
+  const containerStyle = {
+    display: "flex",
+    justifyContent: isOtherUser ? "flex-start" : "flex-end",
+    marginBottom: "8px",
+  };
+
+  const bubbleStyle = {
+    maxWidth: "60%",
+    padding: "10px",
+    borderRadius: "12px",
+    backgroundColor: isOtherUser ? "#f1f1f1" : "#DCF8C6",
+    wordBreak: "break-word",
+  };
+
+  const imageStyle = {
+    maxWidth: "100%",
+    borderRadius: "8px",
+    cursor: "pointer",
+  };
+
   return (
-    <div className={style.balao}>
-      <section
-        className={`${userClassname}  ${isFirst ? style.first : ""} ${
-          isLast ? style.last : ""
-        }`}
-      >
-        <p>{conteudo.conteudo}</p>
-      </section>
+    <div style={containerStyle}>
+      <div style={bubbleStyle}>
+        {conteudo.tipo === "TEXTO" && (
+          <p style={{ margin: 0 }}>{conteudo.conteudo}</p>
+        )}
+
+        {conteudo.tipo === "IMAGEM" && (
+          <img
+            src={conteudo.conteudo}
+            alt="imagem enviada"
+            style={imageStyle}
+            onClick={() => window.open(conteudo.conteudo, "_blank")}
+          />
+        )}
+      </div>
     </div>
   );
 };

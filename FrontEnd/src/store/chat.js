@@ -71,7 +71,12 @@ const useChatStore = create((set, get) => ({
 
         // Importante: Ao enviar FormData, o navegador define o Content-Type automaticamente
         // Não force 'application/json' aqui.
-        await Api.post(`/chat/mensagem/${chatId}/imagem`, formData); 
+        const { token } = useAuthStore.getState();
+        await Api.post(`/chat/mensagem/${chatId}/imagem`, formData, {
+          headers: {
+            Authorization: token
+          }
+        });
         
         // Não precisa adicionar manualmente na lista se o WebSocket já estiver ouvindo.
         // Se quiser otimista, converta para base64 localmente e adicione.

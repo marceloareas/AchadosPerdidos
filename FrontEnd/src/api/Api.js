@@ -7,9 +7,9 @@ class CreateAxios {
     if (!this.instance) {
       this.instance = axios.create({
         baseURL: "http://localhost:8080",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        // headers: {
+        //   "Content-Type": "application/json",
+        // },
       });
     }
     return this.instance;
@@ -17,4 +17,15 @@ class CreateAxios {
 }
 
 const Api = CreateAxios.getInstance();
+
+Api.interceptors.request.use((config) => {
+  // 🔥 SE FOR FormData, NÃO SETA Content-Type
+  if (config.data instanceof FormData) {
+    delete config.headers["Content-Type"];
+  } else {
+    config.headers["Content-Type"] = "application/json";
+  }
+
+  return config;
+});
 export default Api;
