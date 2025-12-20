@@ -1,6 +1,13 @@
 import React from "react";
 import dayjs from "dayjs";
-import { CardHeader, Card, CardContent, Typography, Box, Chip } from "@mui/material";
+import {
+  CardHeader,
+  Card,
+  CardContent,
+  Typography,
+  Box,
+  Chip,
+} from "@mui/material";
 import style from "./ChatCard.module.scss";
 import useAuthStore from "../../../store/auth";
 
@@ -32,7 +39,12 @@ const ChatCard = ({
     (usr) => usr.id === lastMessage?.remetenteId
   )?.nome;
   return (
-    <Card className={`${style["MuiPaper-root"]} ${isMatchFinalizado ? style.finalizado : ""}`} onClick={handleSelect}>
+    <Card
+      className={`${style["MuiPaper-root"]} ${
+        isMatchFinalizado ? style.finalizado : ""
+      }`}
+      onClick={handleSelect}
+    >
       <CardHeader
         title={
           <Box className={style.headerCard}>
@@ -43,23 +55,24 @@ const ChatCard = ({
               {item}
             </Typography>
 
-            {isMatchFinalizado && (
-              <Chip
-                label="Finalizado"
-                size="small"
-                sx={{ ml: 1, fontSize: "0.8rem", height: "18px", }}
-              />
-            )}
-
-            <Typography
-              className={style.horarioLastMessage}
-              sx={{
-                color: "#706d6db2",
-                fontSize: "0.9rem",
-              }}
-            >
-              {convertDate(lastMessage?.dataEnvio)}
-            </Typography>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <Typography
+                className={style.horarioLastMessage}
+                sx={{
+                  color: "#706d6db2",
+                  fontSize: "0.9rem",
+                }}
+              >
+                {convertDate(lastMessage?.dataEnvio)}
+              </Typography>
+              {isMatchFinalizado && (
+                <Chip
+                  label="Finalizado"
+                  size="small"
+                  sx={{ ml: 1, fontSize: "0.8rem", height: "18px" }}
+                />
+              )}
+            </div>
           </Box>
         }
       />

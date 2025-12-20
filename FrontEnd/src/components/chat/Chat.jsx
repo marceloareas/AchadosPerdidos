@@ -54,7 +54,7 @@ const Chat = ({
         setTimeout(() => setIsLoading(false), 1000);
       } else {
         showNotification(response, "success");
-        getChat();
+        getChat(chat.id);
         getChats();
         handleCloseModal();
       }
