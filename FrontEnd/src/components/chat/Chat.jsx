@@ -21,14 +21,9 @@ const Chat = ({
   chat,
   isMatchFinalizado,
 }) => {
-  const {
-    confirmMatch,
-    getMatchesFinalizados,
-    getMatchesAtivos,
-    getMatchesArquivados,
-  } = useMatchStore();
+  const { confirmMatch } = useMatchStore();
   const { showNotification } = useNotification();
-  const { getChat } = useChatStore();
+  const { getChat, getChats } = useChatStore();
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -56,12 +51,11 @@ const Chat = ({
       if (error) {
         showNotification(response, "error");
         setTimeout(() => setIsLoading(false), 1000);
-        getMatchesFinalizados();
-        getMatchesArquivados();
-        getMatchesAtivos();
-        handleCloseModal();
       } else {
         showNotification(response, "success");
+        getChat();
+        getChats();
+        handleCloseModal();
       }
       await getChat(idMatch);
     } catch {

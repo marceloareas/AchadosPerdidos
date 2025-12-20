@@ -4,6 +4,7 @@ import Layout from "../../components/layout/Layout";
 import MatchCard from "../../components/ui/matchCard/MatchCard";
 import useMatchStore from "../../store/match";
 import useChatStore from "../../store/chat";
+import useItemStore from "../../store/item.js";
 import { Activity, Archive, CheckCircle } from "lucide-react";
 
 import {
@@ -26,10 +27,12 @@ const Matches = () => {
     getMatchesArquivados,
     getMatchesFinalizados,
   } = useMatchStore();
+  const { getUserItens } = useItemStore();
 
   const { chats, getChats } = useChatStore();
 
   useEffect(() => {
+    getUserItens();
     getChats();
     getMatchesAtivos();
     getMatchesArquivados();
