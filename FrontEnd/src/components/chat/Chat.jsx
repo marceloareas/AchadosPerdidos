@@ -50,6 +50,7 @@ const Chat = ({
       const { error, response } = useMatchStore.getState();
       if (error) {
         showNotification(response, "error");
+        handleCloseModal();
         setTimeout(() => setIsLoading(false), 1000);
       } else {
         showNotification(response, "success");
