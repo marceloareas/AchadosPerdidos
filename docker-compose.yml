@@ -1,5 +1,4 @@
 version: "3.8"
-
 services:
   frontend-achados:
     container_name: achados_frontend
@@ -17,6 +16,7 @@ services:
       - .env
     networks:
       - bridge_achados
+
   backend-achados:
     container_name: achados_backend
     build:
@@ -34,6 +34,7 @@ services:
         condition: service_healthy
     networks:
       - bridge_achados
+
   postgresql_db:
     container_name: achados_postgresql
     image: postgres:14
@@ -54,6 +55,7 @@ services:
       retries: 5
     networks:
       - bridge_achados
+
   mongo_db:
     image: mongo:7
     container_name: achados_mongo
@@ -67,6 +69,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     networks:
       - bridge_achados
+
   match-api:
     container_name: achados_match
     build:
@@ -82,6 +85,7 @@ services:
       - ./aep-match:/app
     networks:
       - bridge_achados
+
   ollama:
     container_name: achados_ollama
     build:
@@ -92,9 +96,11 @@ services:
       - ollama_data:/root/.ollama
     networks:
       - bridge_achados
+
   rabbitmq:
     container_name: achados_rabbitmq
-    image: rabbitmq:3.12-management
+    image: rabbitmq:3-management-alpine
+    platform: linux/amd64
     ports:
       - "5672:5672"
       - "15672:15672"

@@ -16,10 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-//classe de configuração de segurança
 @Configuration
 @EnableWebSecurity
-//junta todos os componentes de segurança da aplicação para serem usados
 public class SecurityConfig {
 
     @Autowired
@@ -31,18 +29,26 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http    
-                .cors(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //nao guarda estado de login
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/validateToken").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/ws/**").permitAll()
+            .cors(Customizer.withDefaults())
+            .csrf(AbstractHttpConfigurer::disable)
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(authorize -> authorize
+                // Endpoints Públicos
+                .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/validateToken").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/forgot-password").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/reset-password").permitAll()
+                
+                // WebSocket e Imagens
+                .requestMatchers(HttpMethod.GET, "/ws/**").permitAll()
+                .requestMatchers("/imagens/chat/**").permitAll()
 
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
+                // Todo o resto precisa de login
+                .anyRequest().authenticated()
+            )
+            .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
+            
         return http.build();
     }
 

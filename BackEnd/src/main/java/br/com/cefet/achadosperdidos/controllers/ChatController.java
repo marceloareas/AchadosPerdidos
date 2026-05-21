@@ -8,6 +8,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestParam; 
 
 import br.com.cefet.achadosperdidos.domain.model.Usuario;
 import br.com.cefet.achadosperdidos.dto.mensagem.BaseMensagemDTO;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-
 
 @RestController
 @RequestMapping("/chat")
@@ -51,6 +51,16 @@ public class ChatController {
         return ResponseEntity.ok(response);
     }
 
+    // --- Adição de imagem no chat---
+    @PostMapping("/upload-imagem")
+    public ResponseEntity<ApiResponse<String>> uploadImagemChat(@RequestParam("file") MultipartFile file) {
+        // Pega o usuário logado caso queira registrar quem fez o upload
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario)auth.getPrincipal();
 
-    
+        // Passa o arquivo para o ChatService lidar com ele e retornar a URL
+        ApiResponse<String> response = chatService.uploadImagemChat(file, usuario);
+        
+        return ResponseEntity.ok(response);
+    }
 }

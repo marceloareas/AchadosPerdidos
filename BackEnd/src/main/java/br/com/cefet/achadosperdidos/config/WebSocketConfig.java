@@ -17,7 +17,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-
 import java.util.List;
 
 @Configuration
@@ -64,12 +63,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         String token = authorizationHeader.substring(7);
 
                         // 5. Usa o SEU TokenService para validar
-                        // Se for válido, retorna o ID (Long). Se não, retorna null.
                         Long usuarioId = tokenService.validateToken(token);
 
                         if (usuarioId != null) {
                             // 6. Cria a autenticação do Spring Security
-                            // Importante: Transformamos o ID em String para ser o "Principal"
                             UsernamePasswordAuthenticationToken auth =
                                     new UsernamePasswordAuthenticationToken(String.valueOf(usuarioId), null, List.of());
 

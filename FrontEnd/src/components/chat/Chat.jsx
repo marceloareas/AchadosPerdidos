@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import style from "./Chat.module.scss";
 
 import ContentChat from "../chat/ContentChat.jsx";
@@ -22,11 +22,26 @@ const Chat = ({
   isMatchFinalizado,
 }) => {
   const { confirmMatch } = useMatchStore();
-  const { showNotification } = useNotification();
+  //Puxando a novaMensagem e setNovaMensagem do contexto
+  const { showNotification, novaMensagem, setNovaMensagem } = useNotification(); 
   const { getChat, getChats } = useChatStore();
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  //Atualiza a tela automaticamente quando recebe mensagem pelo WebSocket
+  useEffect(() => {
+    if (novaMensagem) {
+      // Verifica se a mensagem que chegou pertence a ESTE chat específico
+      if (novaMensagem.chatId === chat.id) {
+        // Atualiza as mensagens puxando do banco novamente
+        getChat(chat.id);
+        
+        // Limpa a notificação para não ficar atualizando em loop
+        setNovaMensagem(null);
+      }
+    }
+  }, [novaMensagem, chat.id, getChat, setNovaMensagem]);
 
   const handleOpenModal = () => {
     setConfirmModal(true);
@@ -43,6 +58,7 @@ const Chat = ({
         item.nome === itemsMatches.nomeItemPerdido
     );
   }, [items]);
+
   const handleMatchConfirm = async (idMatch) => {
     setIsLoading(true);
     try {
@@ -70,7 +86,7 @@ const Chat = ({
     <>
       <div className={style.chatLayout}>
         <HeaderChat
-          item={meuitemNome.nome}
+          item={meuitemNome?.nome}
           usuario={person.nome}
           onBack={onBack}
           openModal={handleOpenModal}

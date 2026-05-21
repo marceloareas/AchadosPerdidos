@@ -33,6 +33,14 @@ import br.com.cefet.achadosperdidos.repositories.ChatRepository;
 import br.com.cefet.achadosperdidos.repositories.MatchRepository;
 import jakarta.transaction.Transactional;
 
+import org.springframework.web.multipart.MultipartFile;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
+import java.io.IOException;
+
 
 @Service
 public class ChatService {
@@ -90,37 +98,27 @@ public class ChatService {
         boolean isUsuarioItemAchado = usuario.getId().equals(match.getItemAchado().getUsuario().getId());
         boolean isUsuarioItemPerdido = usuario.getId().equals(match.getItemPerdido().getUsuario().getId());
         
-        // Verifica se o usuário da requisição é parte integrante do Chat
         if (!isUsuarioItemAchado && !isUsuarioItemPerdido) {
             throw new NotAuthorized("Chat não pertence ao usuario.");
         }
 
-        // Verifica se já existe um chat atrelado a esse Match
         Optional<Chat> alreadyExistingChat = chatRepository.findByMatchId(match_id);
         Chat chat;
         String messageResponse;
         List<BaseMensagem> mensagens;
 
-        // Caso já exista um chat
         if (alreadyExistingChat.isPresent()) {
-
-            // Objeto chat é materializado
             chat = alreadyExistingChat.get();
-            // As mensagens atreladas ao chat são recuperadas
             mensagens = mensagemRepository.findByChatIdOrderByDataEnvioAsc(chat.getId());
             messageResponse = "Chat encontrado com sucesso.";
         }
-        // Caso não exista um Chat
         else{
             if(match.isFinalizado()){
                 throw new MatchFinalizadoException("O Match já foi finalizado");
             }
-            // Um novo Chat é criado 
             chat = new Chat();
-            // Setando relação entre Chat e Match
             chat.setMatch(match);
 
-            // Setando relação entre os usuários do Match e Chat
             Set<Usuario> usuarios = new HashSet<>();
             usuarios.add(match.getItemAchado().getUsuario());
             usuarios.add(match.getItemPerdido().getUsuario());
@@ -148,13 +146,14 @@ public class ChatService {
         if(chat.getMatch().isFinalizado()){
             throw new MatchFinalizadoException("Falha ao enviar mensagem, match já foi finalizado.");
         }
+        
+        // 1. Cria a entidade e salva no banco
         BaseMensagem mensagem = mensagemFactory.criarMensagem(chat_id, mensagemDTO);
-
         BaseMensagem mensagemSalva = mensagemRepository.save(mensagem);
-        //todo: modificar a mensagem para ser enviada de acordo com a instancia (usar factory).
-
+        
         String routingKey =  "user." + mensagemDTO.getDestinatarioId();
         
+        // 2. Envia a entidade salva direto pro RabbitMQ (como o seu Consumer já espera)
         rabbitTemplate.convertAndSend(
             RabbitConfig.TOPIC_EXCHANGE_NAME,
             routingKey,
@@ -162,5 +161,34 @@ public class ChatService {
         );
 
         return new ApiResponse<String>("Mensagem enviada com sucesso.", null);
+    }
+    @Transactional
+    public ApiResponse<String> uploadImagemChat(MultipartFile file, Usuario usuario) {
+        try {
+            String pastaUploads = "uploads/chat/";
+            Path caminhoDiretorio = Paths.get(pastaUploads);
+
+            if (!Files.exists(caminhoDiretorio)) {
+                Files.createDirectories(caminhoDiretorio);
+            }
+
+            String nomeOriginal = file.getOriginalFilename();
+            String extensao = "";
+            if (nomeOriginal != null && nomeOriginal.contains(".")) {
+                extensao = nomeOriginal.substring(nomeOriginal.lastIndexOf("."));
+            }
+
+            String novoNomeArquivo = UUID.randomUUID().toString() + extensao;
+
+            Path caminhoCompleto = caminhoDiretorio.resolve(novoNomeArquivo);
+            Files.copy(file.getInputStream(), caminhoCompleto, StandardCopyOption.REPLACE_EXISTING);
+
+            String urlPublica = "http://localhost:8080/imagens/chat/" + novoNomeArquivo;
+
+            return new ApiResponse<>("Upload realizado com sucesso", "url", urlPublica);
+
+        } catch (IOException e) {
+            return new ApiResponse<>("Erro ao processar imagem: " + e.getMessage(), null);
+        }
     }
 }

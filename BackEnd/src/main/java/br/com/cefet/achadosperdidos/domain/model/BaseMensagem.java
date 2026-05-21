@@ -13,13 +13,16 @@ import lombok.Setter;
 @ToString
 @Document(collection = "mensagens")
 public class BaseMensagem {
-    public BaseMensagem(TipoMensagemEnum tipo, Long chatId, LocalDateTime dataEnvio, Long remetenteId, Long destinatarioId, String conteudo) {
+    
+    // Construtor atualizado para receber a imageUrl
+    public BaseMensagem(TipoMensagemEnum tipo, Long chatId, LocalDateTime dataEnvio, Long remetenteId, Long destinatarioId, String conteudo, String imageUrl) {
         this.tipo = tipo;
         this.chatId = chatId;
         this.dataEnvio = dataEnvio;
         this.remetenteId = remetenteId;
         this.conteudo = conteudo;
         this.destinatarioId = destinatarioId;
+        this.imageUrl = imageUrl; // <-- NOVO
     }
 
     @Id
@@ -49,5 +52,10 @@ public class BaseMensagem {
     @Getter
     @Setter
     private String conteudo;
+    
+    // <-- NOVO CAMPO ADICIONADO -->
+    @Getter
+    @Setter
+    private String imageUrl; 
     
 }

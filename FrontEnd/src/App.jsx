@@ -1,7 +1,9 @@
+// src/App.jsx
 import { useEffect, useState } from "react";
-import ReactDom from "react-dom";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
+
+// Paginas e Layout
 import Home from "./pages/home/Home";
 import Matches from "./pages/matches/Matches";
 import MeusItens from "./pages/meusItens/MeusItens";
@@ -11,65 +13,52 @@ import AddItem from "./pages/cadastroItem/AddItem";
 import Cadastro from "./pages/cadastro/Cadastro";
 import Login from "./pages/login/Login";
 import Profile from "./pages/profile/Profile";
+
+import ForgotPassword from "./pages/forgotPassword/ForgotPassword";
+import ResetPassword from "./pages/resetPassword/ResetPassword";
+
 import ProtectedRoute from "./utils/protectedRoute/protectedRoute";
 import HomeOrLanding from "./utils/HomeOrLanding";
 import useAuthStore from "./store/auth";
-import { useNavigate } from "react-router-dom";
-import webSocketService from "./utils/config/WebSocket_config";
 import Api from "./api/Api";
 
 function App() {
   const { token, logout } = useAuthStore();
-  const onNavigate = useNavigate();
-
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Criamos uma função assíncrona interna
     const verifyToken = async () => {
-      console.log("🔍 VERIFICAÇÃO PADRÃO: TOKEN VÁLIDO?");
-
-      // Se não tem token, paramos o loading e deixamos o fluxo seguir
-      // (As ProtectedRoutes vão barrar o acesso se necessário)
       if (!token) {
         setIsLoading(false);
         return;
       }
-
       try {
-        // 2. Usamos AWAIT para esperar a resposta
-        // Nota: Enviar { token } como objeto JSON é mais padrão que enviar a string pura
         const response = await Api.post("/auth/validateToken", token);
-
-        // Assumindo que o backend retorna true/false diretamente no body
         const isTokenValid = response.data.data;
-
-        if (!isTokenValid) {
-          throw new Error("Token inválido segundo o backend");
-        }
-
-        console.log("✅ TOKEN VÁLIDO");
-        webSocketService.connectWebSocket();
+        if (!isTokenValid) throw new Error("Token inválido");
       } catch (error) {
-        console.warn(
-          "🚫 Token inválido ou erro na requisição. Realizando LOGOUT."
-        );
-
-        webSocketService.disconnect(); // Garante desconexão
-        logout(); // Limpa store
-        navigate("/login"); // Redireciona
+        logout();
+        navigate("/login"); 
       } finally {
-        // 4. Finaliza o carregamento independente do resultado
         setIsLoading(false);
       }
     };
-
     verifyToken();
-  }, []); // Executa apenas na montagem
+  }, [token, logout, navigate]);
+
+  if (isLoading) {
+      return <div>Carregando aplicação...</div>;
+  }
+
   return (
-    <>
       <Routes>
         <Route path="/" element={<HomeOrLanding />} />
+        
+        {/* ROTAS DE RECUPERAÇÃO DE SENHA (PÚBLICAS) */}
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
         <Route
           path="/matches"
           element={
@@ -78,6 +67,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        
         <Route
           path="/itens"
           element={
@@ -86,6 +76,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        
         <Route
           path="/chats"
           element={
@@ -94,6 +85,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        
         <Route
           path="/add-item"
           element={
@@ -102,9 +94,10 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<NotFound />} />
+        
         <Route path="/register" element={<Cadastro />} />
         <Route path="/login" element={<Login />} />
+        
         <Route
           path="/profile"
           element={
@@ -113,8 +106,9 @@ function App() {
             </ProtectedRoute>
           }
         />
+        
+        <Route path="*" element={<NotFound />} />
       </Routes>
-    </>
   );
 }
 

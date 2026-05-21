@@ -90,11 +90,11 @@ public class UsuarioService {
         if(senha.equals(confirmacaoSenha)){
             String hashedSenha = passwordEncoder.encode(senha);
             usuario.setSenha(hashedSenha);
+            
+            return "Senha atualizada com sucesso."; 
+        } else {
+            throw new InvalidCredentials("As senhas não coincidem."); 
         }
-
-        usuarioRepository.save(usuario);
-
-        return "Senha atualizada com sucesso!";
     }
 
     @Transactional
@@ -108,6 +108,5 @@ public class UsuarioService {
 
         return "Usuário deletado com sucesso";
     }
-
 
 }

@@ -8,7 +8,6 @@ import { useNotification } from "../../utils/NotificationContext.jsx";
 import { loginSchema } from "../../validation/validation";
 import useAuthStore from "../../store/auth.js";
 import { useNavigate } from "react-router-dom";
-import webSocketService from "../../utils/config/WebSocket_config.js";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -31,6 +30,7 @@ const Login = () => {
       setErrors((prev) => ({ ...prev, [field]: err.message }));
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -49,7 +49,7 @@ const Login = () => {
           email: "",
           senha: "",
         });
-        webSocketService.connectWebSocket();
+        
         showNotification(response, "success");
         setTimeout(() => {
           setIsLoading(false);
@@ -72,6 +72,7 @@ const Login = () => {
       }
     }
   };
+
   return (
     <div className={style.pageContainer}>
       <section className={style.section_register_top}>
@@ -132,14 +133,22 @@ const Login = () => {
             </CustomButton>
           </form>
         </div>
+        
         <div className={style.container_link}>
+          {/* Cadastro primeiro */}
           <span>
-            {" "}
             Não tem uma conta?{" "}
             <a href="/register" className={style.auth_link}>
               Cadastre-se
             </a>
           </span>
+
+          {/* Esqueci a senha abaixo com margem superior para espaçamento */}
+          <div style={{ marginTop: '16px' }}>
+            <a href="/forgot-password" className={style.auth_link} style={{ fontSize: '0.9rem', opacity: 0.8 }}>
+              Esqueci minha senha
+            </a>
+          </div>
         </div>
       </section>
     </div>

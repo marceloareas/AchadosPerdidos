@@ -1,7 +1,5 @@
 import { create } from "zustand";
-import useAuthStore from "./auth";
 import Api from "../api/Api";
-import { API_HEADER } from "../utils/config/API_HEADER";
 
 const useChatStore = create((set, get) => ({
   chats: [],
@@ -13,8 +11,8 @@ const useChatStore = create((set, get) => ({
   getChats: async () => {
     set({ loading: true, error: null });
     try {
-      const { token } = useAuthStore.getState();
-      const response = await Api.get("/chat", API_HEADER(token));
+      // O Api.js intercepta e coloca o token sozinho!
+      const response = await Api.get("/chat");
       set({ chats: response.data.chats, response: response.data.message });
     } catch (error) {
       set({ error: error.message });
@@ -22,11 +20,12 @@ const useChatStore = create((set, get) => ({
       set({ loading: false });
     }
   },
+
   getChat: async (matchId) => {
     set({ loading: true, error: null });
     try {
-      const { token } = useAuthStore.getState();
-      const response = await Api.get(`/chat/${matchId}`, API_HEADER(token));
+      // O Api.js intercepta e coloca o token sozinho!
+      const response = await Api.get(`/chat/${matchId}`);
       set({ chatAtual: response.data.chat, response: response.data.message });
     } catch (error) {
       set({ error: error.message });
@@ -34,15 +33,12 @@ const useChatStore = create((set, get) => ({
       set({ loading: false });
     }
   },
-  // --- ADICIONAR MENSAGEM AO CHAT ATUAL (WebSocket) ---
+
+  // --- ADICIONAR MENSAGEM AO CHAT ATUAL ---
   addMensagem: async (novaMsg, chatId) => {
-    const { token } = useAuthStore.getState();
     try {
-      await Api.post(
-        `/chat/mensagem/${chatId}`,
-        novaMsg, // BaseMensagemDTO
-        API_HEADER(token)
-      );
+
+      await Api.post(`/chat/mensagem/${chatId}`, novaMsg);
     } catch (err) {
       console.error(
         "Erro ao enviar mensagem:",

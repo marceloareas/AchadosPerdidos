@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum TipoMensagemEnum {
     TEXTO("texto"),
-    CONFIRMACAO("confirmacao");
+    CONFIRMACAO("confirmacao"),
+    IMAGEM("imagem"); 
 
     private String tipoMensagemString;
 
@@ -13,7 +14,7 @@ public enum TipoMensagemEnum {
         this.tipoMensagemString = tipoMensagemString;
     }
 
-    public TipoMensagemEnum fromString(String tipoMensagemString){
+    public static TipoMensagemEnum fromString(String tipoMensagemString){
         for(TipoMensagemEnum constant : TipoMensagemEnum.values()){
             if(tipoMensagemString.equalsIgnoreCase(constant.getTipoMensagemString())){
                 return constant;

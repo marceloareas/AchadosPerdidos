@@ -11,21 +11,21 @@ import org.springframework.stereotype.Component;
 public class MensagemFactory {
 
     public BaseMensagem criarMensagem (Long chat_id, BaseMensagemDTO mensagemDTO){
-        Long remetenteId = mensagemDTO.getRemetenteId();
-        String conteudo = mensagemDTO.getConteudo();
-
         TipoMensagemEnum tipoDTO = mensagemDTO.getTipo();
 
          return switch(tipoDTO){
              case TEXTO -> {
-                 yield new MensagemTexto(tipoDTO, chat_id, mensagemDTO.getDataEnvio(), mensagemDTO.getRemetenteId(), mensagemDTO.getDestinatarioId(), mensagemDTO.getConteudo());
+                 yield new MensagemTexto(tipoDTO, chat_id, mensagemDTO.getDataEnvio(), mensagemDTO.getRemetenteId(), mensagemDTO.getDestinatarioId(), mensagemDTO.getConteudo(), mensagemDTO.getImageUrl());
              }
              case CONFIRMACAO -> {
-                 yield new MensagemConfirmacao(tipoDTO, chat_id, mensagemDTO.getDataEnvio(), mensagemDTO.getRemetenteId(), mensagemDTO.getDestinatarioId(), mensagemDTO.getConteudo());
+                 yield new MensagemConfirmacao(tipoDTO, chat_id, mensagemDTO.getDataEnvio(), mensagemDTO.getRemetenteId(), mensagemDTO.getDestinatarioId(), mensagemDTO.getConteudo(), mensagemDTO.getImageUrl());
              }
-
+             
+             case IMAGEM -> {
+                 yield new MensagemTexto(tipoDTO, chat_id, mensagemDTO.getDataEnvio(), mensagemDTO.getRemetenteId(), mensagemDTO.getDestinatarioId(), mensagemDTO.getConteudo(), mensagemDTO.getImageUrl());
+             }
+             // ----------------------------------------------------------------
              default -> throw new IllegalArgumentException("Tipo de mensagem não suportado.");
          };
     }
-    
 }

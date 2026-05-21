@@ -14,4 +14,6 @@ public class BaseMensagemDTO {
     private Long remetenteId;
     private Long destinatarioId;
     private String conteudo;
+    
+    private String imageUrl; // <-- NOVO CAMPO ADICIONADO
 }

@@ -7,7 +7,8 @@ import { PiSignOutBold } from "react-icons/pi";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import CustomButton from "../ui/button/CustomButton";
 import useAuthStore from "../../store/auth";
-import webSocketService from "../../utils/config/WebSocket_config";
+
+// A importação do webSocketService foi removida daqui!
 
 const Header = () => {
   const route = useLocation();
@@ -24,10 +25,12 @@ const Header = () => {
 
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
+  
   const handleLogout = () => {
     logout();
     handleMenuClose();
-    webSocketService.disconnect();
+    // A chamada webSocketService.disconnect() foi removida daqui, 
+    // pois o NotificationContext.jsx cuida de desconectar quando o token é apagado pelo logout().
     onNavigate("/login");
   };
 
@@ -110,10 +113,10 @@ const Header = () => {
               isChat
                 ? `${style.nav_header} ${style.nav_header_current}`
                 : style.nav_header
-            }
-          >
-            Chats
-          </NavLink>
+          }
+        >
+          Chats
+        </NavLink>
         </div>
         <div
           className={

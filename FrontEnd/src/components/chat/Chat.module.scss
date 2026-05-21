@@ -1,6 +1,5 @@
 @use '../../styles/variables.scss' as *;
 
-
 // Layout wrapper para o chat
 .chatLayout {
   display: flex;
@@ -10,8 +9,7 @@
   position: relative;
 }
 
-
-//HEADER
+// HEADER
 .headerChat {
   display: flex;
   position: sticky;
@@ -61,52 +59,44 @@
     margin-left: auto;
     margin-right: 40px;
 
-    @media(max-width:900px) {
+    @media (max-width: 900px) {
       font-size: 0.625rem !important;
       margin-right: 20px;
     }
 
-    @media(max-width:700px) {
+    @media (max-width: 700px) {
       font-size: 0.575rem !important;
       margin-right: 10px;
     }
   }
-
 }
 
 .matchFinalizadoBanner {
   width: 100%;
   padding: 10px 14px;
-
   background-color: #f5f5f5;
   border: 1px solid #e0e0e0;
   border-radius: 5px;
-
   color: #5f5f5f;
   font-size: 0.85rem;
   font-weight: 500;
-
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   opacity: 0.7;
-
   margin: 8px 0 12px 0;
   user-select: none;
 }
 
-
-//CONTENT
+// CONTENT
 .contentChat {
   margin-top: 0;
-  /* sem gap entre header e mensagens */
   flex: 1 1 auto;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: $primary-color #e7e7e700;
   padding: 8px 0;
-  /* apenas espaçamento interno leve */
 }
 
 .contentChat::-webkit-scrollbar {
@@ -122,99 +112,166 @@
   border-radius: 10px;
 }
 
-
-//INPUT (fixo inferior)
+//  MENU DE ANEXOS
 .contentInput {
   display: flex;
-  align-items: baseline;
-  padding: 0px 1.5%;
-
+  align-items: flex-end; // Alinha ícones e botão de enviar ao fundo
+  padding: 0px 1.5% 15px 1.5%;
+  gap: 8px;
+  position: relative;
 
   .wrapInputChat {
     display: flex;
-    margin: 5px 5px 20px 0px;
+    flex: 1;
+    position: relative; // Para o menu de anexos se posicionar em relação a este box
     align-items: flex-end;
-    border-radius: 40px;
+    border-radius: 25px; // Arredondado estilo WhatsApp
     background: $primary-color-transparent;
-    padding: 5px;
+    padding: 5px 12px;
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
-    width: 100%;
 
     .inputMessage {
       flex: 1;
       display: block;
       width: 100%;
-      min-height: 20px;
+      min-height: 24px;
       max-height: 96px;
-      font-size: 18px;
-      line-height: 1.1;
+      font-size: 17px;
+      line-height: 1.2;
       resize: none;
       overflow-y: auto;
-      overflow-x: hidden;
-
-      white-space: pre-wrap;
-      word-break: break-word;
-
       outline: none;
-      scrollbar-width: none;
       border: none;
-      padding: 0px 15px 10px 0px;
+      padding: 8px 5px;
       background-color: transparent;
 
       &::-webkit-scrollbar {
         display: none;
       }
-
     }
-
-    .inputMessage:focus {
-      outline: none;
-    }
-
   }
 
+  // Estilo do Botão de Clips
+  .iconClip {
+    background: none;
+    border: none;
+    color: #54656f;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, color 0.2s;
+
+    &:hover {
+      color: rgb(30, 69, 107);
+    }
+
+    &.clipActive {
+      transform: rotate(45deg);
+      color: rgb(30, 69, 107);
+    }
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+  }
+
+  // Menu Flutuante de Anexos
+  .attachmentMenu {
+    position: absolute;
+    bottom: 65px; // Aparece acima do input
+    left: 10px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    z-index: 20;
+    animation: slideUp 0.2s ease-out;
+
+    .menuItem {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      border-radius: 8px;
+      transition: background 0.2s;
+
+      &:hover {
+        background-color: #f5f6f6;
+      }
+
+      span {
+        font-size: 14px;
+        color: #3b4a54;
+        font-weight: 500;
+      }
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  // Círculos Coloridos dos Ícones
+  .iconCircleCamera,
+  .iconCircleGallery {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+  }
+
+  .iconCircleCamera {
+    background: #ec52d3;
+  } // Rosa Câmera
+  .iconCircleGallery {
+    background: #bf59cf;
+  } // Roxo Galeria
+
   .iconSendMessage,
-  .iconDesativado,
-  .iconImage {
+  .iconDesativado {
     display: flex;
     align-items: center;
     justify-content: center;
     border: none;
     border-radius: 50%;
-  }
-
-  .iconSendMessage {
     color: white;
-    width: 50px;
-    padding: 12.5px;
-    font-size: 26px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    font-size: 22px;
     background-color: rgb(30, 69, 107);
+    cursor: pointer;
+    transition: background 0.2s;
   }
 
   .iconDesativado {
-    color: white;
-    width: 50px;
-    padding: 12.5px;
-    font-size: 26px;
-    background-color: rgb(30, 69, 107);
     opacity: 0.2;
-  }
-
-  .iconImage {
-    color: transparent;
-    width: 40px;
-    padding: 10px;
-    font-size: 20px;
-    background-color: transparent;
-  }
-
-  .iconSendMessage:hover,
-  .iconImage:hover {
-    cursor: pointer;
+    cursor: default;
   }
 }
 
-//CONTENT MESSAGE
+// CONTENT MESSAGE
 .balao {
   margin: 0 1% 0 2%;
   max-width: 95%;
@@ -245,7 +302,6 @@
 
   .them.first p {
     border-bottom-left-radius: 4px;
-
   }
 
   .userMe.first p {
