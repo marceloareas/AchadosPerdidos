@@ -73,3 +73,28 @@ MATCH_API_KEY=chave_secreta_de_integracao_java_python
 # Serviço de E-mail (Gmail)
 MAIL_USERNAME=seu_email@gmail.com
 MAIL_PASSWORD=senha_de_aplicativo_de_16_digitos_do_google
+
+
+
+COMO FAZER DEPLOY EM UM SERVIDOR
+
+# 🔍 Achados & Perdidos - Guia de Deploy em Servidor Compartilhado
+
+Este guia foi desenvolvido para orientar o deploy da aplicação em um ambiente de produção ou homologação que já possua outros sistemas em execução. A arquitetura foi projetada para evitar conflitos de portas e garantir a segurança dos dados.
+
+## ⚠️ Cuidados em Servidores Compartilhados (Conflito de Portas)
+Antes de iniciar, certifique-se com a equipe de infraestrutura de TI sobre quais portas estão livres no servidor. Se as portas padrão do projeto (5173 e 8080) já estiverem ocupadas por outros aplicativos, você deverá alterá-las no arquivo "docker-compose.yml" apenas no lado do Host (o número que fica à esquerda dos dois pontos).
+
+Exemplo de remapeamento seguro caso haja conflito:
+- Se a porta 5173 estiver ocupada, mude no compose para "8181:5173" (o mundo externo acessará via 8181).
+- Se a porta 8080 estiver ocupada, mude no compose para "8082:8080" (o mundo externo acessará via 8082).
+
+## 🚀 Passos para o Deploy
+
+1. Clone o repositório oficial na máquina do servidor.
+2. Na raiz do projeto, copie o arquivo ".env.example" criando um arquivo chamado ".env".
+3. Preencha todas as variáveis de ambiente seguindo as instruções de geração de chaves.
+4. Execute o comando para subir a aplicação isolando o ambiente:
+   ```bash
+   docker-compose up --build -d
+
