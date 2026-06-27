@@ -74,9 +74,10 @@ MATCH_API_KEY=chave_secreta_de_integracao_java_python
 MAIL_USERNAME=seu_email@gmail.com
 MAIL_PASSWORD=senha_de_aplicativo_de_16_digitos_do_google
 
+```
 
 
-COMO FAZER DEPLOY EM UM SERVIDOR
+### COMO FAZER O DEPLOY NO SERVIDOR
 
 # 🔍 Achados & Perdidos - Guia de Deploy em Servidor Compartilhado
 
