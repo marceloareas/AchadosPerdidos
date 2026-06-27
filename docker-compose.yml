@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   frontend-achados:
     container_name: achados_frontend
@@ -38,12 +37,14 @@ services:
   postgresql_db:
     container_name: achados_postgresql
     image: postgres:14
-    ports:
-      - "${DB_PORT}:5432"
+    # Portas comentadas para garantir isolamento na rede interna do servidor
+    # ports:
+    #   - "${DB_PORT}:5432"
     env_file:
       - .env
     volumes:
-      - datalake_postgres:/var/lib/postgresql/data
+      # Alterado para pasta local (Bind Mount) para não perder as contas no 'down -v'
+      - ./data/postgres:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
@@ -59,10 +60,12 @@ services:
   mongo_db:
     image: mongo:7
     container_name: achados_mongo
-    ports:
-      - "27017:27017"
+    # Portas comentadas para garantir isolamento na rede interna do servidor
+    # ports:
+    #   - "27017:27017"
     volumes:
-      - datalake_mongo:/data/db
+      # Alterado para pasta local (Bind Mount) para não perder o histórico do chat
+      - ./data/mongo:/data/db
       - ./BackEnd/src/main/resources/mongo/seed:/docker-entrypoint-initdb.d
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
@@ -75,8 +78,9 @@ services:
     build:
       context: ./aep-match
       dockerfile: Dockerfile
-    ports:
-      - "5001:5001"
+    # Portas comentadas para garantir isolamento na rede interna do servidor
+    # ports:
+    #   - "5001:5001"
     env_file:
       - .env
     environment:
@@ -90,8 +94,9 @@ services:
     container_name: achados_ollama
     build:
       context: ./ollama
-    ports:
-      - "11434:11434"
+    # Portas comentadas para garantir isolamento na rede interna do servidor
+    # ports:
+    #   - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
     networks:
@@ -101,9 +106,10 @@ services:
     container_name: achados_rabbitmq
     image: rabbitmq:3-management-alpine
     platform: linux/amd64
-    ports:
-      - "5672:5672"
-      - "15672:15672"
+    # Portas comentadas para garantir isolamento na rede interna do servidor
+    # ports:
+    #   - "5672:5672"
+    #   - "15672:15672"
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-guest}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD:-guest}
@@ -118,10 +124,7 @@ services:
       - bridge_achados
 
 volumes:
-  datalake_postgres:
-    driver: local
-  datalake_mongo:
-    driver: local
+  # datalake_postgres e datalake_mongo foram removidos, pois agora são pastas físicas locais
   ollama_data:
     driver: local
   rabbitmq_data:

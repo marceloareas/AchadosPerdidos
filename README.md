@@ -33,24 +33,24 @@ Uma plataforma digital inteligente para registrar e recuperar objetos perdidos. 
 ## 🚀 Como rodar o projeto localmente
 
 1. Clone o repositório.
-2. Na raiz do projeto, renomeie o arquivo `.env.example` para `.env` e preencha com as suas senhas.
+2. Na raiz do projeto, crie o arquivo `.env` e preencha com as suas senhas.
 3. Tenha o **Docker** e o **Docker Compose** instalados na sua máquina.
 4. Execute o comando abaixo na raiz do projeto:
    ```bash
-   docker-compose up --build
+   docker compose up --build
 5. Acesse o Frontend em http://localhost:5173.
 
 
 
 
-### Passo 2: Arquivo `.env.example`
-Crie um arquivo chamado **exatamente** `.env.example` na raiz do seu projeto (na mesma pasta onde fica o `docker-compose.yml`). Cole isso dentro dele:
+### Passo 2: ".env."
+Crie um arquivo chamado **exatamente** `.env` na raiz do seu projeto (na mesma pasta onde fica o `docker-compose.yml`). Cole isso dentro dele:
 
 ```env
 # ==========================================
 # EXEMPLO DE VARIÁVEIS DE AMBIENTE (.env)
 # ==========================================
-# DICA: Copie este arquivo, renomeie para ".env" 
+# DICA: Copie este arquivo, nomeie como ".env" 
 # e substitua os valores reais antes de rodar o Docker.
 
 # Configurações do Banco Relacional (PostgreSQL)
@@ -92,9 +92,9 @@ Exemplo de remapeamento seguro caso haja conflito:
 ## 🚀 Passos para o Deploy
 
 1. Clone o repositório oficial na máquina do servidor.
-2. Na raiz do projeto, copie o arquivo ".env.example" criando um arquivo chamado ".env".
+2. Na raiz do projeto, crie um arquivo chamado ".env".
 3. Preencha todas as variáveis de ambiente seguindo as instruções de geração de chaves.
 4. Execute o comando para subir a aplicação isolando o ambiente:
    ```bash
-   docker-compose up --build -d
+   docker compose up --build -d
 
