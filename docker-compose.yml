@@ -98,10 +98,10 @@ services:
     # ports:
     #   - "11434:11434"
     volumes:
-      - ollama_data:/root/.ollama
+      - ./data/ollama:/root/.ollama
     networks:
       - bridge_achados
-
+      
   rabbitmq:
     container_name: achados_rabbitmq
     image: rabbitmq:3-management-alpine
